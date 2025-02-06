@@ -32,7 +32,7 @@ class OpenSfMConfig:
     feature_process_size_panorama: int = 4096
     feature_use_adaptive_suppression: bool = False
     # Bake segmentation info (class and instance) in the feature data. Thus it is done once for all at extraction time.
-    features_bake_segmentation: bool = True
+    features_bake_segmentation: bool = False
 
     ##################################
     # Params for SIFT
@@ -169,7 +169,7 @@ class OpenSfMConfig:
     # If True, removes static matches using ad-hoc heuristics
     matching_use_filters: bool = False
     # Use segmentation information (if available) to improve matching
-    matching_use_segmentation: bool = True
+    matching_use_segmentation: bool = False
 
     ##################################
     # Params for geometric estimation
