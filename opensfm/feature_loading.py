@@ -126,7 +126,7 @@ class FeatureLoader(object):
             raise RuntimeError(
                 "Semantic segmentation in descriptor only supported for HAHOG UCHAR descriptors"
             )
-
+        print("Reading Segmentation - Fran Flag")
         segmentation = features.get_segmentation()
         if segmentation is None:
             return features
