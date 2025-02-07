@@ -127,7 +127,7 @@ class FeatureLoader:
             raise RuntimeError(
                 "Semantic segmentation in descriptor only supported for HAHOG UCHAR descriptors"
             )
-        logger.info("ADD SEGMENTATION FLAG")    
+        logger.info("Adding the semantic segmentation data to the descriptor prior to matching - Fran")
         segmentation = features.get_segmentation()
         if segmentation is None:
             return features
