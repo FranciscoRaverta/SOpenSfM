@@ -79,7 +79,7 @@ def match_images_with_pairs(
     logger.info("Computing pair matching with %d processes" % processes)
     matches = context.parallel_map(match_unwrap_args, args, processes, jobs_per_process)
     logger.info(
-        "Matched {} pairs {} in {} seconds ({} seconds/pair).".format(
+        "Matched {} pairs {} in {} seconds ({} seconds/pair - FRAN HERE).".format(
             len(pairs),
             log_projection_types(pairs, exifs, cameras),
             timer() - start,
