@@ -1,3 +1,4 @@
+# pyre-unsafe
 import logging
 from functools import lru_cache
 from typing import Optional, Tuple, Any
@@ -15,7 +16,7 @@ SEGMENTATION_IN_DESCRIPTOR_MULT = (
 )
 
 
-class FeatureLoader(object):
+class FeatureLoader:
     def clear_cache(self) -> None:
         self.load_mask.cache_clear()
         self.load_points_colors_segmentations_instances.cache_clear()
@@ -126,7 +127,7 @@ class FeatureLoader(object):
             raise RuntimeError(
                 "Semantic segmentation in descriptor only supported for HAHOG UCHAR descriptors"
             )
-        print("Reading Segmentation - Fran Flag")
+            
         segmentation = features.get_segmentation()
         if segmentation is None:
             return features
@@ -205,4 +206,3 @@ class FeatureLoader(object):
         else:
             features_data.points = np.array(features_data.points[:, :3], dtype=float)
         return features_data
-
