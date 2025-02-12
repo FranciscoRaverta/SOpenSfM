@@ -326,6 +326,10 @@ def _match_descriptors_guided_impl(
             camera2,
             features_data2.points,
         )
+
+    if overriden_config["matching_use_segmentation"]:
+        apply_segmentation_filter()
+
     return (
         features_data1.points,
         features_data2.points,
@@ -448,6 +452,10 @@ def _match_descriptors_impl(
             camera2,
             features_data2.points,
         )
+
+    if overriden_config["matching_use_segmentation"]:
+        apply_segmentation_filter()
+
     return (
         features_data1.points,
         features_data2.points,
@@ -914,6 +922,9 @@ def unfilter_matches(matches, m1, m2) -> np.ndarray:
     i2 = np.flatnonzero(m2)
     return np.array([(i1[match[0]], i2[match[1]]) for match in matches])
 
+def apply_segmentation_filter():
+    logger.info("Fran - Here will be the function to check if the points have the same segmentation indices")
+    return
 
 def apply_adhoc_filters(
     data: DataSetBase,
