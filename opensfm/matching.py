@@ -934,9 +934,9 @@ def apply_segmentation_filter(
     logger.info("Change the following into what it needs to be done")
 
     seg_im1 = data.load_segmentation(im1)
-    logger.info("Size of seg_im1: "), logger.info(seg_im1.size)
+    logger.info("Size of seg_im1: "), logger.info(seg_im1)
     seg_im2 = data.load_segmentation(im2)
-    logger.info("Size of seg2: "), logger.info(seg_im2.size)
+    logger.info("Size of seg2: "), logger.info(seg_im2.shape())
 
     #threshold = 0.001
     res = []
