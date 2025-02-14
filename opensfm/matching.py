@@ -328,7 +328,7 @@ def _match_descriptors_guided_impl(
         )
 
     if overriden_config["matching_use_segmentation"]:
-        apply_segmentation_filter()
+        apply_segmentation_filter(data, matches, im1, features_data1.points, im2, features_data2.points)
 
     return (
         features_data1.points,
@@ -454,7 +454,7 @@ def _match_descriptors_impl(
         )
 
     if overriden_config["matching_use_segmentation"]:
-        apply_segmentation_filter()
+        apply_segmentation_filter(data, matches, im1, features_data1.points, im2, features_data2.points)
 
     return (
         features_data1.points,
@@ -922,9 +922,41 @@ def unfilter_matches(matches, m1, m2) -> np.ndarray:
     i2 = np.flatnonzero(m2)
     return np.array([(i1[match[0]], i2[match[1]]) for match in matches])
 
-def apply_segmentation_filter():
+def apply_segmentation_filter(
+    data: DataSetBase,
+    matches: List[Tuple[int, int]],
+    im1: str,
+    p1: np.ndarray,
+    im2: str,
+    p2: np.ndarray,
+) -> List[Tuple[int, int]]:
     logger.info("Fran - Here will be the function to check if the points have the same segmentation indices")
-    return
+    logger.info("Change the following into what it needs to be done")
+
+    seg_im1 = data.load_segmentation(im1)
+    logger.info("Size of seg_im1: "), logger.info(seg_im1.size)
+    seg_im2 = data.load_segmentation(im2)
+    logger.info("Size of seg2: "), logger.info(seg_im2.size)
+
+    #threshold = 0.001
+    res = []
+    for match in matches:
+        seg1 = seg_im1[p1[match[0]]]
+        logger.info("Seg1: "), logger.info(seg1)
+        seg2 = seg_im2[p2[match[1]]]
+        logger.info("Seg2: "), logger.info(seg2)
+        #d = p1[match[0]] - p2[match[1]]
+        if seg1 == seg2:#d[0] ** 2 + d[1] ** 2 >= threshold ** 2:
+            logger.info("Both matched points have the same segmentation index")
+            res.append(match)
+
+    #static_ratio_threshold = 0.85
+    #static_ratio_removed = 1 - len(res) / max(len(matches), 1)
+    #if static_ratio_removed > static_ratio_threshold:
+    return matches
+    #else:
+    #    return res
+    #return
 
 def apply_adhoc_filters(
     data: DataSetBase,
