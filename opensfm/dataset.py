@@ -185,8 +185,9 @@ class DataSet(DataSetBase):
                         # scores = data[:, :, 3].astype(np.float32) / 256.0
                     else:
                         raise IndexError
-                logger.info("Segmentation image loaded - FRAN: " + segmentation_file)
+            logger.info("Segmentation image loaded - FRAN: " + segmentation_file)
         else:
+            logger.info("Segmentation image NOT loaded - FRAN: " + segmentation_file)
             segmentation = None
         return segmentation
 
