@@ -941,7 +941,9 @@ def apply_segmentation_filter(
     #threshold = 0.001
     res = []
     for match in matches:
+        logger.info("p1[match[0]]: "), logger.info(p1[match[0]])
         seg1 = seg_im1[p1[match[0]]]
+        logger.info("p2[match[1]]: "), logger.info(p2[match[1]])
         logger.info("Seg1: "), logger.info(seg1)
         seg2 = seg_im2[p2[match[1]]]
         logger.info("Seg2: "), logger.info(seg2)
