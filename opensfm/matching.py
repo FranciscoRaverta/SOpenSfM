@@ -328,7 +328,7 @@ def _match_descriptors_guided_impl(
         )
 
     if overriden_config["matching_use_segmentation"]:
-        apply_segmentation_filter(data, matches, im1, features_data1.points, im2, features_data2.points)
+        apply_segmentation_filter(data, matches, im1, features_data1, im2, features_data2)
 
     return (
         features_data1.points,
@@ -454,7 +454,7 @@ def _match_descriptors_impl(
         )
 
     if overriden_config["matching_use_segmentation"]:
-        apply_segmentation_filter(data, matches, im1, features_data1.points, im2, features_data2.points)
+        apply_segmentation_filter(data, matches, im1, features_data1, im2, features_data2)
 
     return (
         features_data1.points,
@@ -926,9 +926,9 @@ def apply_segmentation_filter(
     data: DataSetBase,
     matches: List[Tuple[int, int]],
     im1: str,
-    p1: np.ndarray,
+    p1,
     im2: str,
-    p2: np.ndarray,
+    p2,
 ) -> List[Tuple[int, int]]:
     logger.info("Fran - Here will be the function to check if the points have the same segmentation indices")
     logger.info("Change the following into what it needs to be done")
@@ -941,7 +941,8 @@ def apply_segmentation_filter(
     #threshold = 0.001
     res = []
     for match in matches:
-        logger.info("match: "), logger.info(match)
+        logger.info("semantic: "), logger.info(p1.semantic[match[0]])
+        logger.info("descriptors: "), logger.info(p1.descriptors[match[0]])
         logger.info("p1[match[0]]: "), logger.info(p1[match[0]])
         seg1 = seg_im1[p1[match[0]]]
         logger.info("p2[match[1]]: "), logger.info(p2[match[1]])
