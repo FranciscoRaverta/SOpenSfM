@@ -941,7 +941,7 @@ def apply_segmentation_filter(
     #threshold = 0.001
     res = []
     for match in matches:
-        logger.info("semantic: "), logger.info(p1.semantic)
+        logger.info("semantic: "), logger.info(p1.semantic.segmentation)
         logger.info("descriptors: "), logger.info(p1.descriptors[match[0]])
         logger.info("p1[match[0]]: "), logger.info(p1[match[0]])
         seg1 = seg_im1[p1[match[0]]]
