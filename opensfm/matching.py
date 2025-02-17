@@ -327,8 +327,9 @@ def _match_descriptors_guided_impl(
             features_data2.points,
         )
 
-    if overriden_config["matching_use_segmentation"]:
-        apply_segmentation_filter(data, matches, im1, features_data1, im2, features_data2)
+    if overriden_config["matching_segmentation_filter"]:
+        logger.info("Filtering based on the segmentation index for the paired matched points - FRAN")
+        apply_segmentation_filter(matches, features_data1, features_data2)
 
     return (
         features_data1.points,
@@ -454,7 +455,7 @@ def _match_descriptors_impl(
         )
 
     if overriden_config["matching_use_segmentation"]:
-        apply_segmentation_filter(data, matches, im1, features_data1, im2, features_data2)
+        apply_segmentation_filter(matches, features_data1, features_data2)
 
     return (
         features_data1.points,
@@ -923,19 +924,16 @@ def unfilter_matches(matches, m1, m2) -> np.ndarray:
     return np.array([(i1[match[0]], i2[match[1]]) for match in matches])
 
 def apply_segmentation_filter(
-    data: DataSetBase,
     matches: List[Tuple[int, int]],
-    im1: str,
     p1,
-    im2: str,
     p2,
 ) -> List[Tuple[int, int]]:
     logger.info("Fran - Here will be the function to check if the points have the same segmentation indices")
     logger.info("Change the following into what it needs to be done")
 
-    seg_im1 = data.load_segmentation(im1)
+    #seg_im1 = data.load_segmentation(im1)
     #logger.info("Size of seg_im1: "), logger.info(seg_im1)
-    seg_im2 = data.load_segmentation(im2)
+    #seg_im2 = data.load_segmentation(im2)
     #logger.info("Size of seg_im2: "), logger.info(seg_im2)
 
     #threshold = 0.001
@@ -943,8 +941,8 @@ def apply_segmentation_filter(
     counter_equal_seg = 0
     counter_not_equal_seg = 0
     for match in matches:
-        logger.info("semantic0: "), logger.info(p1.semantic.segmentation[match[0]])
-        logger.info("semantic1: "), logger.info(p2.semantic.segmentation[match[1]])
+        #logger.info("semantic0: "), logger.info(p1.semantic.segmentation[match[0]])
+        #logger.info("semantic1: "), logger.info(p2.semantic.segmentation[match[1]])
         #logger.info("descriptors: "), logger.info(p1.descriptors[match[0]])
         #logger.info("p1[match[0]]: "), logger.info(p1[match[0]])
         seg1 = p1.semantic.segmentation[match[0]]#seg_im1[p1[match[0]]]
