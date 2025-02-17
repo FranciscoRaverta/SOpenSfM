@@ -454,7 +454,8 @@ def _match_descriptors_impl(
             features_data2.points,
         )
 
-    if overriden_config["matching_use_segmentation"]:
+    if data.config["matching_segmentation_filter"]:
+        logger.info("Filtering based on the segmentation index for the paired matched points - FRAN")
         apply_segmentation_filter(matches, features_data1, features_data2)
 
     return (
