@@ -161,7 +161,7 @@ def read_images(
     for image in images:
         logger.info(f"Reading data for image {image} (queue-size={queue.qsize()})")
         image_array = data.load_image(image)
-        if data.config["features_bake_segmentation"]:
+        if data.config["features_bake_segmentation"] or data.config["matching_segmentation_filter"]:
             segmentation_array = data.load_segmentation(image)
             instances_array = data.load_instances(image)
         else:
