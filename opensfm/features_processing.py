@@ -162,9 +162,11 @@ def read_images(
         logger.info(f"Reading data for image {image} (queue-size={queue.qsize()})")
         image_array = data.load_image(image)
         if data.config["features_bake_segmentation"] or data.config["matching_segmentation_filter"]:
+            logger.info("Reading the segmentation images")
             segmentation_array = data.load_segmentation(image)
             instances_array = data.load_instances(image)
         else:
+            logger.info("Not reading the segmentation images")
             segmentation_array, instances_array = None, None
         args = image, image_array, segmentation_array, instances_array, data, force
         queue.put(args, block=True, timeout=full_queue_timeout)
