@@ -940,6 +940,8 @@ def apply_segmentation_filter(
 
     #threshold = 0.001
     res = []
+    counter_equal_seg = 0
+    counter_not_equal_seg = 0
     for match in matches:
         logger.info("semantic0: "), logger.info(p1.semantic.segmentation[match[0]])
         logger.info("semantic1: "), logger.info(p2.semantic.segmentation[match[1]])
@@ -952,9 +954,14 @@ def apply_segmentation_filter(
         #logger.info("Seg2: "), logger.info(seg2)
         #d = p1[match[0]] - p2[match[1]]
         if seg1 == seg2:#d[0] ** 2 + d[1] ** 2 >= threshold ** 2:
-            logger.info("Both matched points have the same segmentation index")
+            #logger.info("Both matched points have the same segmentation index")
+            counter_equal_seg += 1
             res.append(match)
-
+        else:
+            counter_not_equal_seg += 1
+    logger.info("Counter - Equal segmentation: "), logger.info(counter_equal_seg)
+    logger.info("Counter - Different segmentation: "), logger.info(counter_not_equal_seg)
+    logger.info("Total: "), logger.info(counter_equal_seg+counter_not_equal_seg)
     #static_ratio_threshold = 0.85
     #static_ratio_removed = 1 - len(res) / max(len(matches), 1)
     #if static_ratio_removed > static_ratio_threshold:
