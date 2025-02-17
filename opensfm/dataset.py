@@ -168,6 +168,7 @@ class DataSet(DataSetBase):
     def load_segmentation(self, image: str) -> Optional[np.ndarray]:
         """Load image segmentation if it exists, otherwise return None."""
         segmentation_file = self._segmentation_file(image)
+        logger.info(f"Importing segmentation image {segmentation_file}- FRAN")
         if self.io_handler.isfile(segmentation_file):
             with self.io_handler.open(segmentation_file, "rb") as fp:
                 with PngImageFile(fp) as png_image:
@@ -189,6 +190,7 @@ class DataSet(DataSetBase):
         else:
             logger.info("Segmentation image NOT loaded - FRAN: " + segmentation_file)
             segmentation = None
+        logger.info(f"Finish importing image {segmentation_file} - FRAN")
         return segmentation
 
     def segmentation_ignore_values(self, image: str) -> List[int]:
