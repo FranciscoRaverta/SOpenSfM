@@ -175,8 +175,10 @@ class DataSet(DataSetBase):
                     # TODO: We do not write a header tag in the metadata. Might be good safety check.
                     data = np.array(png_image)
                     if data.ndim == 2:
+                        logger.info("Data: \n", data)
                         return data
                     elif data.ndim == 3:
+                        logger.info("Data: \n", data[:,:,0])
                         return data[:, :, 0]
 
                         # TODO we can optionally return also the instances and scores:
