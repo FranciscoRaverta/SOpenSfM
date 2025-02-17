@@ -941,14 +941,15 @@ def apply_segmentation_filter(
     #threshold = 0.001
     res = []
     for match in matches:
-        logger.info("semantic: "), logger.info(p1.semantic.segmentation)
-        logger.info("descriptors: "), logger.info(p1.descriptors[match[0]])
-        logger.info("p1[match[0]]: "), logger.info(p1[match[0]])
-        seg1 = seg_im1[p1[match[0]]]
-        logger.info("p2[match[1]]: "), logger.info(p2[match[1]])
-        logger.info("Seg1: "), logger.info(seg1)
-        seg2 = seg_im2[p2[match[1]]]
-        logger.info("Seg2: "), logger.info(seg2)
+        logger.info("semantic0: "), logger.info(p1.semantic.segmentation[match[0]])
+        logger.info("semantic1: "), logger.info(p2.semantic.segmentation[match[1]])
+        #logger.info("descriptors: "), logger.info(p1.descriptors[match[0]])
+        #logger.info("p1[match[0]]: "), logger.info(p1[match[0]])
+        seg1 = p1.semantic.segmentation[match[0]]#seg_im1[p1[match[0]]]
+        #logger.info("p2[match[1]]: "), logger.info(p2[match[1]])
+        #logger.info("Seg1: "), logger.info(seg1)
+        seg2 = p2.semantic.segmentation[match[1]]#seg_im2[p2[match[1]]]
+        #logger.info("Seg2: "), logger.info(seg2)
         #d = p1[match[0]] - p2[match[1]]
         if seg1 == seg2:#d[0] ** 2 + d[1] ** 2 >= threshold ** 2:
             logger.info("Both matched points have the same segmentation index")
