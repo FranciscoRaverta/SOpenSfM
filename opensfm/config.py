@@ -32,7 +32,7 @@ class OpenSfMConfig:
     feature_process_size_panorama: int = 4096
     feature_use_adaptive_suppression: bool = False
     # Bake segmentation info (class and instance) in the feature data. Thus it is done once for all at extraction time.
-    features_bake_segmentation: bool = False
+    features_bake_segmentation: bool = True
 
     ##################################
     # Params for SIFT

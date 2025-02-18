@@ -327,7 +327,7 @@ def _match_descriptors_guided_impl(
             features_data2.points,
         )
 
-    if data.config["matching_segmentation_filter"]:
+    if data.config["matching_segmentation_filter"] and data.config["features_bake_segmentation"]:
         logger.info("Filtering based on the segmentation index for the paired matched points - FRAN")
         apply_segmentation_filter(matches, features_data1, features_data2)
 
@@ -454,8 +454,7 @@ def _match_descriptors_impl(
             features_data2.points,
         )
 
-    if data.config["matching_segmentation_filter"]:
-        logger.info("Filtering based on the segmentation index for the paired matched points - FRAN")
+    if data.config["matching_segmentation_filter"] and data.config["features_bake_segmentation"]:
         apply_segmentation_filter(matches, features_data1, features_data2)
 
     return (
@@ -929,45 +928,32 @@ def apply_segmentation_filter(
     p1,
     p2,
 ) -> List[Tuple[int, int]]:
-    logger.info("Fran - Here will be the function to check if the points have the same segmentation indices")
-    logger.info("Change the following into what it needs to be done")
-
-    #seg_im1 = data.load_segmentation(im1)
-    #logger.info("Size of seg_im1: "), logger.info(seg_im1)
-    #seg_im2 = data.load_segmentation(im2)
-    #logger.info("Size of seg_im2: "), logger.info(seg_im2)
+    #logger.info("Fran - Here will be the function to check if the points have the same segmentation indices")
+    #logger.info("Change the following into what it needs to be done")
 
     #threshold = 0.001
     res = []
     counter_equal_seg = 0
     counter_not_equal_seg = 0
     for match in matches:
-        #logger.info("semantic0: "), logger.info(p1.semantic.segmentation[match[0]])
-        #logger.info("semantic1: "), logger.info(p2.semantic.segmentation[match[1]])
-        #logger.info("descriptors: "), logger.info(p1.descriptors[match[0]])
-        #logger.info("p1[match[0]]: "), logger.info(p1[match[0]])
         seg1 = p1.semantic.segmentation[match[0]]#seg_im1[p1[match[0]]]
-        #logger.info("p2[match[1]]: "), logger.info(p2[match[1]])
-        #logger.info("Seg1: "), logger.info(seg1)
         seg2 = p2.semantic.segmentation[match[1]]#seg_im2[p2[match[1]]]
-        #logger.info("Seg2: "), logger.info(seg2)
         #d = p1[match[0]] - p2[match[1]]
         if seg1 == seg2:#d[0] ** 2 + d[1] ** 2 >= threshold ** 2:
-            #logger.info("Both matched points have the same segmentation index")
             counter_equal_seg += 1
             res.append(match)
         else:
             counter_not_equal_seg += 1
-    logger.info("Counter - Equal segmentation: "), logger.info(counter_equal_seg)
-    logger.info("Counter - Different segmentation: "), logger.info(counter_not_equal_seg)
-    logger.info("Total: "), logger.info(counter_equal_seg+counter_not_equal_seg)
-    #static_ratio_threshold = 0.85
-    #static_ratio_removed = 1 - len(res) / max(len(matches), 1)
-    #if static_ratio_removed > static_ratio_threshold:
-    return matches
-    #else:
-    #    return res
-    #return
+    logger.info("Counter - Equal segmentation: ", counter_equal_seg)
+    logger.info("Counter - Different segmentation: ", counter_not_equal_seg)
+    logger.info("Total: ", counter_equal_seg+counter_not_equal_seg)
+    static_ratio_threshold = 0.85
+    static_ratio_removed = 1 - len(res) / max(len(matches), 1)
+    if static_ratio_removed > static_ratio_threshold:
+        return matches
+    else:
+        return res
+    return
 
 def apply_adhoc_filters(
     data: DataSetBase,
