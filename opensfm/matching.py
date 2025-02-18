@@ -328,8 +328,7 @@ def _match_descriptors_guided_impl(
         )
 
     if data.config["matching_segmentation_filter"] and data.config["features_bake_segmentation"]:
-        logger.info("Filtering based on the segmentation index for the paired matched points - FRAN")
-        apply_segmentation_filter(matches, features_data1, features_data2)
+        matches = apply_segmentation_filter(matches, features_data1, features_data2)
 
     return (
         features_data1.points,
@@ -455,7 +454,7 @@ def _match_descriptors_impl(
         )
 
     if data.config["matching_segmentation_filter"] and data.config["features_bake_segmentation"]:
-        apply_segmentation_filter(matches, features_data1, features_data2)
+        matches = apply_segmentation_filter(matches, features_data1, features_data2)
 
     return (
         features_data1.points,
