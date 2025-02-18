@@ -944,9 +944,9 @@ def apply_segmentation_filter(
             res.append(match)
         else:
             counter_not_equal_seg += 1
-    logger.info("Counter - Equal segmentation: ", counter_equal_seg)
-    logger.info("Counter - Different segmentation: ", counter_not_equal_seg)
-    logger.info("Total: ", counter_equal_seg+counter_not_equal_seg)
+    logger.info("Counter - Equal segmentation: " + str(counter_equal_seg))
+    logger.info("Counter - Different segmentation: " + str(counter_not_equal_seg))
+    logger.info("Total: " + str(counter_equal_seg+counter_not_equal_seg))
     static_ratio_threshold = 0.85
     static_ratio_removed = 1 - len(res) / max(len(matches), 1)
     if static_ratio_removed > static_ratio_threshold:
