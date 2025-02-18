@@ -161,7 +161,7 @@ def read_images(
     for image in images:
         logger.info(f"Reading data for image {image} (queue-size={queue.qsize()})")
         image_array = data.load_image(image)
-        if data.config["features_bake_segmentation"] or data.config["matching_segmentation_filter"]:
+        if data.config["features_bake_segmentation"]:# or data.config["matching_segmentation_filter"]:
             logger.info(f"Reading the segmentation image for {image}- FRAN")
             segmentation_array = data.load_segmentation(image)
             logger.info("Finish reading the segmentation image - FRAN")
@@ -260,8 +260,8 @@ def detect(
         image_array, data.config, is_high_res_panorama(data, image, image_array)
     )
 
-    # Load segmentation and bake it in the data
-    if data.config["features_bake_segmentation"]:
+    # Load segmentation and bake it in the data - FRAN: This does not modify the descriptores, but store the segmentation data separately 
+    if data.config["features_bake_segmentation"]:# or data.config["matching_segmentation_filter"]:
         exif = data.load_exif(image)
         s_unsorted, i_unsorted = bake_segmentation(
             image_array, p_unmasked, segmentation_array, instances_array, exif
