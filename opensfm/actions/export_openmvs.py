@@ -49,7 +49,7 @@ def export(reconstruction, tracks_manager, udata: UndistortedDataSet, export_onl
             mask_path = udata._undistorted_mask_file(shot.id)
             if not os.path.isfile(mask_path):
                 mask_path = ""
-            segmentation_path = udata._undistorted_segmentation_path(shot.id)
+            segmentation_path = udata._undistorted_segmentation_file(shot.id)
             if not os.path.isfile(segmentation_path):
                 segmentation_path = ""
 
