@@ -501,6 +501,7 @@ struct Interface
 	struct Image {
 		std::string name; // image file name
 		std::string maskName; // segmentation file name (optional)
+		std::string segmentationName;
 		uint32_t platformID; // ID of the associated platform
 		uint32_t cameraID; // ID of the associated camera on the associated platform
 		uint32_t poseID; // ID of the pose of the associated platform
