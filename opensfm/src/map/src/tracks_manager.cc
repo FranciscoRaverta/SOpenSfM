@@ -20,8 +20,8 @@ struct TrackRecord{
     uint8_t r;
     uint8_t g;
     uint8_t b;
-    // int segm;
-    // int inst;
+    int segm; // FRAN
+    int inst; // FRAN
 };
 
 template <class S>
@@ -64,8 +64,8 @@ void WriteToStreamCurrentVersion(S& ostream,
       tr.r = static_cast<uint8_t>(observation.second.color(0));
       tr.g = static_cast<uint8_t>(observation.second.color(1));
       tr.b = static_cast<uint8_t>(observation.second.color(2));
-      //   tr.segm = observation.second.segmentation_id;
-      //   tr.inst = observation.second.instance_id;
+      tr.segm = observation.second.segmentation_id; //FRAN
+      tr.inst = observation.second.instance_id; // FRAN
 
       ostream.write(reinterpret_cast<char *>(&tl), sizeof(tl));
       ostream << shotID << observation.first;

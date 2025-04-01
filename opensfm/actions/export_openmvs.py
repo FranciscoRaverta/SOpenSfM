@@ -49,12 +49,16 @@ def export(reconstruction, tracks_manager, udata: UndistortedDataSet, export_onl
             mask_path = udata._undistorted_mask_file(shot.id)
             if not os.path.isfile(mask_path):
                 mask_path = ""
+            segmentation_path = udata._undistorted_segmentation_path(shot.id)
+            if not os.path.isfile(segmentation_path):
+                segmentation_path = ""
 
             shots_map[str(shot.id)] = shot
 
             exporter.add_shot(
                 str(os.path.abspath(image_path)),
                 str(os.path.abspath(mask_path)),
+                str(os.path.abspath(segmentation_path)),
                 str(shot.id),
                 str(shot.camera.id),
                 shot.pose.get_rotation_matrix(),
