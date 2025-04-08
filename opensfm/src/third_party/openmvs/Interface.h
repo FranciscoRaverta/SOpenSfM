@@ -369,6 +369,7 @@ struct Interface
 	typedef cv::Matx<double,4,4> Mat44d;
 	typedef cv::Point3_<uint8_t> Col3; // x=B, y=G, z=R
 	typedef uint8_t Segm;
+	typedef uint8_t SegmConf; 
 	/*----------------------------------------------------------------*/
 
 	// structure describing a mobile platform with cameras attached to it
@@ -620,6 +621,18 @@ struct Interface
 	typedef std::vector<Segmentation> SegmentationArr;
 	/*----------------------------------------------------------------*/
 
+	// structure describing a 3D point's segmentation confidence (optional)
+	struct SegmentationConfidence {
+		SegmConf segConf; // 3D feature segnebtatuib
+		
+		template <class Archive>
+		void serialize(Archive& ar, const unsigned int /*version*/) {
+			ar & segConf;
+		}
+	};
+	typedef std::vector<SegmentationConfidence> SegmentationConfArr;
+	/*----------------------------------------------------------------*/
+
 	// structure describing a Oriented Bounding-Box (optional)
 	struct OBB {
 		Mat33d rot; // rotation from scene to OBB coordinate system
@@ -644,7 +657,8 @@ struct Interface
 	VertexArr vertices; // array of reconstructed 3D points
 	NormalArr verticesNormal; // array of reconstructed 3D points' normal (optional)
 	ColorArr verticesColor; // array of reconstructed 3D points' color (optional)
-	SegmentationArr verticesSegmentation; 
+	SegmentationArr verticesSegmentation; // array of reconstructed 3D points' segmentation (optional)
+	SegmentationConfArr verticesSegmentationConfidence; // array of reconstructed 3D points' segmentation confidence (optional)
 	LineArr lines; // array of reconstructed 3D lines (optional)
 	NormalArr linesNormal; // array of reconstructed 3D lines' normal (optional)
 	ColorArr linesColor; // array of reconstructed 3D lines' color (optional)
@@ -694,6 +708,7 @@ struct Interface
 		ar & verticesNormal;
 		ar & verticesColor;
 		ar & verticesSegmentation;
+		ar & verticesSegmentationConfidence;
 		if (version > 0) {
 			ar & lines;
 			ar & linesNormal;
