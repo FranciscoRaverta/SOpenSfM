@@ -516,7 +516,6 @@ struct Interface
 		template <class Archive>
 		void serialize(Archive& ar, const unsigned int version) {
 			ar & name;
-			ar & segmentationName;
 			if (version > 4) {
 				ar & maskName;
 			}
