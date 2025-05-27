@@ -110,8 +110,8 @@ def _load_segmentation_mask(data: DataSetBase, image: str) -> Optional[np.ndarra
     ignore_values = data.segmentation_ignore_values(image)
     if not ignore_values:
         return None
-
-    segmentation = data.load_segmentation(image)
+    if data.config["features_bake_segmentation"]:
+        segmentation = data.load_segmentation(image)
     if segmentation is None:
         return None
 
