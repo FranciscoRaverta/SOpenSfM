@@ -1,6 +1,6 @@
-## This is OpenDroneMap's OpenSfM fork
+## This is SOpenSfM fork
 
-This fork is pretty close to upstream OpenSfM, but includes changes specific to ODM.
+This fork is a modification of the OpenSfM used by ODM, includes changes specific to ODM. We added the capacity to use semantic segmentation data to filter outliers. 
 
 Please note that all such changes are released under the AGPLv3 license, not BSD.
 

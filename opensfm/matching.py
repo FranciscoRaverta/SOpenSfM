@@ -927,9 +927,7 @@ def apply_segmentation_filter(
     p1,
     p2,
 ) -> List[Tuple[int, int]]:
-    #logger.info("Fran - Here will be the function to check if the points have the same segmentation indices")
-    #logger.info("Change the following into what it needs to be done")
-
+    
     #threshold = 0.001
     res = []
     counter_equal_seg = 0

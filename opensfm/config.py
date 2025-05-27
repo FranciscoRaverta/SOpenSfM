@@ -170,7 +170,7 @@ class OpenSfMConfig:
     matching_use_filters: bool = False
     # Use segmentation information (if available) to improve matching
     matching_use_segmentation: bool = False
-    # Filter matches if segmentation is different for both points - FRAN
+    # Filter matches if segmentation is different for both points
     matching_segmentation_filter: bool = False
 
     ##################################

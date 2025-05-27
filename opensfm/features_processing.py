@@ -257,7 +257,7 @@ def detect(
         image_array, data.config, is_high_res_panorama(data, image, image_array)
     )
 
-    # Load segmentation and bake it in the data - FRAN: This does not modify the descriptores, but store the segmentation data separately 
+    # Load segmentation and bake it in the data: This does not modify the descriptores, but store the segmentation data separately 
     if data.config["features_bake_segmentation"]:
         exif = data.load_exif(image)
         s_unsorted, i_unsorted = bake_segmentation(
