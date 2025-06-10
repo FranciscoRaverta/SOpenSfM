@@ -62,7 +62,10 @@ struct Data : public DataNode {
   MatXd GetCovariance() const {
     if (!HasCovariance()) {
       throw std::runtime_error(GetID() + " hasn't any covariance");
+    } else {
+      std::cout << "Covariance Matrix: " << covariance_ << endl;
     }
+
     return covariance_.Value();
   }
 
