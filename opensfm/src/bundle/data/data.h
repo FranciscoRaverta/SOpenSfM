@@ -6,6 +6,7 @@
 #include <Eigen/Eigen>
 #include <numeric>
 #include <unordered_map>
+#include <iostream>
 
 namespace bundle {
 
