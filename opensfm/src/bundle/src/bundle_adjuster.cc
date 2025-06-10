@@ -32,7 +32,7 @@ BundleAdjuster::BundleAdjuster() {
   p2_sd_ = 1;
   k3_sd_ = 1;
   k4_sd_ = 1;
-  compute_covariances_ = false;
+  compute_covariances_ = true;
   covariance_estimation_valid_ = false;
   compute_reprojection_errors_ = true;
   adjust_absolute_position_std_ = false;
