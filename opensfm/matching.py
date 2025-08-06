@@ -970,7 +970,7 @@ def apply_segmentation_filter(
             res.append(match)
         else:
             counter_not_equal_seg += 1
-    logger.info("Counter - Equal segmentation: " + str(counter_equal_seg) + " - Counter - Different segmentation: " + str(counter_not_equal_seg) + " - Total: " + str(counter_equal_seg+counter_not_equal_seg))
+    logger_matches.info("Counter - Equal segmentation: " + str(counter_equal_seg) + " - Counter - Different segmentation: " + str(counter_not_equal_seg) + " - Total: " + str(counter_equal_seg+counter_not_equal_seg))
     for handler in logger_matches.handlers:
         handler.flush()
     #static_ratio_threshold = 0.85
