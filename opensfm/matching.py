@@ -20,7 +20,9 @@ from opensfm.dataset_base import DataSetBase
 logger: logging.Logger = logging.getLogger(__name__)
 
 def setup_segmentation_logger(log_file='matching_filter.txt'):
-    os.makedirs(os.path.dirname(log_file), exist_ok=True)
+    log_dir = os.path.dirname(log_file)
+    if log_dir:  
+        os.makedirs(log_dir, exist_ok=True)
 
     logger = logging.getLogger("matching_filter")
     logger.setLevel(logging.INFO)
