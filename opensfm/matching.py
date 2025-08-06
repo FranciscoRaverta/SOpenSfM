@@ -19,7 +19,7 @@ from opensfm.dataset_base import DataSetBase
 
 logger: logging.Logger = logging.getLogger(__name__)
 
-def setup_segmentation_logger(log_file='matching_filter.txt'):
+def setup_segmentation_logger(log_file='volume/matching_filter.txt'):
     log_dir = os.path.dirname(log_file)
     if log_dir:  
         os.makedirs(log_dir, exist_ok=True)
@@ -970,6 +970,8 @@ def apply_segmentation_filter(
         else:
             counter_not_equal_seg += 1
     logger_matches.info("Counter - Equal segmentation: " + str(counter_equal_seg) + " - Counter - Different segmentation: " + str(counter_not_equal_seg) + " - Total: " + str(counter_equal_seg+counter_not_equal_seg))
+    for handler in logger_matches.handlers:
+        handler.flush()
     #static_ratio_threshold = 0.85
     #static_ratio_removed = 1 - len(res) / max(len(matches), 1)
     #if static_ratio_removed > static_ratio_threshold:
