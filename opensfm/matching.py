@@ -357,7 +357,7 @@ def _match_descriptors_guided_impl(
         )
 
     if data.config["matching_segmentation_filter"] and data.config["features_bake_segmentation"]:
-        matches = apply_segmentation_filter(matches, features_data1, features_data2)
+        matches = apply_segmentation_filter(matches, features_data1, features_data2, data)
 
     return (
         features_data1.points,
@@ -483,7 +483,7 @@ def _match_descriptors_impl(
         )
 
     if data.config["matching_segmentation_filter"] and data.config["features_bake_segmentation"]:
-        matches = apply_segmentation_filter(matches, features_data1, features_data2)
+        matches = apply_segmentation_filter(matches, features_data1, features_data2, data)
 
     return (
         features_data1.points,
@@ -955,6 +955,7 @@ def apply_segmentation_filter(
     matches: List[Tuple[int, int]],
     p1,
     p2,
+    data: DataSetBase
 ) -> List[Tuple[int, int]]:
     
     #threshold = 0.001
@@ -970,9 +971,11 @@ def apply_segmentation_filter(
             res.append(match)
         else:
             counter_not_equal_seg += 1
-    logger_matches.info("Counter - Equal segmentation: " + str(counter_equal_seg) + " - Counter - Different segmentation: " + str(counter_not_equal_seg) + " - Total: " + str(counter_equal_seg+counter_not_equal_seg))
-    for handler in logger_matches.handlers:
-        handler.flush()
+    logger.info("Counter - Equal segmentation: " + str(counter_equal_seg) + " - Counter - Different segmentation: " + str(counter_not_equal_seg) + " - Total: " + str(counter_equal_seg+counter_not_equal_seg))
+    filename = os.path.join(data.data_path, "matches_filter_segmentation.txt")
+    log_file = open(filename, "a")
+    log_file.write("Counter - Equal segmentation: " + str(counter_equal_seg) + " - Counter - Different segmentation: " + str(counter_not_equal_seg) + " - Total: " + str(counter_equal_seg+counter_not_equal_seg))
+    log_file.close()
     #static_ratio_threshold = 0.85
     #static_ratio_removed = 1 - len(res) / max(len(matches), 1)
     #if static_ratio_removed > static_ratio_threshold:
