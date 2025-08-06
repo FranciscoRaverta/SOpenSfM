@@ -1,4 +1,5 @@
 import logging
+import os
 from timeit import default_timer as timer
 from typing import Sized, Optional, Dict, Any, Tuple, List, Generator
 
@@ -18,6 +19,31 @@ from opensfm.dataset_base import DataSetBase
 
 logger: logging.Logger = logging.getLogger(__name__)
 
+def setup_segmentation_logger(log_file='matching_filter.txt'):
+    os.makedirs(os.path.dirname(log_file), exist_ok=True)
+
+    logger = logging.getLogger("matching_filter")
+    logger.setLevel(logging.INFO)
+
+    if not logger.handlers:
+
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.INFO)
+
+        file_handler = logging.FileHandler(log_file)
+        file_handler.setLevel(logging.INFO)
+
+        # Formatter: only the actual message
+        formatter = logging.Formatter('%(message)s')
+        console_handler.setFormatter(formatter)
+        file_handler.setFormatter(formatter)
+
+        logger.addHandler(file_handler)
+        logger.addHandler(console_handler)
+
+    return logger
+
+logger_matches = setup_segmentation_logger()
 
 def clear_cache() -> None:
     feature_loader.instance.clear_cache()
@@ -941,7 +967,7 @@ def apply_segmentation_filter(
             res.append(match)
         else:
             counter_not_equal_seg += 1
-    logger.info("Counter - Equal segmentation: " + str(counter_equal_seg) + " - Counter - Different segmentation: " + str(counter_not_equal_seg) + " - Total: " + str(counter_equal_seg+counter_not_equal_seg))
+    logger_matches.info("Counter - Equal segmentation: " + str(counter_equal_seg) + " - Counter - Different segmentation: " + str(counter_not_equal_seg) + " - Total: " + str(counter_equal_seg+counter_not_equal_seg))
     #static_ratio_threshold = 0.85
     #static_ratio_removed = 1 - len(res) / max(len(matches), 1)
     #if static_ratio_removed > static_ratio_threshold:
