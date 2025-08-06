@@ -46,7 +46,7 @@ def setup_segmentation_logger(log_file='volume/matching_filter.txt'):
     return logger
 
 #logger_matches = setup_segmentation_logger()
-logger_matches: logging.Logger = logging.getLogger("matches.txt")
+logger_matches: logging.Logger = logging.getLogger("matches_segmentation.json")
 
 def clear_cache() -> None:
     feature_loader.instance.clear_cache()
