@@ -974,7 +974,7 @@ def apply_segmentation_filter(
     logger.info("Counter - Equal segmentation: " + str(counter_equal_seg) + " - Counter - Different segmentation: " + str(counter_not_equal_seg) + " - Total: " + str(counter_equal_seg+counter_not_equal_seg))
     filename = os.path.join(data.data_path, "matches_filter_segmentation.txt")
     log_file = open(filename, "a")
-    log_file.write("Counter - Equal segmentation: " + str(counter_equal_seg) + " - Counter - Different segmentation: " + str(counter_not_equal_seg) + " - Total: " + str(counter_equal_seg+counter_not_equal_seg) + '\n')
+    log_file.write(str(counter_equal_seg) + "," + str(counter_not_equal_seg) + "," + str(counter_equal_seg+counter_not_equal_seg) + '\n')
     log_file.close()
     #static_ratio_threshold = 0.85
     #static_ratio_removed = 1 - len(res) / max(len(matches), 1)
