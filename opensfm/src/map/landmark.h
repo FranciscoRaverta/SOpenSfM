@@ -45,8 +45,8 @@ class Landmark {
 
   // Semantic functions
   void SetSemanticLabel(int label, float confidence);
-  int GetSemanticLabel() const { return semantic_label_};
-  float GetSemanticConfidence() const { return semantic_conf_};
+  int GetSemanticLabel() const { return semantic_label_;}
+  float GetSemanticConfidence() const { return semantic_conf_;}
 
  public:
   const LandmarkId id_;

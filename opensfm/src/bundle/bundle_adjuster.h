@@ -223,10 +223,9 @@ class BundleAdjuster {
                               double observed_label,
                               double confidence,
                               double lambda,
-                              int width,
-                              int height,
-                              const std::vector<double> &map,
-                              double std_deviation);
+                              double std_deviation,
+                              std::string segmentation_image_path,
+                              std::string confidence_image_path);
 
   // Relative motion constraints
   void AddRelativeMotion(const RelativeMotion &rm);
@@ -291,6 +290,7 @@ class BundleAdjuster {
   void Run();
   void ComputeCovariances(ceres::Problem *problem);
   void ComputeReprojectionErrors();
+  void ComputeSemanticErrors();
 
   // Getters
   int GetProjectionsCount() const;
@@ -365,6 +365,8 @@ class BundleAdjuster {
   // minimization setup
   std::string point_projection_loss_name_;
   double point_projection_loss_threshold_;
+  std::string semantic_loss_name_;
+  double semantic_loss_threshold_;
   std::string relative_motion_loss_name_;
   double relative_motion_loss_threshold_;
   bool adjust_absolute_position_std_;

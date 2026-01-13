@@ -5,6 +5,7 @@
 #include <bundle/error/position_functors.h>
 #include <bundle/error/prior_error.h>
 #include <bundle/error/projection_errors.h>
+#include <bundle/error/semantic_errors.h>
 #include <bundle/error/relative_motion_errors.h>
 #include <foundation/types.h>
 
@@ -24,7 +25,7 @@ namespace bundle {
 BundleAdjuster::BundleAdjuster() {
   SetPointProjectionLossFunction("CauchyLoss", 1.0);
   SetRelativeMotionLossFunction("CauchyLoss", 1.0);
-  SetPointSemanticLossFunction("CauchyLoss", 1.0);
+  SetSemanticLossFunction("CauchyLoss", 1.0);
   focal_prior_sd_ = 1;
   c_prior_sd_ = 1;
   k1_sd_ = 1;
@@ -373,7 +374,7 @@ void BundleAdjuster::SetPointProjectionLossFunction(std::string name,
   point_projection_loss_threshold_ = threshold;
 }
 
-void BundleAdjuster::SetPointSemanticLossFunction(std::string name,
+void BundleAdjuster::SetSemanticLossFunction(std::string name,
                                                     double threshold) {
   semantic_loss_name_ = name;
   semnatic_loss_threshold_ = threshold;
