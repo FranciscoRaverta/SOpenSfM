@@ -75,6 +75,8 @@ PYBIND11_MODULE(pybundle, m) {
            &bundle::BundleAdjuster::AddReconstructionInstance)
       .def("add_point_projection_observation",
            &bundle::BundleAdjuster::AddPointProjectionObservation)
+      .def("add_semantic_observation",
+           &bundle::BundleAdjuster::AddSemanticObservation)
       .def("add_relative_motion", &bundle::BundleAdjuster::AddRelativeMotion)
       .def("add_relative_rotation",
            &bundle::BundleAdjuster::AddRelativeRotation)
@@ -97,6 +99,8 @@ PYBIND11_MODULE(pybundle, m) {
            &bundle::BundleAdjuster::GetCovarianceEstimationValid)
       .def("set_compute_reprojection_errors",
            &bundle::BundleAdjuster::SetComputeReprojectionErrors)
+      .def("set_compute_semantic_errors",
+           &bundle::BundleAdjuster::SetComputeSemanticErrors)
       .def("set_max_num_iterations",
            &bundle::BundleAdjuster::SetMaxNumIterations)
       .def("set_adjust_absolute_position_std",

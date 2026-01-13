@@ -162,6 +162,12 @@ class DataSet(DataSetBase):
     def _segmentation_file(self, image: str) -> str:
         return os.path.join(self._segmentation_path(), image + ".png")
 
+    def _segmentation_confidence_file(self, image: str) -> str:
+        return os.path.join(self._segmentation_confidence_path(), image + ".png")
+
+    def _segmentation_confidence_path(self) -> str:
+        return os.path.join(self.data_path, "segmentation_confidences")
+
     def segmentation_labels(self) -> List[Any]:
         return []
 
@@ -170,6 +176,30 @@ class DataSet(DataSetBase):
         segmentation_file = self._segmentation_file(image)
         if self.io_handler.isfile(segmentation_file):
             with self.io_handler.open(segmentation_file, "rb") as fp:
+                with PngImageFile(fp) as png_image:
+                    # TODO: We do not write a header tag in the metadata. Might be good safety check.
+                    data = np.array(png_image)
+                    if data.ndim == 2:
+                        return data
+                    elif data.ndim == 3:
+                        return data[:, :, 0]
+
+                        # TODO we can optionally return also the instances and scores:
+                        # instances = (
+                        #     data[:, :, 1].astype(np.int16) + data[:, :, 2].astype(np.int16) * 256
+                        # )
+                        # scores = data[:, :, 3].astype(np.float32) / 256.0
+                    else:
+                        raise IndexError
+        else:
+            segmentation = None
+        return segmentation
+
+    def load_confidence(self, image: str) -> Optional[np.ndarray]:
+        """Load image segmentation confidence if it exists, otherwise return None."""
+        segmentation_confidence_file = self._segmentation_confidence_file(image)
+        if self.io_handler.isfile(segmentation_confidence_file):
+            with self.io_handler.open(segmentation_confidence_file, "rb") as fp:
                 with PngImageFile(fp) as png_image:
                     # TODO: We do not write a header tag in the metadata. Might be good safety check.
                     data = np.array(png_image)

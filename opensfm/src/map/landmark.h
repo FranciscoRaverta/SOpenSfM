@@ -42,6 +42,12 @@ class Landmark {
   std::map<ShotId, Eigen::VectorXd> GetReprojectionErrors() const;
   void RemoveReprojectionError(const ShotId& shot_id);
 
+
+  // Semantic functions
+  void SetSemanticLabel(int label, float confidence);
+  int GetSemanticLabel() const { return semantic_label_};
+  float GetSemanticConfidence() const { return semantic_conf_};
+
  public:
   const LandmarkId id_;
 
@@ -50,5 +56,9 @@ class Landmark {
   std::map<Shot*, FeatureId, KeyCompare> observations_;
   Vec3i color_;
   std::map<ShotId, Eigen::VectorXd> reproj_errors_;
+  //Semantic properties
+  int semantic_label_;
+  float semantic_conf_;
+
 };
 }  // namespace map

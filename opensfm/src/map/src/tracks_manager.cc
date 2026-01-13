@@ -22,6 +22,9 @@ struct TrackRecord{
     uint8_t b;
     int segm; //
     int inst; //
+    float segm_conf;
+    std::string segmentation_image_path;
+    std::string confidence_image_path;
 };
 
 template <class S>
@@ -66,6 +69,9 @@ void WriteToStreamCurrentVersion(S& ostream,
       tr.b = static_cast<uint8_t>(observation.second.color(2));
       tr.segm = observation.second.segmentation_id; //
       tr.inst = observation.second.instance_id; // 
+      tr.segm_conf = observation.second.segmentation_confidence_id;
+      tr.segmentation_image_path = observation.second.segmentation_image_path_id;
+      tr.confidence_image_path = observation.second.confidence_image_path_id;
 
       ostream.write(reinterpret_cast<char *>(&tl), sizeof(tl));
       ostream << shotID << observation.first;
@@ -77,7 +83,10 @@ void WriteToStreamCurrentVersion(S& ostream,
 map::Observation InstanciateObservation(
     double x, double y, double scale, int id, int r, int g, int b,
     int segm = map::Observation::NO_SEMANTIC_VALUE,
-    int inst = map::Observation::NO_SEMANTIC_VALUE) {
+    int inst = map::Observation::NO_SEMANTIC_VALUE,
+    float segm_conf = map::Observation::NO_SEMANTIC_VALUE,
+    std::string segm_img_path = "",
+    std::string conf_img_path = "") {
   map::Observation observation;
   observation.point << x, y;
   observation.scale = scale;
@@ -85,6 +94,9 @@ map::Observation InstanciateObservation(
   observation.color << r, g, b;
   observation.segmentation_id = segm;
   observation.instance_id = inst;
+  observation.segmentation_confidence_id = segm_conf;
+  observation.segmentation_image_path_id = segm_img_path;
+  observation.confidence_image_path_id = conf_img_path;
   return observation;
 }
 
@@ -214,7 +226,7 @@ map::TracksManager InstanciateFromFilenameBinaryV2(std::ifstream& fstream, const
       std::string trackID(buffer + tl.imageLen, tl.trackIdLen);
 
       fs.read(reinterpret_cast<char *>(&tr), sizeof(TrackRecord));
-      auto observation = InstanciateObservation(tr.x, tr.y, tr.scale, tr.featureID, tr.r, tr.g, tr.b, -1, -1);
+      auto observation = InstanciateObservation(tr.x, tr.y, tr.scale, tr.featureID, tr.r, tr.g, tr.b, tr.segm, -1, tr.segm_conf, tr.segm_img_path, tr.conf_img_path);
       manager.AddObservation(image, trackID, observation);
   }
 

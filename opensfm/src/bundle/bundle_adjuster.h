@@ -63,6 +63,22 @@ struct PointProjectionObservation {
   double std_deviation;
 };
 
+struct SemanticObservation {
+  Camera *camera;
+  Shot *shot;
+  Point *point;
+
+  double observed_label;
+  double confidence;
+  double std_deviation;
+  double lambda;
+
+  const std::vector<double> *semantic_map;
+  Vec2d coordinates;
+  std::string segmentation_image_path;
+  std::string confidence_image_path;
+};
+
 struct RelativeMotion {
   RelativeMotion(const std::string &rig_instance_i,
                  const std::string &rig_instance_j, const Vec3d &rotation,
@@ -201,6 +217,16 @@ class BundleAdjuster {
                                      const std::string &point,
                                      const Vec2d &observation,
                                      double std_deviation);
+  void AddSemanticObservation(const std::string &shot,
+                              const std::string &point,
+                              const Vec2d &observation,
+                              double observed_label,
+                              double confidence,
+                              double lambda,
+                              int width,
+                              int height,
+                              const std::vector<double> &map,
+                              double std_deviation);
 
   // Relative motion constraints
   void AddRelativeMotion(const RelativeMotion &rm);
@@ -241,6 +267,7 @@ class BundleAdjuster {
   // Minimization setup
   void SetPointProjectionLossFunction(std::string name, double threshold);
   void SetRelativeMotionLossFunction(std::string name, double threshold);
+  void SetSemanticLossFunction(std::string name, double threshold);
   void SetAdjustAbsolutePositionStd(bool adjust);
 
   void SetMaxNumIterations(int miter);
@@ -258,6 +285,7 @@ class BundleAdjuster {
   void SetComputeCovariances(bool v);
   bool GetCovarianceEstimationValid() const;
   void SetComputeReprojectionErrors(bool v);
+  void SetComputeSemanticErrors(bool v);
 
   // Minimization
   void Run();
@@ -302,6 +330,7 @@ class BundleAdjuster {
 
   // reprojection observation
   std::vector<PointProjectionObservation> point_projection_observations_;
+  std::vector<SemanticObservation> semantic_observations_;
   std::map<std::string, std::shared_ptr<HeatmapInterpolator>> heatmaps_;
 
   // relative motion between shots
@@ -345,6 +374,7 @@ class BundleAdjuster {
   bool compute_covariances_;
   bool covariance_estimation_valid_;
   bool compute_reprojection_errors_;
+  bool compute_semantic_errors_;
 
   int max_num_iterations_;
   int num_threads_;

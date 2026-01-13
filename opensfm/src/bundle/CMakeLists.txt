@@ -9,6 +9,7 @@ set(BUNDLE_FILES
     error/motion_prior_errors.h
     error/position_functors.h
     error/projection_errors.h
+    error/semantic_errors.h
     error/absolute_motion_errors.h
     error/parameters_errors.h
     error/relative_motion_errors.h

@@ -7,6 +7,7 @@ from opensfm import pymap
 from opensfm.dataset_base import DataSetBase
 from opensfm.unionfind import UnionFind
 from opensfm.pymap import TracksManager
+from opensfm.dataset import Dataset
 
 
 logger: logging.Logger = logging.getLogger(__name__)
@@ -19,12 +20,14 @@ def load_features(
     t.Dict[str, np.ndarray],
     t.Dict[str, np.ndarray],
     t.Dict[str, np.ndarray],
+    t.Dict[str, np.ndarray],
 ]:
     logging.info("reading features")
     features = {}
     colors = {}
     segmentations = {}
     instances = {}
+    segmentation_confidences = {}
     for im in images:
         features_data = dataset.load_features(im)
 
@@ -39,8 +42,10 @@ def load_features(
             segmentations[im] = semantic_data.segmentation
             if semantic_data.has_instances():
                 instances[im] = semantic_data.instances
+            if semantic_data.has_confidences():
+                segmentation_confidences = semantic_data.segmentation_confidences
 
-    return features, colors, segmentations, instances
+    return features, colors, segmentations, instances, segmentation_confidences
 
 
 def load_matches(
@@ -63,6 +68,7 @@ def create_tracks_manager(
     colors: t.Dict[str, np.ndarray],
     segmentations: t.Dict[str, np.ndarray],
     instances: t.Dict[str, np.ndarray],
+    segmentation_confidences: t.Dict[str, np.ndarray],
     matches: t.Dict[t.Tuple[str, str], t.List[t.Tuple[int, int]]],
     min_length: int,
 ) -> TracksManager:
@@ -92,12 +98,15 @@ def create_tracks_manager(
                 continue
             x, y, s = features[image][featureid]
             r, g, b = colors[image][featureid]
-            segmentation, instance = (
+            segmentation, instance, segmentation_confidence = (
                 segmentations[image][featureid] if image in segmentations else NO_VALUE,
                 instances[image][featureid] if image in instances else NO_VALUE,
+                segmentation_confidences[image][featureid] if image in segmentation_confidences else NO_VALUE,
             )
+            segmentation_image_path = Dataset._segmentation_file(image)
+            confidence_image_path = Datset._segmentation_confidence_file(image)
             obs = pymap.Observation(
-                x, y, s, int(r), int(g), int(b), featureid, segmentation, instance
+                x, y, s, int(r), int(g), int(b), featureid, segmentation, instance, segmentation_confidence, segmentation_image_path, confidence_image_path
             )
             tracks_manager.add_observation(image, str(track_id), obs)
     return tracks_manager
@@ -265,5 +274,6 @@ def as_graph(tracks_manager: pymap.TracksManager) -> nx.Graph:
                 feature_color=obs.color,
                 feature_segmentation=obs.segmentation,
                 feature_instance=obs.instance,
+                feature_segmentation_confidence=obs.segmentation_confidence
             )
     return graph

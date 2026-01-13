@@ -47,4 +47,10 @@ void Landmark::RemoveReprojectionError(const ShotId& shot_id) {
 
 size_t Landmark::NumberOfObservations() const { return observations_.size(); }
 
+// Semantic functions
+void Landmark::SetSemanticLabel(int label, float confidence) {
+  semantic_label_ = label;
+  semantic_conf_ = confidence;
+}
+
 };  // namespace map

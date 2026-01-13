@@ -130,6 +130,9 @@ py::tuple BAHelpers::BundleLocal(
 
   // set up BA
   auto ba = bundle::BundleAdjuster();
+  const bool use_semantics = config.contains("bundle_use_semantics") && config["bundle_use_semantics"].cast<bool>();
+  const double semantic_lambda = config.contains("semantic_lambda") ? config["semantic_lambda"].cast<double>() : 1.0;
+
   ba.SetUseAnalyticDerivatives(
       config["bundle_analytic_derivatives"].cast<bool>());
 
@@ -227,6 +230,12 @@ py::tuple BAHelpers::BundleLocal(
       const auto& obs = lm_obs.second;
       ba.AddPointProjectionObservation(shot->id_, lm_obs.first->id_, obs.point,
                                        obs.scale);
+
+      if (use_semantics) {
+        ba.SetComputeSemanticErrors(true);
+        ba.AddSemanticObservation(shot->id_, lm_obs.first->id_, obs.point, obs.segmentation_id, obs.segmentation_confidence_id, obs.scale, obs.segmentation_image_path, obs.confidence_image_path);
+      }
+
     }
   }
   for (auto* shot : boundary) {

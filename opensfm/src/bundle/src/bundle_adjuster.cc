@@ -24,6 +24,7 @@ namespace bundle {
 BundleAdjuster::BundleAdjuster() {
   SetPointProjectionLossFunction("CauchyLoss", 1.0);
   SetRelativeMotionLossFunction("CauchyLoss", 1.0);
+  SetPointSemanticLossFunction("CauchyLoss", 1.0);
   focal_prior_sd_ = 1;
   c_prior_sd_ = 1;
   k1_sd_ = 1;
@@ -35,6 +36,7 @@ BundleAdjuster::BundleAdjuster() {
   compute_covariances_ = true;
   covariance_estimation_valid_ = true;
   compute_reprojection_errors_ = true;
+  compute_semantic_errors_ = false;
   adjust_absolute_position_std_ = false;
   max_num_iterations_ = 500;
   num_threads_ = 1;
@@ -249,6 +251,29 @@ void BundleAdjuster::AddPointProjectionObservation(const std::string &shot,
   point_projection_observations_.push_back(o);
 }
 
+
+void BundleAdjuster::AddSemanticObservation(const std::string &shot,
+                                            const std::string &point,
+                                            const Vec2d &observation,
+                                            double observed_label,
+                                            double confidence,
+                                            double std_deviation,
+                                            std::string segmentation_image_path,
+                                            std::string confidence_image_path) {
+  SemanticObservation o;
+  o.shot = &shots_.at(shot);
+  o.camera = &cameras_.at(o.shot->GetCamera()->GetID());
+  o.point = &points_.at(point);
+  o.coordinates = observation;
+  o.std_deviation = std_deviation;
+  o.observed_label = observed_label;
+  o.confidence = confidence;
+  o.segmentation_image_path = segmentation_image_path;
+  o.confidence_image_path = confidence_image_path;
+  o.lambda = lambda;
+  semantic_observations_.push_back(o);
+}
+
 void BundleAdjuster::AddRelativeMotion(const RelativeMotion &rm) {
   relative_motions_.push_back(rm);
 }
@@ -348,6 +373,12 @@ void BundleAdjuster::SetPointProjectionLossFunction(std::string name,
   point_projection_loss_threshold_ = threshold;
 }
 
+void BundleAdjuster::SetPointSemanticLossFunction(std::string name,
+                                                    double threshold) {
+  semantic_loss_name_ = name;
+  semnatic_loss_threshold_ = threshold;
+}
+
 void BundleAdjuster::SetRelativeMotionLossFunction(std::string name,
                                                    double threshold) {
   relative_motion_loss_name_ = name;
@@ -410,6 +441,10 @@ bool BundleAdjuster::GetCovarianceEstimationValid() const {
 
 void BundleAdjuster::SetComputeReprojectionErrors(bool v) {
   compute_reprojection_errors_ = v;
+}
+
+void BundleAdjuster::SetComputeSemanticErrors(bool v) {
+  compute_semantic_errors_ = v;
 }
 
 ceres::LossFunction *CreateLossFunction(std::string name, double threshold) {
@@ -493,6 +528,41 @@ struct AddProjectionError {
   }
 };
 
+struct AddSemanticError {
+  template <class T>
+  static void Apply(bool /*use_analytical*/,
+                    const SemanticObservation &obs,
+                    ceres::LossFunction *loss,
+                    ceres::Problem *problem) {
+
+    constexpr static int CameraSize = T::Size;
+    constexpr static int ShotSize = 6;
+    constexpr static int ErrorSize = 1;
+
+    const bool is_rig_camera_useful =
+        IsRigCameraUseful(*obs.shot->GetRigCamera());
+
+    auto *cost_function =
+        new ceres::AutoDiffCostFunction<SemanticReprojectionError, ErrorSize, 
+                                        CameraSize, ShotSize, ShotSize, 3> (new SemanticReprojectionError(
+                obs.camera->GetValue().GetProjectionType(),
+                obs.std_deviation,
+                obs.observed_label,
+                obs.confidence,
+                obs.lambda,
+                obs.segmentation_image_path,
+                obs.confidence_image_path));
+
+    problem->AddResidualBlock(cost_function, loss,
+        obs.camera->GetValueData().data(),
+        obs.shot->GetRigInstance()->GetValueData().data(),
+        obs.shot->GetRigCamera()->GetValueData().data(),
+        obs.point->GetValueData().data());
+  }
+};
+
+
+
 struct ComputeResidualError {
   template <class T>
   static void Apply(bool use_analytical,
@@ -529,6 +599,39 @@ struct ComputeResidualError {
     }
   }
 };
+
+struct ComputeSemanticResidualError {
+  template <class T>
+  static void Apply(bool /*unused*/,
+                    const SemanticObservation &obs) {
+
+    const bool is_rig_camera_useful =
+        IsRigCameraUseful(*obs.shot->GetRigCamera());
+
+    using ErrorType = SemanticReprojectionError;
+
+    ErrorType error(obs.camera->GetValue().GetProjectionType(),
+                    obs.std_deviation,
+                    obs.observed_label,
+                    obs.confidence,
+                    obs.lambda,
+                    obs.segmentation_image_path,
+                    obs.confidence_image_path);
+
+    VecNd<1> residuals;
+
+    error(obs.camera->GetValueData().data(),
+          obs.shot->GetRigInstance()->GetValueData().data(),
+          obs.shot->GetRigCamera()->GetValueData().data(),
+          obs.point->GetValueData().data(),
+          residuals.data());
+
+    // Store error in point
+    obs.point->semantic_errors[obs.shot->GetID()] = residuals[0];
+  }
+
+};
+
 
 struct AddCameraPriorError {
   template <class T>
@@ -776,6 +879,23 @@ void BundleAdjuster::Run() {
     geometry::Dispatch<AddProjectionError>(
         projection_type, use_analytic_, observation, projection_loss, &problem);
   }
+
+  // Add semantic reprojection error blocks
+  if(compute_semantic_errors_) {
+    ceres::LossFunction *semantic_loss =
+    semantic_observations_.empty()
+    ? nullptr
+    : CreateLossFunction(semantic_loss_name_,
+                                semantic_loss_threshold_);
+    for (auto &observation : semantic_observations_) {
+      const auto projection_type =
+        observation.camera->GetValue().GetProjectionType();
+
+      geometry::Dispatch<AddSemanticError>(
+        projection_type, false, observation, semantic_loss, &problem);
+    }
+  }
+
 
   // Add relative motion errors
   for (auto &rp : relative_motions_) {
@@ -1082,6 +1202,9 @@ void BundleAdjuster::Run() {
   if (compute_reprojection_errors_) {
     ComputeReprojectionErrors();
   }
+  if (compute_semantic_errors_) {
+    ComputeSemanticErrors();
+  }
 }
 
 void BundleAdjuster::ComputeCovariances(ceres::Problem *problem) {
@@ -1165,6 +1288,21 @@ void BundleAdjuster::ComputeReprojectionErrors() {
         observation.camera->GetValue().GetProjectionType();
     geometry::Dispatch<ComputeResidualError>(projection_type, use_analytic_,
                                              observation);
+  }
+}
+
+void BundleAdjuster::ComputeSemanticErrors() {
+  // Init errors
+  for (auto &i : points_) {
+    i.second.semantic_errors.clear();
+  }
+
+  for (auto &observation : semantic_observations_) {
+    const auto projection_type =
+        observation.camera->GetValue().GetProjectionType();
+
+    geometry::Dispatch<ComputeSemanticResidualError>(projection_type, false,
+                                                     observation);
   }
 }
 

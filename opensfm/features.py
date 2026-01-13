@@ -15,6 +15,7 @@ logger: logging.Logger = logging.getLogger(__name__)
 class SemanticData:
     segmentation: np.ndarray
     instances: Optional[np.ndarray]
+    segmentation_confidences: Optional[np.ndarray]
     labels: List[Dict[str, Any]]
 
     def __init__(
@@ -22,27 +23,35 @@ class SemanticData:
         segmentation: np.ndarray,
         instances: Optional[np.ndarray],
         labels: List[Dict[str, Any]],
+        segmentation_confidences: List[Dict[str, Any]],
     ):
         self.segmentation = segmentation
         self.instances = instances
         self.labels = labels
+        self.segmentation_confidences = segmentation_confidences
 
     def has_instances(self) -> bool:
         return self.instances is not None
+
+    def has_confidences(self) -> bool:
+        return self.segmentation_confidences is not None
 
     def mask(self, mask: np.ndarray) -> "SemanticData":
         try:
             segmentation = self.segmentation[mask]
             instances = self.instances
+            segmentation_confidences = self.segmentation_confidences
             if instances is not None:
                 instances = instances[mask]
+            if segmentation_confidences is not None:
+                segmentation_confidences = segmentation_confidences[mask]
         except IndexError:
             logger.error(
                 f"Invalid mask array of dtype {mask.dtype}, shape {mask.shape}: {mask}"
             )
             raise
 
-        return SemanticData(segmentation, instances, self.labels)
+        return SemanticData(segmentation, instances, segmentation_confidences, self.labels)
 
 
 class FeaturesData:
@@ -80,6 +89,12 @@ class FeaturesData:
             return False
         return semantic.instances is not None
 
+    def has_confidences(self) -> bool:
+        semantic = self.semantic
+        if not semantic:
+            return False
+        return semantic.segmentation_confidences is not None
+
     def mask(self, mask: np.ndarray) -> "FeaturesData":
         if self.semantic:
             masked_semantic = self.semantic.mask(mask)
@@ -112,6 +127,7 @@ class FeaturesData:
         semantic = self.semantic
         if semantic:
             instances = semantic.instances
+            segmentation_confidences = semantic.segmentation_confidences
             np.savez_compressed(
                 fileobject,
                 points=self.points.astype(np.float32),
@@ -119,6 +135,7 @@ class FeaturesData:
                 colors=self.colors,
                 segmentations=semantic.segmentation.astype(np.uint8),
                 instances=instances.astype(np.int16) if instances is not None else [],
+                segmentation_confidences=instances.astype(np.int16) if segmentation_confidences is not None else [],
                 segmentation_labels=np.array(semantic.labels).astype(np.str),
                 OPENSFM_FEATURES_VERSION=self.FEATURES_VERSION,
             )
@@ -130,6 +147,7 @@ class FeaturesData:
                 colors=self.colors,
                 segmentations=[],
                 instances=[],
+                segmentation_confidences=[]
                 segmentation_labels=[],
                 OPENSFM_FEATURES_VERSION=self.FEATURES_VERSION,
             )
@@ -211,9 +229,10 @@ class FeaturesData:
         try:
             has_segmentation = (data["segmentations"] != None).all()
             has_instances = (data["instances"] != None).all()
+            has_segmentation_confidences = (data["instances"] != None).all()
         except ValueError:
             logger.warning(pickle_message.format("segmentations and instances"))
-            has_segmentation, has_instances = False, False
+            has_segmentation, has_instances, has_segmentation_confidences = False, False, False
 
         # ... whereas 'labels' can't be loaded anymore, as it is a plain 'list' object. Not an
         # issue since these labels are used for description only and not actual filtering.
@@ -223,10 +242,11 @@ class FeaturesData:
             logger.warning(pickle_message.format("labels"))
             labels = []
 
-        if has_segmentation or has_instances:
+        if has_segmentation or has_instances or has_segmentation_confidences:
             semantic_data = SemanticData(
                 data["segmentations"] if has_segmentation else None,
                 data["instances"] if has_instances else None,
+                data["segmentation_confidences"] if has_segmentation_confidences else None,
                 labels,
             )
         else:
@@ -254,11 +274,13 @@ class FeaturesData:
 
         has_segmentation = len(data["segmentations"]) > 0
         has_instances = len(data["instances"]) > 0
+        has_segmentation_confidences = len(data["segmentation_confidences"]) > 0
 
-        if has_segmentation or has_instances:
+        if has_segmentation or has_instances or has_segmentation_confidences:
             semantic_data = SemanticData(
                 data["segmentations"] if has_segmentation else None,
                 data["instances"] if has_instances else None,
+                data["segmentation_confidences"] if has_segmentation_confidences else None,
                 data["segmentation_labels"],
             )
         else:
