@@ -70,8 +70,8 @@ void WriteToStreamCurrentVersion(S& ostream,
       tr.segm = observation.second.segmentation_id; //
       tr.inst = observation.second.instance_id; // 
       tr.segm_conf = observation.second.segmentation_confidence_id;
-      tr.segmentation_image_path = observation.second.segmentation_image_path_id;
-      tr.confidence_image_path = observation.second.confidence_image_path_id;
+      tr.segm_img_path = observation.second.segmentation_image_path_id;
+      tr.conf_img_path = observation.second.confidence_image_path_id;
 
       ostream.write(reinterpret_cast<char *>(&tl), sizeof(tl));
       ostream << shotID << observation.first;
