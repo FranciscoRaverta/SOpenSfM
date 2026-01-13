@@ -19,8 +19,8 @@ class SemanticReprojectionError {
                               double observed_label,
                               double confidence,
                               double lambda,
-                              string segmentation_image_path,
-                              string confidence_image_path) :
+                              std::string segmentation_image_path,
+                              std::string confidence_image_path) :
         type_(type),
         observed_label_(observed_label),
         scale_(std::sqrt(lambda * confidence) / std_dev),
@@ -76,8 +76,8 @@ class SemanticReprojectionError {
         geometry::ProjectionType type_;
         double scale_;
         double observed_label_;
-        string segmentation_image_path_;
-        string confidence_image_path_;
+        std::string segmentation_image_path_;
+        std::string confidence_image_path_;
         //const std::vector<double>& semantic_map_;
         //int width_;
         //int height_;

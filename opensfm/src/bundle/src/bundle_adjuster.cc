@@ -258,6 +258,7 @@ void BundleAdjuster::AddSemanticObservation(const std::string &shot,
                                             const Vec2d &observation,
                                             double observed_label,
                                             double confidence,
+                                            double lambda,
                                             double std_deviation,
                                             std::string segmentation_image_path,
                                             std::string confidence_image_path) {
@@ -377,7 +378,7 @@ void BundleAdjuster::SetPointProjectionLossFunction(std::string name,
 void BundleAdjuster::SetSemanticLossFunction(std::string name,
                                                     double threshold) {
   semantic_loss_name_ = name;
-  semnatic_loss_threshold_ = threshold;
+  semantic_loss_threshold_ = threshold;
 }
 
 void BundleAdjuster::SetRelativeMotionLossFunction(std::string name,
