@@ -23,8 +23,8 @@ struct TrackRecord{
     int segm; //
     int inst; //
     float segm_conf;
-    std::string segmentation_image_path;
-    std::string confidence_image_path;
+    std::string segm_img_path;
+    std::string conf_img_path;
 };
 
 template <class S>
