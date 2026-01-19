@@ -595,7 +595,7 @@ struct AddSemanticError {
                 obs.semantic_value,
                 obs.confidence,
                 obs.lambda,
-                obs.shot->GetSegmentationImage()));//segmentation_image,
+                *obs.shot->GetSegmentationImage()));//segmentation_image,
                 //obs.shot->GetConfidenceImage()));//confidence_image));
 
     problem->AddResidualBlock(cost_function, loss,
@@ -655,7 +655,7 @@ struct ComputeSemanticResidualError {
 
     using ErrorType = SemanticReprojectionError;
 
-    SegmImage segmentation_image = obs.shot->GetSegmentationImage();
+    SegmImage& segmentation_image = *obs.shot->GetSegmentationImage();
     int h = segmentation_image.rows();
     int w = segmentation_image.cols();
 
@@ -672,7 +672,7 @@ struct ComputeSemanticResidualError {
                     obs.semantic_value,
                     obs.confidence,
                     obs.lambda,
-                    obs.shot->GetSegmentationImage());//segmentation_image_path,
+                    *obs.shot->GetSegmentationImage());//segmentation_image_path,
                     //obs.shot->GetConfidenceImage());//confidence_image_path);
 
     VecNd<1> residuals;
