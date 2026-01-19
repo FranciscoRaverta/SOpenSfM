@@ -35,10 +35,7 @@ struct Shot : public DataContainer {
     RegisterData("camera", camera);
     RegisterData("rig_camera", rig_camera);
     RegisterData("rig_instance", rig_instance);
-    if (segmented_image != nullptr) {
-      auto seg_data = new Data<SegmImage>("segmented_image", *segmented_image);
-      RegisterData("segmented_image", seg_data);
-    }
+    segmented_image_ = segmented_image;
   }
 
   bundle::Camera *GetCamera() {
@@ -52,8 +49,9 @@ struct Shot : public DataContainer {
   }
 
   SegmImage *GetSegmentationImage() {
-    auto data = static_cast<Data<SegmImage>*>(GetData("segmented_image"));
-    return &data->GetValue();
+    return segmented_image_;
   }
+
+  SegmImage* segmented_image_  = nullptr;
 };
 }  // namespace bundle
