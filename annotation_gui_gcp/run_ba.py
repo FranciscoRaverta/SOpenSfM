@@ -276,8 +276,8 @@ def bundle_with_fixed_images(
     for point in reconstruction.points.values():
         ba.add_point(point.id, point.coordinates, False)
         ba.add_point_prior(point.id, point.coordinates, np.array([100.0, 100.0, 100.0]), False)
-        if(has_semantics):
-            ba.add_point_semantics(point.id, point.semantic_value, point.confidence_value)
+        #if(has_semantics):
+        #    ba.add_point_semantics(point.id, point.semantic_value, point.confidence_value)
 
     for shot_id in reconstruction.shots:
         shot = reconstruction.get_shot(shot_id)

@@ -305,11 +305,16 @@ class Reconstruction(object):
         self.map.remove_pano_shot(shot_id)
 
     def create_point(
-        self, point_id: str, coord: Optional[np.ndarray] = None
+        self, point_id: str, coord: Optional[np.ndarray] = None, segmentation_value: Optional[int], confidence_value: Optional[float]
     ) -> pymap.Landmark:
-        if coord is None:
-            return self.map.create_landmark(point_id, np.array([0, 0, 0]))
-        return self.map.create_landmark(point_id, coord)
+        if (segmentation_value is None) and (confidence_value is None):
+            if coord is None:
+                return self.map.create_landmark(point_id, np.array([0, 0, 0]))
+            return self.map.create_landmark(point_id, coord)
+        else:
+            if coord is None:
+                return self.map.create_landmark(point_id, np.array([0, 0, 0]), segmentation_value, confidence_value)
+            return self.map.create_landmark(point_id, coord, segmentation_value, confidence_value)
 
     def add_point(self, point: pymap.Landmark) -> pymap.Landmark:
         """Add a point in the list

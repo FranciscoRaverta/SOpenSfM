@@ -2,7 +2,7 @@
 
 #include <Eigen/Eigen>
 
-using SegmImage = Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic>;
+using SegmImage = Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
 
 template <class T>
 using MatX = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;

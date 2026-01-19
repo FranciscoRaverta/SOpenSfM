@@ -8,6 +8,9 @@ namespace map {
 Landmark::Landmark(const LandmarkId& lm_id, const Vec3d& global_pos)
     : id_(lm_id), global_pos_(global_pos), color_(255, 0, 0) {}
 
+Landmark::Landmark(const LandmarkId& lm_id, const Vec3d& global_pos, const int semantic_label, const double confidence)
+    : id_(lm_id), global_pos_(global_pos), color_(255, 0, 0), semantic_label_(semantic_label), semantic_conf_(confidence) {}
+
 void Landmark::SetReprojectionErrors(
     const std::map<ShotId, Eigen::VectorXd>& reproj_errors) {
   reproj_errors_ = reproj_errors;

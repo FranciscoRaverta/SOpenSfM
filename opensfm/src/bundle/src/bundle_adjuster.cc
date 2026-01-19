@@ -256,11 +256,10 @@ void BundleAdjuster::AddPointProjectionObservation(const std::string &shot,
 void BundleAdjuster::AddSemanticObservation(const std::string &shot,
                                             const std::string &point,
                                             const Vec2d &observation,
-                                            double semantic_value,
+                                            int semantic_value,
                                             double confidence,
                                             double lambda,
-                                            double std_deviation,
-                                            ) {
+                                            double std_deviation) {
   SemanticObservation o;
   o.shot = &shots_.at(shot);
   o.camera = &cameras_.at(o.shot->GetCamera()->GetID());
@@ -273,16 +272,14 @@ void BundleAdjuster::AddSemanticObservation(const std::string &shot,
   semantic_observations_.push_back(o);
 }
 
-void BundleAdjuster::AddPointSemantics(const std::string &id, double semantic_value, double confidence) {
+/*void BundleAdjuster::AddPointSemantics(const std::string &id, int semantic_value, double confidence) {
   auto point_exist = points_.find(point_id);
   if (point_exist == points_.end()) {
     throw std::runtime_error("Point " + point_id + " doesn't exist.");
   }
-
-  point_exist->second.SetPrior(position);
-  point_exist->second.SetSigma(std_deviation);
-  point_exist->second.has_altitude_prior = has_altitude_prior;
-}
+  point_exist->second.SetSemanticLabel(semantic_value);
+  point_exist->second.SetConfidence(confidence);
+}*/
 
 void BundleAdjuster::AddRelativeMotion(const RelativeMotion &rm) {
   relative_motions_.push_back(rm);
