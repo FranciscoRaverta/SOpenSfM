@@ -618,6 +618,18 @@ PYBIND11_MODULE(pymap, m) {
                              const map::RigCameraId &,
                              const map::RigInstanceId &>(&map::Map::CreateShot),
            py::return_value_policy::reference_internal)
+      .def(
+          "create_shot",
+          py::overload_cast<const map::ShotId &, const map::CameraId &,
+                            const map::RigCameraId &,
+                            const map::RigInstanceId &, const geometry::Pose &, const SegmImage &>(
+              &map::Map::CreateShot),
+          py::return_value_policy::reference_internal)
+      .def("create_shot",
+           py::overload_cast<const map::ShotId &, const map::CameraId &,
+                             const map::RigCameraId &,
+                             const map::RigInstanceId &, const SegmImage &>(&map::Map::CreateShot),
+           py::return_value_policy::reference_internal)
       .def("remove_shot", &map::Map::RemoveShot)
       .def("get_shot",
            py::overload_cast<const map::ShotId &>(&map::Map::GetShot),

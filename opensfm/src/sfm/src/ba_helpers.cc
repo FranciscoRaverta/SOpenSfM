@@ -660,10 +660,12 @@ py::dict BAHelpers::Bundle(
 
     // average GPS and assign GPS constraint to the instance
     std::unordered_map<std::string, std::string> shot_cameras, shot_rig_cameras;
+    std::unordered_map<std::string, SegmImage&> segmented_images;
     for (const auto& shot_n_rig_camera : instance.GetRigCameras()) {
       const auto shot_id = shot_n_rig_camera.first;
       const auto& shot = map.GetShot(shot_id);
       shot_cameras[shot_id] = shot.GetCamera()->id;
+      segmented_images[shot_id] = shot.GetSegmentationImage();
       shot_rig_cameras[shot_id] = shot_n_rig_camera.second->id;
 
       if (config["bundle_use_gps"].cast<bool>()) {
@@ -677,8 +679,13 @@ py::dict BAHelpers::Bundle(
       }
     }
 
-    ba.AddRigInstance(instance_pair.first, instance.GetPose(), shot_cameras,
-                      shot_rig_cameras, false);
+    if(segmented_images.empty()) {  
+      ba.AddRigInstance(instance_pair.first, instance.GetPose(), shot_cameras,
+        shot_rig_cameras, false);
+    } else {
+      ba.AddRigInstance(instance_pair.first, instance.GetPose(), shot_cameras,
+        shot_rig_cameras, false, segmented_images);
+    }
 
     if (config["bundle_use_gps"].cast<bool>() && gps_count > 0) {
       average_position /= gps_count;

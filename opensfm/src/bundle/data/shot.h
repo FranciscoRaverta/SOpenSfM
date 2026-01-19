@@ -29,6 +29,15 @@ struct Shot : public DataContainer {
     RegisterData("rig_instance", rig_instance);
   }
 
+  Shot(const std::string &id, bundle::Camera *camera, RigCamera *rig_camera,
+       RigInstance *rig_instance, SegmImage *segmented_image)
+      : DataContainer(id) {
+    RegisterData("camera", camera);
+    RegisterData("rig_camera", rig_camera);
+    RegisterData("rig_instance", rig_instance);
+    RegisterData("segmented_image", segmented_image)
+  }
+
   bundle::Camera *GetCamera() {
     return static_cast<bundle::Camera *>(GetData("camera"));
   }
@@ -37,6 +46,10 @@ struct Shot : public DataContainer {
   }
   RigInstance *GetRigInstance() {
     return static_cast<RigInstance *>(GetData("rig_instance"));
+  }
+
+  SegmImage *GetSegmentationImage() {
+    return static_cast<SegmImage *>(GetData("segmented_image"));
   }
 };
 }  // namespace bundle

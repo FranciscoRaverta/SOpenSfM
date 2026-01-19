@@ -145,6 +145,44 @@ void BundleAdjuster::AddRigInstance(
   }
 };
 
+void BundleAdjuster::AddRigInstance(
+    const std::string &rig_instance_id, const geometry::Pose &rig_instance_pose,
+    const std::unordered_map<std::string, std::string> &shot_cameras,
+    const std::unordered_map<std::string, std::string> &shot_rig_cameras,
+    bool fixed,
+    const std::unordered_map<std::string, SegmImage&> &segmented_image) {
+  auto &rig_instance =
+      rig_instances_
+          .emplace(std::piecewise_construct,
+                   std::forward_as_tuple(rig_instance_id),
+                   std::forward_as_tuple(rig_instance_id, rig_instance_pose,
+                                         shot_cameras))
+          .first->second;
+  if (fixed) {
+    rig_instance.SetParametersToOptimize({});
+  }
+
+  for (const auto &shot_camera : shot_cameras) {
+    const auto shot_id = shot_camera.first;
+    const auto camera_id = shot_camera.second;
+    const auto rig_camera_id = shot_rig_cameras.at(shot_id);
+
+    const auto camera_exists = cameras_.find(camera_id);
+    if (camera_exists == cameras_.end()) {
+      throw std::runtime_error("Camera " + camera_id + " doesn't exist.");
+    }
+    const auto rig_camera_exists = rig_cameras_.find(rig_camera_id);
+    if (rig_camera_exists == rig_cameras_.end()) {
+      throw std::runtime_error("Rig camera " + rig_camera_id +
+                               " doesn't exist.");
+    }
+    shots_.emplace(std::piecewise_construct, std::forward_as_tuple(shot_id),
+                   std::forward_as_tuple(shot_id, &camera_exists->second,
+                                         &rig_camera_exists->second,
+                                         &rig_instances_.at(rig_instance_id), &segmented_image[shot_id]));
+  }
+};
+
 void BundleAdjuster::AddRigCamera(const std::string &rig_camera_id,
                                   const geometry::Pose &pose,
                                   const geometry::Pose &pose_prior,
@@ -554,7 +592,7 @@ struct AddSemanticError {
                                         CameraSize, ShotSize, ShotSize, 3> (new SemanticReprojectionError(
                 obs.camera->GetValue().GetProjectionType(),
                 obs.std_deviation,
-                obs.observed_label,
+                obs.semantic_value,
                 obs.confidence,
                 obs.lambda,
                 obs.shot->GetSegmentationImage()));//segmentation_image,
@@ -631,7 +669,7 @@ struct ComputeSemanticResidualError {
 
     ErrorType error(obs.camera->GetValue().GetProjectionType(),
                     obs.std_deviation,
-                    obs.observed_label,
+                    obs.semantic_value,
                     obs.confidence,
                     obs.lambda,
                     obs.shot->GetSegmentationImage());//segmentation_image_path,
