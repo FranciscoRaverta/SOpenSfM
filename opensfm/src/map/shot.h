@@ -1,5 +1,6 @@
 #pragma once
 #include <foundation/optional.h>
+#include <foundation/types.h>
 #include <geometry/camera.h>
 #include <geometry/pose.h>
 #include <map/defines.h>

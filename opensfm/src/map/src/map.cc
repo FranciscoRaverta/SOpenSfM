@@ -1,3 +1,4 @@
+#include <foundation/types.h>
 #include <geometry/pose.h>
 #include <map/defines.h>
 #include <map/landmark.h>
