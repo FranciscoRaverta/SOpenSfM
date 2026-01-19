@@ -38,6 +38,8 @@ def merge_reconstructions(reconstructions, tracks_manager):
         for point in reconstruction.points.values():
             new_point = merged.create_point(f"R{ix_r}_{point.id}", point.coordinates)
             new_point.color = point.color
+            new_point.semantic_value = point.semantic_value
+            new_point.confidence_value = point.confidence_value
 
         for shot in reconstruction.shots.values():
             merged.add_shot(shot)
@@ -74,6 +76,8 @@ def resplit_reconstruction(merged, original_reconstructions):
             merged_point = merged.points[merged_id]
             new_point = r.create_point(point_id, merged_point.coordinates)
             new_point.color = merged_point.color
+            new_point.semantic_value = merged_point.semantic_value
+            new_point.confidence_value = merged_point.confidence_value
         for camera_id in original.cameras:
             r.add_camera(merged.cameras[camera_id])
         split.append(r)
@@ -266,16 +270,28 @@ def bundle_with_fixed_images(
         r = shot.pose.rotation
         t = shot.pose.translation
         ba.add_shot(shot.id, shot.camera.id, r, t, shot.id in fixed_images)
+        if(has_semantics)
+            ba.add_shot_semantics(shot.id, shot.semantic_map)
 
     for point in reconstruction.points.values():
         ba.add_point(point.id, point.coordinates, False)
         ba.add_point_prior(point.id, point.coordinates, np.array([100.0, 100.0, 100.0]), False)
+        if(has_semantics):
+            ba.add_point_semantics(point.id, point.semantic_value, point.confidence_value)
 
     for shot_id in reconstruction.shots:
         shot = reconstruction.get_shot(shot_id)
         for point in shot.get_valid_landmarks():
             obs = shot.get_landmark_observation(point)
             ba.add_point_projection_observation(shot.id, point.id, obs.point, obs.scale)
+            if (has_semantics):
+                ba.add_semantic_observation(shot.id,
+                                            point.id,
+                                            obs.point,
+                                            point.semantic_value,
+                                            point.confidence_value,
+                                            point.lambda_value,
+                                            obs.scale,)
 
     add_gcp_to_bundle(ba, reconstruction.reference, gcp, gcp_std, reconstruction.shots)
 
@@ -318,6 +334,7 @@ def bundle_with_fixed_images(
         p = ba.get_point(point.id)
         point.coordinates = [p.p[0], p.p[1], p.p[2]]
         point.reprojection_errors = p.reprojection_errors
+        #point.semantic_errors = p.semantic_errors
 
     chrono.lap("teardown")
 

@@ -103,10 +103,10 @@ def create_tracks_manager(
                 instances[image][featureid] if image in instances else NO_VALUE,
                 segmentation_confidences[image][featureid] if image in segmentation_confidences else NO_VALUE,
             )
-            segmentation_image_path = Dataset._segmentation_file(image)
-            confidence_image_path = Datset._segmentation_confidence_file(image)
+            #segmentation_image_path = Dataset._segmentation_file(image)
+            #confidence_image_path = Datset._segmentation_confidence_file(image)
             obs = pymap.Observation(
-                x, y, s, int(r), int(g), int(b), featureid, segmentation, instance, segmentation_confidence, segmentation_image_path, confidence_image_path
+                x, y, s, int(r), int(g), int(b), featureid, segmentation, instance, segmentation_confidence#, segmentation_image_path, confidence_image_path
             )
             tracks_manager.add_observation(image, str(track_id), obs)
     return tracks_manager

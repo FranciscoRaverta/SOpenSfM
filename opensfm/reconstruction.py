@@ -242,10 +242,15 @@ def add_shot(
     All necessary shots and rig models will be created.
     """
 
+    segmentation_image = data.load_segmentation(shot_id)
+    print("Segmentation Image " + shot_id + " Loaded In Shot")
     added_shots = set()
     if shot_id not in rig_assignments:
         camera_id = data.load_exif(shot_id)["camera"]
-        shot = reconstruction.create_shot(shot_id, camera_id, pose)
+        if segmentation_image is None:
+            shot = reconstruction.create_shot(shot_id, camera_id, pose)
+        else:
+            shot = reconstruction.create_shot(shot_id, camera_id, pose, None, None, segmentation_image)
         shot.metadata = helpers.get_image_metadata(data, shot_id)
         added_shots = {shot_id}
     else:
@@ -255,13 +260,23 @@ def add_shot(
         for shot in instance_shots:
             _, rig_camera_id, _ = rig_assignments[shot]
             camera_id = data.load_exif(shot)["camera"]
-            created_shot = reconstruction.create_shot(
+            if segmentation_image is None:
+                created_shot = reconstruction.create_shot(
                 shot,
                 camera_id,
                 pygeometry.Pose(),
                 rig_camera_id,
                 instance_id,
-            )
+                )
+            else:
+                created_shot = reconstruction.create_shot(
+                shot,
+                camera_id,
+                pygeometry.Pose(),
+                rig_camera_id,
+                instance_id,
+                segmentation_image,
+                )
             created_shot.metadata = helpers.get_image_metadata(data, shot)
         rig_instance.update_instance_pose_with_shot(shot_id, pose)
         added_shots = set(instance_shots)

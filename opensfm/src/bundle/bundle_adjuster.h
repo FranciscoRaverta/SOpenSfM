@@ -68,15 +68,13 @@ struct SemanticObservation {
   Shot *shot;
   Point *point;
 
-  double observed_label;
+  double semantic_value;
   double confidence;
   double std_deviation;
   double lambda;
 
   const std::vector<double> *semantic_map;
   Vec2d coordinates;
-  std::string segmentation_image_path;
-  std::string confidence_image_path;
 };
 
 struct RelativeMotion {
@@ -220,12 +218,12 @@ class BundleAdjuster {
   void AddSemanticObservation(const std::string &shot,
                               const std::string &point,
                               const Vec2d &observation,
-                              double observed_label,
+                              double semantic_value,
                               double confidence,
                               double lambda,
-                              double std_deviation,
-                              std::string segmentation_image_path,
-                              std::string confidence_image_path);
+                              double std_deviation);
+
+  void AddPointSemantics(const std::string &id, double semantic_value, double confidence);
 
   // Relative motion constraints
   void AddRelativeMotion(const RelativeMotion &rm);

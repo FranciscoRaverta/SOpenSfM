@@ -210,6 +210,46 @@ Shot& Map::CreateShot(const ShotId& shot_id, const CameraId& camera_id,
   }
 }
 
+Shot& Map::CreateShot(const ShotId& shot_id, const CameraId& camera_id,
+                      const RigCameraId& rig_camera_id,
+                      const RigInstanceId& instance_id,
+                      const geometry::Pose& pose,
+                      const SegmImage& segmentation_image) {
+  auto it_exist = shots_.find(shot_id);
+  if (it_exist == shots_.end())  // create
+  {
+    const auto& camera = GetCamera(camera_id);
+    auto& rig_instance = GetRigInstance(instance_id);
+    auto& rig_camera = GetRigCamera(rig_camera_id);
+    auto it =
+        shots_.emplace(std::piecewise_construct, std::forward_as_tuple(shot_id),
+                       std::forward_as_tuple(shot_id, &camera, &rig_instance,
+                                             &rig_camera, pose, segmentation_image));
+    return it.first->second;
+  } else {
+    throw std::runtime_error("Shot " + shot_id + " already exists.");
+  }
+}
+
+Shot& Map::CreateShot(const ShotId& shot_id, const CameraId& camera_id,
+                      const RigCameraId& rig_camera_id,
+                      const RigInstanceId& instance_id,
+                      const SegmImage& segmentation_image) {
+  auto it_exist = shots_.find(shot_id);
+  if (it_exist == shots_.end())  // create
+  {
+    const auto& camera = GetCamera(camera_id);
+    auto& rig_instance = GetRigInstance(instance_id);
+    auto& rig_camera = GetRigCamera(rig_camera_id);
+    auto it = shots_.emplace(
+        std::piecewise_construct, std::forward_as_tuple(shot_id),
+        std::forward_as_tuple(shot_id, &camera, &rig_instance, &rig_camera, segmentation_image));
+    return it.first->second;
+  } else {
+    throw std::runtime_error("Shot " + shot_id + " already exists.");
+  }
+}
+
 void Map::RemoveShot(const ShotId& shot_id) {
   // 1) Find the point
   const auto& shot_it = shots_.find(shot_id);

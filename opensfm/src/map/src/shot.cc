@@ -24,7 +24,8 @@ Shot::Shot(const ShotId& shot_id, const geometry::Camera* const shot_camera,
       pose_(std::make_unique<geometry::Pose>(pose)),
       rig_instance_(rig_instance),
       rig_camera_(rig_camera),
-      shot_camera_(shot_camera) {
+      shot_camera_(shot_camera),
+      has_segmentation_(false) {
   rig_instance_->AddShot(rig_camera_, this);
   rig_instance_->UpdateInstancePoseWithShot(shot_id, pose);
 }
@@ -35,7 +36,8 @@ Shot::Shot(const ShotId& shot_id, const geometry::Camera* const shot_camera,
       pose_(std::make_unique<geometry::Pose>(geometry::Pose())),
       rig_instance_(rig_instance),
       rig_camera_(rig_camera),
-      shot_camera_(shot_camera) {
+      shot_camera_(shot_camera),
+      has_segmentation_(false) {
   rig_instance_->AddShot(rig_camera_, this);
 }
 
@@ -48,9 +50,36 @@ Shot::Shot(const ShotId& shot_id, const geometry::Camera& shot_camera,
       rig_instance_(&own_rig_instance_.Value()),
       rig_camera_(&own_rig_camera_.Value()),
       own_camera_(shot_camera),
-      shot_camera_(&own_camera_.Value()) {
+      shot_camera_(&own_camera_.Value()),
+      has_segmentation_(false) {
   rig_instance_->AddShot(rig_camera_, this);
   rig_instance_->SetPose(pose);
+}
+
+Shot::Shot(const ShotId& shot_id, const geometry::Camera* const shot_camera,
+           RigInstance* rig_instance, RigCamera* rig_camera,
+           const geometry::Pose& pose, const SegmImage* segmentation_image)
+    : id_(shot_id),
+      pose_(std::make_unique<geometry::Pose>(pose)),
+      rig_instance_(rig_instance),
+      rig_camera_(rig_camera),
+      shot_camera_(shot_camera),
+      segmentation_image_(segmentation_image),
+      has_segmentation_(true) {
+  rig_instance_->AddShot(rig_camera_, this);
+  rig_instance_->UpdateInstancePoseWithShot(shot_id, pose);
+}
+
+Shot::Shot(const ShotId& shot_id, const geometry::Camera* const shot_camera,
+           RigInstance* rig_instance, RigCamera* rig_camera, const SegmImage* segmentation_image)
+    : id_(shot_id),
+      pose_(std::make_unique<geometry::Pose>(geometry::Pose())),
+      rig_instance_(rig_instance),
+      rig_camera_(rig_camera),
+      shot_camera_(shot_camera),
+      segmentation_image_(segmentation_image),
+      has_segmentation_(true) {
+  rig_instance_->AddShot(rig_camera_, this);
 }
 
 bool Shot::IsInRig() const { return true; }

@@ -68,6 +68,7 @@ PYBIND11_MODULE(pybundle, m) {
       .def("get_reconstruction", &bundle::BundleAdjuster::GetReconstruction)
       .def("add_point", &bundle::BundleAdjuster::AddPoint)
       .def("add_point_prior", &bundle::BundleAdjuster::AddPointPrior)
+      .def("add_point_semantics", &bundle::BundleAdjuster::AddPointSemantics)
       .def("get_point", &bundle::BundleAdjuster::GetPoint)
       .def("has_point", &bundle::BundleAdjuster::HasPoint)
       .def("add_reconstruction", &bundle::BundleAdjuster::AddReconstruction)

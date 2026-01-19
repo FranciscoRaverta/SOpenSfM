@@ -82,3 +82,6 @@ using Vec4 = Eigen::Matrix<T, 4, 1>;
 using Vec4f = Eigen::Matrix<float, 4, 1>;
 using Vec4d = Eigen::Matrix<double, 4, 1>;
 using Vec4i = Eigen::Matrix<int, 4, 1>;
+
+template <class T>
+using SegmImage = Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic>;

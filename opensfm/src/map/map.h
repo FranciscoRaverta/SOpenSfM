@@ -52,6 +52,16 @@ class Map {
                    const RigCameraId& rig_camera_id,
                    const RigInstanceId& instance_id);
 
+  Shot& CreateShot(const ShotId& shot_id, const CameraId& camera_id,
+                   const RigCameraId& rig_camera_id,
+                   const RigInstanceId& instance_id,
+                   const geometry::Pose& pose,
+                   const SegmImage& segmentation_image);
+  Shot& CreateShot(const ShotId& shot_id, const CameraId& camera_id,
+                   const RigCameraId& rig_camera_id,
+                   const RigInstanceId& instance_id,
+                   const SegmImage& segmentation_image);
+
   // Getters
   const Shot& GetShot(const ShotId& shot_id) const;
   Shot& GetShot(const ShotId& shot_id);

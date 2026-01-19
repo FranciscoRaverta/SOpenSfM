@@ -233,7 +233,7 @@ py::tuple BAHelpers::BundleLocal(
 
       if (use_semantics) {
         ba.SetComputeSemanticErrors(true);
-        ba.AddSemanticObservation(shot->id_, lm_obs.first->id_, obs.point, obs.segmentation_id, obs.segmentation_confidence_id, semantic_lambda, obs.scale, obs.segmentation_image_path, obs.confidence_image_path);
+        ba.AddSemanticObservation(shot->id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetSemanticConfidence(), semantic_lambda, obs.scale);
       }
 
     }
@@ -245,6 +245,10 @@ py::tuple BAHelpers::BundleLocal(
         const auto& obs = lm_obs.second;
         ba.AddPointProjectionObservation(shot->id_, lm_obs.first->id_,
                                          obs.point, obs.scale);
+        if (use_semantics) {
+          ba.SetComputeSemanticErrors(true);
+          ba.AddSemanticObservation(shot->id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetSemanticConfidence(), semantic_lambda, obs.scale);
+        }
       }
     }
   }
@@ -528,6 +532,10 @@ py::dict BAHelpers::BundleShotPoses(
       const auto& obs = lm_obs.second;
       ba.AddPointProjectionObservation(shot.id_, lm_obs.first->id_, obs.point,
                                        obs.scale);
+      if (use_semantics) {
+        ba.SetComputeSemanticErrors(true);
+        ba.AddSemanticObservation(shot->id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetSemanticConfidence(), semantic_lambda, obs.scale);
+      }
     }
   }
 
@@ -695,6 +703,10 @@ py::dict BAHelpers::Bundle(
       const auto& obs = lm_obs.second;
       ba.AddPointProjectionObservation(shot.id_, lm_obs.first->id_, obs.point,
                                        obs.scale);
+      if (use_semantics) {
+        ba.SetComputeSemanticErrors(true);
+        ba.AddSemanticObservation(shot->id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetSemanticConfidence(), semantic_lambda, obs.scale);
+      }
     }
   }
 

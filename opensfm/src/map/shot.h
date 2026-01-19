@@ -59,6 +59,11 @@ class Shot {
        RigInstance* rig_instance, RigCamera* rig_camera);
   Shot(const ShotId& shot_id, const geometry::Camera& shot_camera,
        const geometry::Pose& pose);
+  Shot(const ShotId& shot_id, const geometry::Camera* const shot_camera,
+       RigInstance* rig_instance, RigCamera* rig_camera,
+       const geometry::Pose& pose, const SegmImage& segmentation_image);
+  Shot(const ShotId& shot_id, const geometry::Camera* const shot_camera,
+       RigInstance* rig_instance, RigCamera* rig_camera, const SegmImage& segmentation_image);
   ShotId GetId() const { return id_; }
 
   // Rig
@@ -154,6 +159,11 @@ class Shot {
   long int merge_cc{0};
   double scale{1.0};
 
+  // Segmentation
+  const SegmImage& GetSegmentationImage() const { return segmentation_image_; }
+  bool HasSegmentation() const { return has_segmentation_; }
+
+
  private:
   geometry::Pose GetPoseInRig() const;
 
@@ -179,5 +189,10 @@ class Shot {
            Eigen::aligned_allocator<std::pair<Landmark* const, Observation>>>
       landmark_observations_;
   std::unordered_map<FeatureId, Landmark*> landmark_id_;
+
+  // Segmentation
+  bool has_segmentation_ = false;
+  SegmImage segmentation_image_;
+
 };
 }  // namespace map

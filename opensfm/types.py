@@ -194,7 +194,8 @@ class Reconstruction(object):
         pose: Optional[pygeometry.Pose] = None,
         rig_camera_id: Optional[str] = None,
         rig_instance_id: Optional[str] = None,
-    ) -> pymap.Shot:
+        segmentation_image: Optional[np.asarray] = None,
+        ) -> pymap.Shot:
         passed_rig_camera_id = rig_camera_id if rig_camera_id else camera_id
         passed_rig_instance_id = rig_instance_id if rig_instance_id else shot_id
 
@@ -212,14 +213,24 @@ class Reconstruction(object):
                 f"Rig Instance {passed_rig_instance_id} doesn't exist in reconstruction"
             )
 
-        if pose is None:
-            created_shot = self.map.create_shot(
-                shot_id, camera_id, passed_rig_camera_id, passed_rig_instance_id
-            )
-        else:
-            created_shot = self.map.create_shot(
-                shot_id, camera_id, passed_rig_camera_id, passed_rig_instance_id, pose
-            )
+        if segmentation_image is None:
+            if pose is None:
+                created_shot = self.map.create_shot(
+                    shot_id, camera_id, passed_rig_camera_id, passed_rig_instance_id
+                )
+            else:
+                created_shot = self.map.create_shot(
+                    shot_id, camera_id, passed_rig_camera_id, passed_rig_instance_id, pose
+                )
+        else:     
+            if pose is None:
+                created_shot = self.map.create_shot(
+                    shot_id, camera_id, passed_rig_camera_id, passed_rig_instance_id, segmentation_image
+                )
+            else:
+                created_shot = self.map.create_shot(
+                    shot_id, camera_id, passed_rig_camera_id, passed_rig_instance_id, pose, segmentation_image
+                )
 
         return created_shot
 

@@ -229,7 +229,7 @@ class FeaturesData:
         try:
             has_segmentation = (data["segmentations"] != None).all()
             has_instances = (data["instances"] != None).all()
-            has_segmentation_confidences = (data["instances"] != None).all()
+            has_segmentation_confidences = (data["segmentation_confidences"] != None).all()
         except ValueError:
             logger.warning(pickle_message.format("segmentations and instances"))
             has_segmentation, has_instances, has_segmentation_confidences = False, False, False

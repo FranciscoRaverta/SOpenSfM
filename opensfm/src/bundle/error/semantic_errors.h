@@ -12,23 +12,30 @@
 
 namespace bundle {
 
+template <typename T>
+inline double GetScalar(const T& x) {
+    return x;   // works when T = double
+}
+
+template <int N>
+inline double GetScalar(const ceres::Jet<double, N>& x) {
+    return x.a; // scalar part of Jet
+}
+
 class SemanticReprojectionError {
     public: 
     SemanticReprojectionError(const geometry::ProjectionType& type,
                               double std_dev,
-                              double observed_label,
+                              int observed_label,
                               double confidence,
                               double lambda,
-                              std::string segmentation_image_path,
-                              std::string confidence_image_path) :
+                              SegmImage& segmentation_image) :
         type_(type),
         observed_label_(observed_label),
         scale_(std::sqrt(lambda * confidence) / std_dev),
-        segmentation_image_path_(segmentation_image_path),
-        confidence_image_path_(confidence_image_path) {}
-        //semantic_map_(semantic_map),
-        //width_(width),
-        //height_(height) {}
+        segmentation_image_(segmentation_image),
+        height_(segmentation_image.rows()),
+        width_(segmentation_image.cols()) {}
 
     template <typename T>
     bool operator()(const T* const camera,
@@ -53,8 +60,8 @@ class SemanticReprojectionError {
         T v = predicted[1];
 
         // Bounds check (use scalar part for Jets)
-        double u0 = ceres::JetOps<T>::GetScalar(u);
-        double v0 = ceres::JetOps<T>::GetScalar(v);
+        double u0 = GetScalar(u);
+        double v0 = GetScalar(v);
         if (u0 < 0 || u0 >= width_ || v0 < 0 || v0 >= height_) {
             residuals[0] = T(0);
             return true;
@@ -62,10 +69,10 @@ class SemanticReprojectionError {
 
         int iu = static_cast<int>(u0);
         int iv = static_cast<int>(v0);
-        int idx = iv * width_ + iu;
+        //int idx = iv * width_ + iu;
 
-        double predicted_label = semantic_map_[idx];
-
+        int predicted_label = segmentation_image_(iv,iu);
+        
         // The error is the difference between the predicted semantic label and the observed semantic label
         residuals[0] = T(scale_) * (T(predicted_label) - T(observed_label_));
 
@@ -75,12 +82,10 @@ class SemanticReprojectionError {
     protected:
         geometry::ProjectionType type_;
         double scale_;
-        double observed_label_;
-        std::string segmentation_image_path_;
-        std::string confidence_image_path_;
-        //const std::vector<double>& semantic_map_;
-        //int width_;
-        //int height_;
+        int observed_label_;
+        SegmImage& segmentation_image_;
+        int height_;
+        int width_;
 
 };
 
