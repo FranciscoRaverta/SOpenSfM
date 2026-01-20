@@ -161,7 +161,7 @@ class Shot {
   double scale{1.0};
 
   // Segmentation
-  const SegmImage& GetSegmentationImage() const { return segmentation_image_; }
+  const SegmImage* GetSegmentationImage() const { return segmentation_image_; }
   bool HasSegmentation() const { return has_segmentation_; }
 
 
@@ -193,7 +193,7 @@ class Shot {
 
   // Segmentation
   bool has_segmentation_ = false;
-  SegmImage segmentation_image_;
+  SegmImage* segmentation_image_;
 
 };
 }  // namespace map

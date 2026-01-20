@@ -150,7 +150,7 @@ void BundleAdjuster::AddRigInstance(
     const std::unordered_map<std::string, std::string> &shot_cameras,
     const std::unordered_map<std::string, std::string> &shot_rig_cameras,
     bool fixed,
-    const std::unordered_map<std::string, SegmImage&> &segmented_image) {
+    const std::unordered_map<std::string, SegmImage*> &segmented_image) {
   auto &rig_instance =
       rig_instances_
           .emplace(std::piecewise_construct,
@@ -179,7 +179,7 @@ void BundleAdjuster::AddRigInstance(
     shots_.emplace(std::piecewise_construct, std::forward_as_tuple(shot_id),
                    std::forward_as_tuple(shot_id, &camera_exists->second,
                                          &rig_camera_exists->second,
-                                         &rig_instances_.at(rig_instance_id), &segmented_image[shot_id]));
+                                         &rig_instances_.at(rig_instance_id), segmented_image.at(shot_id)));
   }
 };
 
