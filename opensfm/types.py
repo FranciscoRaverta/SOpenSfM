@@ -305,7 +305,7 @@ class Reconstruction(object):
         self.map.remove_pano_shot(shot_id)
 
     def create_point(
-        self, point_id: str, coord: Optional[np.ndarray] = None, segmentation_value: Optional[int], confidence_value: Optional[float]
+        self, point_id: str, coord: Optional[np.ndarray] = None, segmentation_value: Optional[int] = None, confidence_value: Optional[float] = None
     ) -> pymap.Landmark:
         if (segmentation_value is None) and (confidence_value is None):
             if coord is None:
