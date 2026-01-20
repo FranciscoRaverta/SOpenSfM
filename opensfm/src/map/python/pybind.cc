@@ -65,11 +65,12 @@ PYBIND11_MODULE(pymap, m) {
       .export_values();
 
   py::class_<map::Observation>(m, "Observation")
-      .def(py::init<double, double, double, int, int, int, int, int, int>(),
+      .def(py::init<double, double, double, int, int, int, int, int, int, double>(),
            py::arg("x"), py::arg("y"), py::arg("s"), py::arg("r"), py::arg("g"),
            py::arg("b"), py::arg("feature"),
            py::arg("segmentation") = map::Observation::NO_SEMANTIC_VALUE,
-           py::arg("instance") = map::Observation::NO_SEMANTIC_VALUE)
+           py::arg("instance") = map::Observation::NO_SEMANTIC_VALUE,
+           py::arg("segmentation_conf") = map::Observation::NO_SEMANTIC_VALUE)
       .def_readwrite("point", &map::Observation::point)
       .def_readwrite("scale", &map::Observation::scale)
       .def_readwrite("id", &map::Observation::feature_id)
