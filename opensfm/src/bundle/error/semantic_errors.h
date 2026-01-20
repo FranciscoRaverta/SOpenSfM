@@ -29,7 +29,7 @@ class SemanticReprojectionError {
                               int observed_label,
                               double confidence,
                               double lambda,
-                              SegmImage& segmentation_image) :
+                              const SegmImage& segmentation_image) :
         type_(type),
         observed_label_(observed_label),
         scale_(std::sqrt(lambda * confidence) / std_dev),
@@ -83,7 +83,7 @@ class SemanticReprojectionError {
         geometry::ProjectionType type_;
         double scale_;
         int observed_label_;
-        SegmImage& segmentation_image_;
+        const SegmImage& segmentation_image_;
         int height_;
         int width_;
 

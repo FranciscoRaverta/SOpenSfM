@@ -655,7 +655,7 @@ struct ComputeSemanticResidualError {
 
     using ErrorType = SemanticReprojectionError;
 
-    SegmImage& segmentation_image = *obs.shot->GetSegmentationImage();
+    const SegmImage& segmentation_image = *obs.shot->GetSegmentationImage();
     int h = segmentation_image.rows();
     int w = segmentation_image.cols();
 
