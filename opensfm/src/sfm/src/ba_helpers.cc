@@ -130,7 +130,7 @@ py::tuple BAHelpers::BundleLocal(
 
   // set up BA
   auto ba = bundle::BundleAdjuster();
-  const bool use_semantics = config.contains("bundle_use_semantics") && config["bundle_use_semantics"].cast<bool>();
+  const bool use_semantics = (data.config["features_bake_segmentation"] and data.config["matching_segmentation_filter"]);
   const double semantic_lambda = config.contains("semantic_lambda") ? config["semantic_lambda"].cast<double>() : 1.0;
 
   ba.SetUseAnalyticDerivatives(
@@ -233,7 +233,7 @@ py::tuple BAHelpers::BundleLocal(
 
       if (use_semantics) {
         ba.SetComputeSemanticErrors(true);
-        ba.AddSemanticObservation(shot->id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetSemanticConfidence(), semantic_lambda, obs.scale);
+        ba.AddSemanticObservation(shot->id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetConfidence(), semantic_lambda, obs.scale);
       }
 
     }
@@ -247,7 +247,7 @@ py::tuple BAHelpers::BundleLocal(
                                          obs.point, obs.scale);
         if (use_semantics) {
           ba.SetComputeSemanticErrors(true);
-          ba.AddSemanticObservation(shot->id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetSemanticConfidence(), semantic_lambda, obs.scale);
+          ba.AddSemanticObservation(shot->id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetConfidence(), semantic_lambda, obs.scale);
         }
       }
     }
@@ -426,6 +426,8 @@ py::dict BAHelpers::BundleShotPoses(
   constexpr auto fix_rig_camera = true;
 
   auto ba = bundle::BundleAdjuster();
+  const bool use_semantics = (data.config["features_bake_segmentation"] and data.config["matching_segmentation_filter"]);
+  const double semantic_lambda = config.contains("semantic_lambda") ? config["semantic_lambda"].cast<double>() : 1.0;
   ba.SetUseAnalyticDerivatives(
       config["bundle_analytic_derivatives"].cast<bool>());
   const auto start = std::chrono::high_resolution_clock::now();
@@ -534,7 +536,7 @@ py::dict BAHelpers::BundleShotPoses(
                                        obs.scale);
       if (use_semantics) {
         ba.SetComputeSemanticErrors(true);
-        ba.AddSemanticObservation(shot->id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetSemanticConfidence(), semantic_lambda, obs.scale);
+        ba.AddSemanticObservation(shot->id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetConfidence(), semantic_lambda, obs.scale);
       }
     }
   }
@@ -601,6 +603,8 @@ py::dict BAHelpers::Bundle(
   py::dict report;
 
   auto ba = bundle::BundleAdjuster();
+  const bool use_semantics = (data.config["features_bake_segmentation"] and data.config["matching_segmentation_filter"]);
+  const double semantic_lambda = config.contains("semantic_lambda") ? config["semantic_lambda"].cast<double>() : 1.0;
   const bool fix_cameras = !config["optimize_camera_parameters"].cast<bool>();
   ba.SetUseAnalyticDerivatives(
       config["bundle_analytic_derivatives"].cast<bool>());
@@ -660,7 +664,7 @@ py::dict BAHelpers::Bundle(
 
     // average GPS and assign GPS constraint to the instance
     std::unordered_map<std::string, std::string> shot_cameras, shot_rig_cameras;
-    std::unordered_map<std::string, SegmImage&> segmented_images;
+    std::unordered_map<std::string, SegmImage*> segmented_images;
     for (const auto& shot_n_rig_camera : instance.GetRigCameras()) {
       const auto shot_id = shot_n_rig_camera.first;
       const auto& shot = map.GetShot(shot_id);
@@ -712,7 +716,7 @@ py::dict BAHelpers::Bundle(
                                        obs.scale);
       if (use_semantics) {
         ba.SetComputeSemanticErrors(true);
-        ba.AddSemanticObservation(shot->id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetSemanticConfidence(), semantic_lambda, obs.scale);
+        ba.AddSemanticObservation(shot->id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetConfidence(), semantic_lambda, obs.scale);
       }
     }
   }

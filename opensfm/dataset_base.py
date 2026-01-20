@@ -71,6 +71,10 @@ class DataSetBase(ABC):
         pass
 
     @abstractmethod
+    def load_confidence(self, image: str) -> Optional[np.ndarray]:
+        pass
+
+    @abstractmethod
     def segmentation_ignore_values(self, image: str) -> List[int]:
         pass
 

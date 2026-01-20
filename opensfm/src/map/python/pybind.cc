@@ -98,9 +98,9 @@ PYBIND11_MODULE(pymap, m) {
                     &map::Landmark::GetReprojectionErrors,
                     &map::Landmark::SetReprojectionErrors)
       .def_property("color", &map::Landmark::GetColor,
-                    &map::Landmark::SetColor);
+                    &map::Landmark::SetColor)
       .def_property("semantic_value", &map::Landmark::GetSemanticLabel,
-                    &map::Landmark::SetSemanticLabel);
+                    &map::Landmark::SetSemanticLabel)
       .def_property("confidence_value", &map::Landmark::GetConfidence,
                     &map::Landmark::SetConfidence);
 
