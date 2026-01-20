@@ -536,7 +536,7 @@ py::dict BAHelpers::BundleShotPoses(
                                        obs.scale);
       if (use_semantics) {
         ba.SetComputeSemanticErrors(true);
-        ba.AddSemanticObservation(shot->id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetConfidence(), semantic_lambda, obs.scale);
+        ba.AddSemanticObservation(shot.id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetConfidence(), semantic_lambda, obs.scale);
       }
     }
   }
@@ -716,7 +716,7 @@ py::dict BAHelpers::Bundle(
                                        obs.scale);
       if (use_semantics) {
         ba.SetComputeSemanticErrors(true);
-        ba.AddSemanticObservation(shot->id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetConfidence(), semantic_lambda, obs.scale);
+        ba.AddSemanticObservation(shot.id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetConfidence(), semantic_lambda, obs.scale);
       }
     }
   }
