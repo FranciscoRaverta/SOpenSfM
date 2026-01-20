@@ -197,7 +197,7 @@ class BundleAdjuster {
       const std::unordered_map<std::string, std::string> &shot_cameras,
       const std::unordered_map<std::string, std::string> &shot_rig_cameras,
       bool fixed);
-  void BundleAdjuster::AddRigInstance(
+  void AddRigInstance(
       const std::string &rig_instance_id, const geometry::Pose &rig_instance_pose,
       const std::unordered_map<std::string, std::string> &shot_cameras,
       const std::unordered_map<std::string, std::string> &shot_rig_cameras,
