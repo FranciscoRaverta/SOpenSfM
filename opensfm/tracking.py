@@ -43,7 +43,7 @@ def load_features(
             if semantic_data.has_instances():
                 instances[im] = semantic_data.instances
             if semantic_data.has_confidences():
-                segmentation_confidences = semantic_data.segmentation_confidences
+                segmentation_confidences[im] = semantic_data.segmentation_confidences
 
     return features, colors, segmentations, instances, segmentation_confidences
 
