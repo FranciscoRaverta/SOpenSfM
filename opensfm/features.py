@@ -23,7 +23,7 @@ class SemanticData:
         segmentation: np.ndarray,
         instances: Optional[np.ndarray],
         labels: List[Dict[str, Any]],
-        segmentation_confidences: List[Dict[str, Any]],
+        segmentation_confidences: Optional[np.ndarray],
     ):
         self.segmentation = segmentation
         self.instances = instances
