@@ -719,7 +719,7 @@ struct AddCameraPriorError {
 
 void BundleAdjuster::Run() {
   ceres::Problem problem;
-
+  std::cout << "BundleAdjuster::Run(), before add cameras" << std::endl;
   // Add cameras
   for (auto &i : cameras_) {
     auto &data = i.second.GetValueData();
@@ -753,7 +753,7 @@ void BundleAdjuster::Run() {
       }
     }
   }
-
+  std::cout << "BundleAdjuster::Run(), before add camera biases" << std::endl;
   // Add cameras biases
   for (auto &b : bias_) {
     auto &data = b.second.GetValueData();
@@ -764,7 +764,7 @@ void BundleAdjuster::Run() {
       problem.SetParameterBlockConstant(data.data());
     }
   }
-
+  std::cout << "BundleAdjuster::Run(), before add rigs" << std::endl;
   // Add rig cameras
   for (auto &rc : rig_cameras_) {
     auto &data = rc.second.GetValueData();
@@ -775,7 +775,7 @@ void BundleAdjuster::Run() {
       problem.SetParameterBlockConstant(data.data());
     }
   }
-
+  std::cout << "BundleAdjuster::Run(), before add rig instances" << std::endl;
   // Add rig instances
   for (auto &ri : rig_instances_) {
     auto &data = ri.second.GetValueData();
@@ -786,7 +786,7 @@ void BundleAdjuster::Run() {
       problem.SetParameterBlockConstant(data.data());
     }
   }
-
+  std::cout << "BundleAdjuster::Run(), before add points" << std::endl;
   // Add points
   for (auto &p : points_) {
     auto &data = p.second.GetValueData();
@@ -797,7 +797,7 @@ void BundleAdjuster::Run() {
       problem.SetParameterBlockConstant(data.data());
     }
   }
-
+  std::cout << "BundleAdjuster::Run(), before add reconstructions" << std::endl;
   // Reconstructions
   for (auto &i : reconstructions_) {
     for (auto &s : i.second.scales) {
@@ -812,7 +812,7 @@ void BundleAdjuster::Run() {
       }
     }
   }
-
+  std::cout << "BundleAdjuster::Run(), before add new generic prior errors" << std::endl;
   // New generic prior errors (only rig instances + rig models + points for now)
   for (auto &i : points_) {
     if (!i.second.HasPrior()) {
@@ -835,7 +835,7 @@ void BundleAdjuster::Run() {
     problem.AddResidualBlock(cost_function, nullptr,
                              i.second.GetValueData().data());
   }
-
+  std::cout << "BundleAdjuster::Run(), before gather scale groups for rig instance priors" << std::endl;
   // Gather scale groups for rig instance priors
   std::map<std::string, int> std_dev_group_remap;
   for (auto &i : rig_instances_) {
@@ -851,7 +851,7 @@ void BundleAdjuster::Run() {
     std_dev_group_remap[scale_group] = index;
   }
   std::vector<double> std_deviations(std_dev_group_remap.size(), 1.0);
-
+  std::cout << "BundleAdjuster::Run(), before add regularizer" << std::endl;
   // Add regularizer term if we're adjusting for standard deviation, or lock
   // them up.
   if (adjust_absolute_position_std_) {
@@ -869,7 +869,7 @@ void BundleAdjuster::Run() {
       problem.SetParameterBlockConstant(data);
     }
   }
-
+  std::cout << "BundleAdjuster::Run(), before add parameter blocjs for residuals" << std::endl;
   for (auto &i : rig_instances_) {
     if (!i.second.HasPrior()) {
       continue;
@@ -916,13 +916,14 @@ void BundleAdjuster::Run() {
     problem.AddResidualBlock(cost_function, nullptr,
                              rc.second.GetValueData().data());
   }
+  std::cout << "BundleAdjuster::Run(), before add internal parameter priors blocks" << std::endl;
   // Add internal parameter priors blocks
   for (auto &i : cameras_) {
     const auto projection_type = i.second.GetValue().GetProjectionType();
     geometry::Dispatch<AddCameraPriorError>(projection_type, i.second,
                                             &problem);
   }
-
+  std::cout << "BundleAdjuster::Run(), before add reprojection error blocks" << std::endl;
   // Add reprojection error blocks
   ceres::LossFunction *projection_loss =
       point_projection_observations_.empty()
@@ -936,7 +937,7 @@ void BundleAdjuster::Run() {
     geometry::Dispatch<AddProjectionError>(
         projection_type, use_analytic_, observation, projection_loss, &problem);
   }
-
+  std::cout << "BundleAdjuster::Run(), before add semantic reprojection error blocks" << std::endl;
   // Add semantic reprojection error blocks
   if(compute_semantic_errors_) {
     ceres::LossFunction *semantic_loss =
@@ -953,7 +954,7 @@ void BundleAdjuster::Run() {
     }
   }
 
-
+  std::cout << "BundleAdjuster::Run(), before add relative motion errors" << std::endl;
   // Add relative motion errors
   for (auto &rp : relative_motions_) {
     double robust_threshold =
@@ -993,7 +994,7 @@ void BundleAdjuster::Run() {
     problem.AddResidualBlock(cost_function, relative_motion_loss,
                              parameter_blocks);
   }
-
+  std::cout << "BundleAdjuster::Run(), before add relative rotation errors" << std::endl;
   // Add relative rotation errors
   ceres::LossFunction *relative_rotation_loss =
       relative_rotations_.empty()
@@ -1038,7 +1039,7 @@ void BundleAdjuster::Run() {
     problem.AddResidualBlock(cost_function, relative_rotation_loss,
                              parameter_blocks);
   }
-
+  std::cout << "BundleAdjuster::Run(), before add common position errors" << std::endl;
   // Add common position errors
   ceres::LossFunction *common_position_loss = nullptr;
   for (auto &c : common_positions_) {
@@ -1081,7 +1082,7 @@ void BundleAdjuster::Run() {
     problem.AddResidualBlock(cost_function, common_position_loss,
                              parameter_blocks);
   }
-
+  std::cout << "BundleAdjuster::Run(), before add heatmap cost" << std::endl;
   // Add heatmap cost
   for (const auto &a : absolute_positions_heatmaps_) {
     auto *cost_function = HeatmapdCostFunctor::Create(
@@ -1092,7 +1093,7 @@ void BundleAdjuster::Run() {
                              shot.GetRigInstance()->GetValueData().data(),
                              shot.GetRigCamera()->GetValueData().data());
   }
-
+  std::cout << "BundleAdjuster::Run(), before add vector errors" << std::endl;
   // Add absolute up vector errors
   ceres::LossFunction *up_vector_loss = nullptr;
   for (auto &a : absolute_up_vectors_) {
@@ -1110,7 +1111,7 @@ void BundleAdjuster::Run() {
                                shot.GetRigCamera()->GetValueData().data());
     }
   }
-
+  std::cout << "BundleAdjuster::Run(), before add absolute pan errors" << std::endl;
   // Add absolute pan (compass) errors
   ceres::LossFunction *pan_loss = nullptr;
   for (auto &a : absolute_pans_) {
@@ -1127,7 +1128,7 @@ void BundleAdjuster::Run() {
                                shot.GetRigCamera()->GetValueData().data());
     }
   }
-
+  std::cout << "BundleAdjuster::Run(), before add absolute tilt errors" << std::endl;
   // Add absolute tilt errors
   ceres::LossFunction *tilt_loss = nullptr;
   for (auto &a : absolute_tilts_) {
@@ -1144,7 +1145,7 @@ void BundleAdjuster::Run() {
                                shot.GetRigCamera()->GetValueData().data());
     }
   }
-
+  std::cout << "BundleAdjuster::Run(), before add absolute roll errors" << std::endl;
   // Add absolute roll errors
   ceres::LossFunction *roll_loss = nullptr;
   for (auto &a : absolute_rolls_) {
@@ -1161,7 +1162,7 @@ void BundleAdjuster::Run() {
                                shot.GetRigCamera()->GetValueData().data());
     }
   }
-
+  std::cout << "BundleAdjuster::Run(), before add linear motion errors" << std::endl;
   // Add linear motion priors
   ceres::LossFunction *linear_motion_prior_loss_ = nullptr;
   for (auto &a : linear_motion_prior_) {
@@ -1222,7 +1223,7 @@ void BundleAdjuster::Run() {
     problem.AddResidualBlock(cost_function, linear_motion_prior_loss_,
                              parameter_blocks);
   }
-
+  std::cout << "BundleAdjuster::Run(), before gaux fix" << std::endl;
   // Gauge fix
   if (gauge_fix_shots_.HasValue()) {
     const auto &gauge_shots = gauge_fix_shots_.Value();
@@ -1240,7 +1241,7 @@ void BundleAdjuster::Run() {
                              instance1->GetValueData().data(),
                              instance2->GetValueData().data());
   }
-
+  std::cout << "BundleAdjuster::Run(), before solve" << std::endl;
   // Solve
   ceres::Solver::Options options;
   if (!ceres::StringToLinearSolverType(linear_solver_type_,
@@ -1250,9 +1251,9 @@ void BundleAdjuster::Run() {
   }
   options.num_threads = num_threads_;
   options.max_num_iterations = max_num_iterations_;
-
+  std::cout << "BundleAdjuster::Run(), before ceres::Solve" << std::endl;
   ceres::Solve(options, &problem, &last_run_summary_);
-
+  std::cout << "BundleAdjuster::Run(), after ceres::Solve" << std::endl;
   if (compute_covariances_) {
     ComputeCovariances(&problem);
   }
