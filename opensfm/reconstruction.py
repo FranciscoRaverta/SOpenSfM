@@ -1664,6 +1664,7 @@ def incremental_reconstruction(
     data: DataSetBase, tracks_manager: pymap.TracksManager
 ) -> Tuple[Dict[str, Any], List[types.Reconstruction]]:
     """Run the entire incremental reconstruction pipeline."""
+    print("Run the entire incremental reconstruction pipeline.")
     logger.info("Starting incremental reconstruction")
     report = {}
     chrono = Chronometer()
@@ -1685,12 +1686,14 @@ def incremental_reconstruction(
             rec_report = {}
             report["reconstructions"].append(rec_report)
             _, p1, p2 = common_tracks[im1, im2]
+            print("Run the bootstrap reconstruction pipeline.")
             reconstruction, rec_report["bootstrap"] = bootstrap_reconstruction(
                 data, tracks_manager, im1, im2, p1, p2
             )
 
             if reconstruction:
                 remaining_images -= set(reconstruction.shots)
+                print("Run the grow reconstruction pipeline.")
                 reconstruction, rec_report["grow"] = grow_reconstruction(
                     data,
                     tracks_manager,
