@@ -139,6 +139,7 @@ class Map {
 
   // Creation
   Landmark& CreateLandmark(const LandmarkId& lm_id, const Vec3d& global_pos);
+  Landmark& CreateLandmark(const LandmarkId& lm_id, const Vec3d& global_pos, const int semantic_label, const double semantic_confidence);
 
   // Getters
   const Landmark& GetLandmark(const LandmarkId& lm_id) const;

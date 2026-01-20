@@ -193,7 +193,7 @@ class Shot {
 
   // Segmentation
   bool has_segmentation_ = false;
-  SegmImage* segmentation_image_;
+  const SegmImage* segmentation_image_;
 
 };
 }  // namespace map

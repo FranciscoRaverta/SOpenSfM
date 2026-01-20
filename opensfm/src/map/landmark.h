@@ -13,6 +13,7 @@ class Landmark {
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   Landmark(const LandmarkId& lm_id, const Vec3d& global_pos);
+  Landmark(const LandmarkId& lm_id, const Vec3d& global_pos, const int semantic_label, const double confidence);
 
   // Getters and Setters
   Vec3d GetGlobalPos() const { return global_pos_; }
