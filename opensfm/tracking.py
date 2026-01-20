@@ -105,6 +105,7 @@ def create_tracks_manager(
             )
             #segmentation_image_path = Dataset._segmentation_file(image)
             #confidence_image_path = Datset._segmentation_confidence_file(image)
+            print(f"x: {x}, y: {y}, s: {s}, r: {int(r)}, g: {int(g)}, b: {int(b)}, feature_id: {featureid}, segmentation: {segmentation}, instance: {instance}, confidence: {segmentation_confidence}")
             obs = pymap.Observation(
                 x, y, s, int(r), int(g), int(b), featureid, segmentation, instance, segmentation_confidence#, segmentation_image_path, confidence_image_path
             )
