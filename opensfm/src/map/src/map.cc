@@ -46,7 +46,7 @@ std::unique_ptr<Map> Map::DeepCopy(const Map& map, bool copy_observations) {
   }
 
   for (const auto& landmark : map.GetLandmarks()) {
-    map_copy->CreateLandmark(landmark.first, landmark.second.GetGlobalPos(), landmark.second.GetSemanticLabel(), landmark.second.GetSemanticConfidence());
+    map_copy->CreateLandmark(landmark.first, landmark.second.GetGlobalPos(), landmark.second.GetSemanticLabel(), landmark.second.GetConfidence());
   }
 
   if (copy_observations) {

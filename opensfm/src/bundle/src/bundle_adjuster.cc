@@ -665,7 +665,7 @@ struct ComputeSemanticResidualError {
     std::cout << "Top-left " << ph << "x" << pw << " patch:\n";
     std::cout << segmentation_image.block(0, 0, ph, pw) << std::endl;
 
-    std::cout << "Observed Label: " << obs.semantic_value << ", Observed Confidence: " << obs.confidence << std::end;
+    std::cout << "Observed Label: " << obs.semantic_value << ", Observed Confidence: " << obs.confidence << std::endl;
 
     ErrorType error(obs.camera->GetValue().GetProjectionType(),
                     obs.std_deviation,

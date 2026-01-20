@@ -62,9 +62,9 @@ class Shot {
        const geometry::Pose& pose);
   Shot(const ShotId& shot_id, const geometry::Camera* const shot_camera,
        RigInstance* rig_instance, RigCamera* rig_camera,
-       const geometry::Pose& pose, const SegmImage& segmentation_image);
+       const geometry::Pose& pose, const SegmImage* segmentation_image);
   Shot(const ShotId& shot_id, const geometry::Camera* const shot_camera,
-       RigInstance* rig_instance, RigCamera* rig_camera, const SegmImage& segmentation_image);
+       RigInstance* rig_instance, RigCamera* rig_camera, const SegmImage* segmentation_image);
   ShotId GetId() const { return id_; }
 
   // Rig

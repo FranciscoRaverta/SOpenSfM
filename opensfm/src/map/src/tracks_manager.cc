@@ -70,8 +70,6 @@ void WriteToStreamCurrentVersion(S& ostream,
       tr.segm = observation.second.segmentation_id; //
       tr.inst = observation.second.instance_id; // 
       tr.segm_conf = observation.second.segmentation_confidence_id;
-      tr.segm_img_path = observation.second.segmentation_image_path_id;
-      tr.conf_img_path = observation.second.confidence_image_path_id;
 
       ostream.write(reinterpret_cast<char *>(&tl), sizeof(tl));
       ostream << shotID << observation.first;
@@ -95,8 +93,6 @@ map::Observation InstanciateObservation(
   observation.segmentation_id = segm;
   observation.instance_id = inst;
   observation.segmentation_confidence_id = segm_conf;
-  observation.segmentation_image_path_id = segm_img_path;
-  observation.confidence_image_path_id = conf_img_path;
   return observation;
 }
 
@@ -226,7 +222,7 @@ map::TracksManager InstanciateFromFilenameBinaryV2(std::ifstream& fstream, const
       std::string trackID(buffer + tl.imageLen, tl.trackIdLen);
 
       fs.read(reinterpret_cast<char *>(&tr), sizeof(TrackRecord));
-      auto observation = InstanciateObservation(tr.x, tr.y, tr.scale, tr.featureID, tr.r, tr.g, tr.b, tr.segm, -1, tr.segm_conf, tr.segm_img_path, tr.conf_img_path);
+      auto observation = InstanciateObservation(tr.x, tr.y, tr.scale, tr.featureID, tr.r, tr.g, tr.b, tr.segm, -1, tr.segm_conf);
       manager.AddObservation(image, trackID, observation);
   }
 
