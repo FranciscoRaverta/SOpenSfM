@@ -23,8 +23,6 @@ struct TrackRecord{
     int segm; //
     int inst; //
     float segm_conf;
-    std::string segm_img_path;
-    std::string conf_img_path;
 };
 
 template <class S>
@@ -82,9 +80,7 @@ map::Observation InstanciateObservation(
     double x, double y, double scale, int id, int r, int g, int b,
     int segm = map::Observation::NO_SEMANTIC_VALUE,
     int inst = map::Observation::NO_SEMANTIC_VALUE,
-    float segm_conf = map::Observation::NO_SEMANTIC_VALUE,
-    std::string segm_img_path = "",
-    std::string conf_img_path = "") {
+    float segm_conf = map::Observation::NO_SEMANTIC_VALUE) {
   map::Observation observation;
   observation.point << x, y;
   observation.scale = scale;

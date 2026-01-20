@@ -114,6 +114,7 @@ def create_tracks_manager(
                 x, y, s, int(r), int(g), int(b), featureid, segmentation, instance, segmentation_confidence#, segmentation_image_path, confidence_image_path
             )
             tracks_manager.add_observation(image, str(track_id), obs)
+    print("Finished with track_manager creation")
     return tracks_manager
 
 
