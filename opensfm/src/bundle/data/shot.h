@@ -48,7 +48,7 @@ struct Shot : public DataContainer {
     return static_cast<RigInstance *>(GetData("rig_instance"));
   }
 
-  SegmImage *GetSegmentationImage() {
+  const SegmImage *GetSegmentationImage() {
     return segmented_image_;
   }
 
