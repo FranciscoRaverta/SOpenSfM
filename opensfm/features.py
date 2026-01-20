@@ -157,6 +157,7 @@ class FeaturesData:
         """Load features from file (path like or file object like)"""
         s = np.load(fileobject, allow_pickle=False)
         version = cls._features_file_version(s)
+        print(f"Features from file version: {version}")
         return getattr(cls, "_from_file_v%d" % version)(s, config)
 
     @classmethod

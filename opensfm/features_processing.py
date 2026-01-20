@@ -167,6 +167,7 @@ def read_images(
             confidence_array = data.load_confidence(image)
         else:
             segmentation_array, instances_array, confidence_array = None, None, None
+        print(f"Confidence Array: {confidence_array}")
         args = image, image_array, segmentation_array, instances_array, confidence_array, data, force
         queue.put(args, block=True, timeout=full_queue_timeout)
         counter.increment()
@@ -295,6 +296,7 @@ def detect(
         )
     else:
         semantic_data = None
+    print(f"Segmentation confidences before saving: {semantic_data.segmentation_confidences}")
     features_data = features.FeaturesData(p_sorted, f_sorted, c_sorted, semantic_data)
     data.save_features(image, features_data)
 
