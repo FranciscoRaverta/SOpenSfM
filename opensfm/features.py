@@ -147,7 +147,7 @@ class FeaturesData:
                 colors=self.colors,
                 segmentations=[],
                 instances=[],
-                segmentation_confidences=[]
+                segmentation_confidences=[],
                 segmentation_labels=[],
                 OPENSFM_FEATURES_VERSION=self.FEATURES_VERSION,
             )
