@@ -30,7 +30,7 @@ struct Shot : public DataContainer {
   }
 
   Shot(const std::string &id, bundle::Camera *camera, RigCamera *rig_camera,
-       RigInstance *rig_instance, SegmImage *segmented_image)
+       RigInstance *rig_instance, const SegmImage *segmented_image)
       : DataContainer(id) {
     RegisterData("camera", camera);
     RegisterData("rig_camera", rig_camera);
@@ -52,6 +52,6 @@ struct Shot : public DataContainer {
     return segmented_image_;
   }
 
-  SegmImage* segmented_image_  = nullptr;
+  const SegmImage* segmented_image_;
 };
 }  // namespace bundle
