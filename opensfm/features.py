@@ -281,7 +281,7 @@ class FeaturesData:
             semantic_data = SemanticData(
                 data["segmentations"] if has_segmentation else None,
                 data["instances"] if has_instances else None,
-                data["segmentation_confidences"] if has_segmentation_confidences else None,
+                data["segmentation_confidences"].astype(np.float32) if has_segmentation_confidences else None,
                 data["segmentation_labels"],
             )
         else:
