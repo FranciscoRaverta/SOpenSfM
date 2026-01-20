@@ -593,6 +593,9 @@ PYBIND11_MODULE(pymap, m) {
       .def("create_landmark", &map::Map::CreateLandmark, py::arg("lm_id"),
            py::arg("global_position"),
            py::return_value_policy::reference_internal)
+      .def("create_landmark", &map::Map::CreateLandmark, py::arg("lm_id"),
+           py::arg("global_position"), py::arg("semantic_label"), py::arg("semantic_confidence"),
+           py::return_value_policy::reference_internal)
       .def("remove_landmark", (void (map::Map::*)(const map::Landmark *const)) &
                                   map::Map::RemoveLandmark)
       .def("remove_landmark", (void (map::Map::*)(const map::LandmarkId &)) &

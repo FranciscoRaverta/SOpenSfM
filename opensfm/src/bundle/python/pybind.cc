@@ -56,7 +56,16 @@ PYBIND11_MODULE(pybundle, m) {
               const std::string &rig_camera_id) {
              return ba.GetRigCamera(rig_camera_id).GetValue();
            })
-      .def("add_rig_instance", &bundle::BundleAdjuster::AddRigInstance)
+      //.def("add_rig_instance", &bundle::BundleAdjuster::AddRigInstance)
+      .def("add_rig_instance",
+           py::overload_cast<
+           const std::string&,
+           const geometry::Pose&,
+           const std::unordered_map<std::string, std::string>&,
+           const std::unordered_map<std::string, std::string>&,
+           bool,
+           const std::unordered_map<std::string, const SegmImage*>&
+           >(&bundle::BundleAdjuster::AddRigInstance))
       .def("get_rig_instance_pose",
            [](const bundle::BundleAdjuster &ba,
               const std::string &rig_instance_id) {
