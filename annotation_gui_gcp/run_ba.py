@@ -270,8 +270,8 @@ def bundle_with_fixed_images(
         r = shot.pose.rotation
         t = shot.pose.translation
         ba.add_shot(shot.id, shot.camera.id, r, t, shot.id in fixed_images)
-        if(has_semantics)
-            ba.add_shot_semantics(shot.id, shot.semantic_map)
+        #if(has_semantics)
+        #    ba.add_shot_semantics(shot.id, shot.semantic_map)
 
     for point in reconstruction.points.values():
         ba.add_point(point.id, point.coordinates, False)
