@@ -98,10 +98,10 @@ def create_tracks_manager(
                 continue
             x, y, s = features[image][featureid]
             r, g, b = colors[image][featureid]
-            print(f"Segmentations while reading: {segmentations}")
-            print(f"Segmentations type while reading: {type(segmentations)}")
-            print(f"Segmentation confidences while reading: {segmentation_confidences}")
-            print(f"Segmentation confidences type while reading: {type(segmentation_confidences)}")
+            #print(f"Segmentations while reading: {segmentations}")
+            #print(f"Segmentations type while reading: {type(segmentations)}")
+            #print(f"Segmentation confidences while reading: {segmentation_confidences}")
+            #print(f"Segmentation confidences type while reading: {type(segmentation_confidences)}")
             segmentation, instance, segmentation_confidence = (
                 segmentations[image][featureid] if image in segmentations else NO_VALUE,
                 instances[image][featureid] if image in instances else NO_VALUE,
