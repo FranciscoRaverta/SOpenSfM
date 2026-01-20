@@ -297,6 +297,7 @@ def detect(
     else:
         semantic_data = None
     print(f"Segmentation confidences before saving: {semantic_data.segmentation_confidences}")
+    print(f"Segmentation confidences type before saving: {type(semantic_data.segmentation_confidences)}")
     features_data = features.FeaturesData(p_sorted, f_sorted, c_sorted, semantic_data)
     data.save_features(image, features_data)
 
