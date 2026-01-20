@@ -7,7 +7,7 @@ from opensfm import pymap
 from opensfm.dataset_base import DataSetBase
 from opensfm.unionfind import UnionFind
 from opensfm.pymap import TracksManager
-from opensfm.dataset import Dataset
+#from opensfm.dataset import Dataset
 
 
 logger: logging.Logger = logging.getLogger(__name__)
