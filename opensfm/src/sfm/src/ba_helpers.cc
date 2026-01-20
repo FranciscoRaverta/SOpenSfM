@@ -528,23 +528,18 @@ py::dict BAHelpers::BundleShotPoses(
   }
 
   // add observations
-  std::cout << "BundleShotPoses, before add PointProjection and Semantic Observations" << std::endl;
   for (const auto& shot_id : shot_ids) {
     const auto& shot = map.GetShot(shot_id);
-    std::cout << "BundleShotPoses, After Get Shot" << std::endl;
     for (const auto& lm_obs : shot.GetLandmarkObservations()) {
       const auto& obs = lm_obs.second;
-      std::cout << "BundleShotPoses, Before AddPointProjectionObservation" << std::endl;
       ba.AddPointProjectionObservation(shot.id_, lm_obs.first->id_, obs.point,
                                        obs.scale);
       if (use_semantics) {
-        std::cout << "BundleShotPoses, Before AddSemanticObservation" << std::endl;
         ba.SetComputeSemanticErrors(true);
         ba.AddSemanticObservation(shot.id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetConfidence(), semantic_lambda, obs.scale);
       }
     }
   }
-  std::cout << "BundleShotPoses, after add PointProjection and Semantic Observations" << std::endl;
   ba.SetPointProjectionLossFunction(
       config["loss_function"].cast<std::string>(),
       config["loss_function_threshold"].cast<double>());
@@ -564,12 +559,13 @@ py::dict BAHelpers::BundleShotPoses(
   ba.SetMaxNumIterations(10);
   ba.SetLinearSolverType("DENSE_QR");
   const auto timer_setup = std::chrono::high_resolution_clock::now();
-
+  std::cout << "BundleShotPoses, before ba.Run()" << std::endl;
   {
     py::gil_scoped_release release;
     ba.Run();
   }
-
+  std::cout << "BundleShotPoses, before ba.Run()" << std::endl;
+  
   const auto timer_run = std::chrono::high_resolution_clock::now();
 
   for (const auto& rig_instance_id : rig_instances_ids) {
