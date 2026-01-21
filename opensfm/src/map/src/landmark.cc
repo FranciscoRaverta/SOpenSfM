@@ -55,7 +55,7 @@ void Landmark::SetSemanticLabel(int label) {
   semantic_label_ = label;
 }
 
-void Landmark::SetConfidence(float confidence) {
+void Landmark::SetConfidence(double confidence) {
   semantic_conf_ = confidence;
 }
 

@@ -47,8 +47,8 @@ class Landmark {
   // Semantic functions
   void SetSemanticLabel(int label);
   int GetSemanticLabel() const { return semantic_label_;}
-  float GetConfidence() const { return semantic_conf_;}
-  void SetConfidence(float confidence);
+  double GetConfidence() const { return semantic_conf_;}
+  void SetConfidence(double confidence);
 
  public:
   const LandmarkId id_;
@@ -60,7 +60,7 @@ class Landmark {
   std::map<ShotId, Eigen::VectorXd> reproj_errors_;
   //Semantic properties
   int semantic_label_;
-  float semantic_conf_;
+  double semantic_conf_;
 
 };
 }  // namespace map
