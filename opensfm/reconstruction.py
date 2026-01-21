@@ -925,7 +925,8 @@ class TrackTriangulator:
             break
 
         # Optional consistency check
-        if obs.segmentation != semantic_value:
+        for shot_id, obs in observations.items():
+            if obs.segmentation != semantic_value:  
                 logger.info(f"Diferent segmentation value: {obs.segmentation} insted of {semantic_value}")
             if obs.segmentation_conf != semantic_confidence:
                 logger.info(f"Diferent confidence value: {obs.segmentation_conf} insted of {semantic_confidence}")
