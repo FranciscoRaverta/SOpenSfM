@@ -225,7 +225,7 @@ Shot& Map::CreateShot(const ShotId& shot_id, const CameraId& camera_id,
     auto it =
         shots_.emplace(std::piecewise_construct, std::forward_as_tuple(shot_id),
                        std::forward_as_tuple(shot_id, &camera, &rig_instance,
-                                             &rig_camera, pose, &segmentation_image));
+                                             &rig_camera, pose, segmentation_image));
     return it.first->second;
   } else {
     throw std::runtime_error("Shot " + shot_id + " already exists.");
