@@ -32,7 +32,7 @@ class SemanticReprojectionError {
                               const SegmImage& segmentation_image) :
         type_(type),
         observed_label_(observed_label),
-        scale_(std::sqrt(lambda * confidence) / std_dev),
+        scale_(std::sqrt(lambda * confidence) / std::max(std_dev, 1e-6)),
         segmentation_image_(segmentation_image),
         height_(segmentation_image.rows()),
         width_(segmentation_image.cols()) {}
