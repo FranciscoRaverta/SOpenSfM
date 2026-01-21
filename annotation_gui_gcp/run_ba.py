@@ -285,6 +285,7 @@ def bundle_with_fixed_images(
             obs = shot.get_landmark_observation(point)
             ba.add_point_projection_observation(shot.id, point.id, obs.point, obs.scale)
             if (has_semantics):
+                logger.info(f"Point Semantic Value: {point.semantic_value} and confidence: {point.confidence_value} cameras")
                 ba.add_semantic_observation(shot.id,
                                             point.id,
                                             obs.point,

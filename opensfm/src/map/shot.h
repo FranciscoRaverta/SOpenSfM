@@ -62,9 +62,9 @@ class Shot {
        const geometry::Pose& pose);
   Shot(const ShotId& shot_id, const geometry::Camera* const shot_camera,
        RigInstance* rig_instance, RigCamera* rig_camera,
-       const geometry::Pose& pose, const SegmImage* segmentation_image);
+       const geometry::Pose& pose, const SegmImage& segmentation_image);
   Shot(const ShotId& shot_id, const geometry::Camera* const shot_camera,
-       RigInstance* rig_instance, RigCamera* rig_camera, const SegmImage* segmentation_image);
+       RigInstance* rig_instance, RigCamera* rig_camera, const SegmImage& segmentation_image);
   ShotId GetId() const { return id_; }
 
   // Rig
@@ -161,7 +161,7 @@ class Shot {
   double scale{1.0};
 
   // Segmentation
-  const SegmImage* GetSegmentationImage() const { return segmentation_image_; }
+  const SegmImage* GetSegmentationImage() const { return has_segmentation_ ? &segmentation_image_ : nullptr; }
   bool HasSegmentation() const { return has_segmentation_; }
 
 
@@ -193,7 +193,7 @@ class Shot {
 
   // Segmentation
   bool has_segmentation_ = false;
-  const SegmImage* segmentation_image_;
+  SegmImage segmentation_image_;
 
 };
 }  // namespace map

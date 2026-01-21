@@ -59,7 +59,7 @@ Shot::Shot(const ShotId& shot_id, const geometry::Camera& shot_camera,
 
 Shot::Shot(const ShotId& shot_id, const geometry::Camera* const shot_camera,
            RigInstance* rig_instance, RigCamera* rig_camera,
-           const geometry::Pose& pose, const SegmImage* segmentation_image)
+           const geometry::Pose& pose, const SegmImage& segmentation_image)
     : id_(shot_id),
       pose_(std::make_unique<geometry::Pose>(pose)),
       rig_instance_(rig_instance),
@@ -72,7 +72,7 @@ Shot::Shot(const ShotId& shot_id, const geometry::Camera* const shot_camera,
 }
 
 Shot::Shot(const ShotId& shot_id, const geometry::Camera* const shot_camera,
-           RigInstance* rig_instance, RigCamera* rig_camera, const SegmImage* segmentation_image)
+           RigInstance* rig_instance, RigCamera* rig_camera, const SegmImage& segmentation_image)
     : id_(shot_id),
       pose_(std::make_unique<geometry::Pose>(geometry::Pose())),
       rig_instance_(rig_instance),

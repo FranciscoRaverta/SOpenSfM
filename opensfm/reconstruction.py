@@ -243,10 +243,10 @@ def add_shot(
     """
 
     segmentation_image = data.load_segmentation(shot_id)
-    logger.info("segmentation image")
-    print(segmentation_image)
-    logger.info(segmentation_image)
-    print("Segmentation Image " + shot_id + " Loaded In Shot")
+    logger.info("segmentation image") # FRAN
+    print(segmentation_image) # FRAN
+    logger.info(segmentation_image) # FRAN
+    print("Segmentation Image " + shot_id + " Loaded In Shot") #FRAN
     added_shots = set()
     if shot_id not in rig_assignments:
         camera_id = data.load_exif(shot_id)["camera"]
