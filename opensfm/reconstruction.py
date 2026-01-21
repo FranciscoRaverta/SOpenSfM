@@ -589,24 +589,24 @@ def reconstruction_from_relative_pose(
         return None, report
 
     to_adjust = {s for s in new_shots if s != im1}
-    logger.info("Before bundle shot poses")
+
     bundle_shot_poses(
         reconstruction, to_adjust, camera_priors, rig_camera_priors, data.config
     )
-    logger.info("After bundle shot poses")
+
     retriangulate(tracks_manager, reconstruction, data.config)
-    logger.info("After retriangulation")
+
     if len(reconstruction.points) < min_inliers:
         report[
             "decision"
         ] = "Re-triangulation after initial motion did not generate enough points"
         logger.info(report["decision"])
         return None, report
-    logger.info("Before bundle shot poses 2")
+
     bundle_shot_poses(
         reconstruction, to_adjust, camera_priors, rig_camera_priors, data.config
     )
-    logger.info("After bundle shot poses 2")
+
     report["decision"] = "Success"
     report["memory_usage"] = current_memory_usage()
     return reconstruction, report
@@ -1757,7 +1757,7 @@ def incremental_reconstruction(
             rec_report = {}
             report["reconstructions"].append(rec_report)
             _, p1, p2 = common_tracks[im1, im2]
-            logger.info("Run the bootstrap reconstruction pipeline.")
+
             reconstruction, rec_report["bootstrap"] = bootstrap_reconstruction(
                 data, tracks_manager, im1, im2, p1, p2
             )

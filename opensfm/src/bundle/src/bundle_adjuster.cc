@@ -1261,8 +1261,8 @@ void BundleAdjuster::Run() {
   if (compute_semantic_errors_) {
     ComputeSemanticErrors();
   }
-  std::cout << "Number of reprojections with same segmentation: " << same_semantics << std::endl;
-  std::cout << "Number of reprojections with different segmentation: " << different_semantics << std::endl; 
+  std::cout << " ------- INFO : Number of reprojections with same segmentation: " << same_semantics << std::endl;
+  std::cout << " ------- INFO : Number of reprojections with different segmentation: " << different_semantics << std::endl; 
 }
 
 void BundleAdjuster::ComputeCovariances(ceres::Problem *problem) {
