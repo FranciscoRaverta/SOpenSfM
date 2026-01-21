@@ -77,16 +77,16 @@ class SemanticReprojectionError {
         // The error is the difference between the predicted semantic label and the observed semantic label
         residuals[0] = T(scale_) * (T(predicted_label) - T(observed_label_));
         
-        if constexpr (std::is_same_v<T, double>) {
-            LOG(INFO)
-                << "[SemanticResidual] "
-                << "u: " << u0 << " v: " << v0
-                << " | pred: " << predicted_label
-                << " | obs: " << observed_label_
-                << " | scale: " << scale_
-                << " | residual: " << r
-                << std::endl;
-        }        
+
+        std::cout
+            << "[SemanticResidual] "
+            << "u: " << u0 << " v: " << v0
+            << " | pred: " << predicted_label
+            << " | obs: " << observed_label_
+            << " | scale: " << scale_
+            << " | residual: " << r
+            << std::endl;
+
         return true;
     }
 
