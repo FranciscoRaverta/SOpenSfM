@@ -655,7 +655,7 @@ struct ComputeSemanticResidualError {
 
     using ErrorType = SemanticReprojectionError;
 
-    std::cout << "Observed Label: " << obs.semantic_value << ", Observed Confidence: " << obs.confidence << std::endl;
+    //std::cout << "Observed Label: " << obs.semantic_value << ", Observed Confidence: " << obs.confidence << std::endl;
 
     ErrorType error(obs.camera->GetValue().GetProjectionType(),
                     obs.std_deviation,
@@ -936,9 +936,9 @@ void BundleAdjuster::Run() {
     for (auto &observation : semantic_observations_) {
       const auto projection_type =
         observation.camera->GetValue().GetProjectionType();
-        std::cout << "Std Deviation: " << observation.std_deviation << std::endl;
-        std::cout << "Semantic Value: " << observation.semantic_value << std::endl;
-        std::cout << "Confidence: " << observation.confidence << std::endl;
+        //std::cout << "Std Deviation: " << observation.std_deviation << std::endl;
+        //std::cout << "Semantic Value: " << observation.semantic_value << std::endl;
+        //std::cout << "Confidence: " << observation.confidence << std::endl;
         //std::cout << "Lambda: " << observation.lambda  << std::endl;
         //std::cout << "Seg.Image: " << *observation.shot->GetSegmentationImage() << std::endl;
       geometry::Dispatch<AddSemanticError>(
