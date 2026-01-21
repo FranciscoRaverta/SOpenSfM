@@ -599,9 +599,7 @@ struct AddSemanticError {
                 obs.semantic_value,
                 obs.confidence,
                 obs.lambda,
-                *obs.shot->GetSegmentationImage(),
-                same_semantics,
-                different_semantics));//segmentation_image,
+                *obs.shot->GetSegmentationImage()));//segmentation_image,
                 //obs.shot->GetConfidenceImage()));//confidence_image));
 
     problem->AddResidualBlock(cost_function, loss,
@@ -654,7 +652,8 @@ struct ComputeResidualError {
 struct ComputeSemanticResidualError {
   template <class T>
   static void Apply(bool /*unused*/,
-                    const SemanticObservation &obs) {
+                    const SemanticObservation &obs, int* same_semantics, int* different_semantics
+                    ) {
 
     const bool is_rig_camera_useful =
         IsRigCameraUseful(*obs.shot->GetRigCamera());
@@ -678,7 +677,47 @@ struct ComputeSemanticResidualError {
           obs.shot->GetRigCamera()->GetValueData().data(),
           obs.point->GetValueData().data(),
           residuals.data());
+    
+    // FOR STATISTICS: 
 
+    int observed_label = obs.semantic_value;
+    const auto& segmentation_image = *obs.shot->GetSegmentationImage();
+    const int height = segmentation_image.rows();
+    const int width  = segmentation_image.cols();
+
+    double scale_one = 1.0;
+    double camera_point[3];
+    WorldToCameraCoordinatesRig(&scale_one,
+                               obs.shot->GetRigInstance()->GetValueData().data(),
+                               obs.shot->GetRigCamera()->GetValueData().data(),
+                               obs.point->GetValueData().data(),
+                               &camera_point[0]);
+
+    // Apply Camera Projection
+    double predicted[2];
+    geometry::Dispatch<geometry::ProjectFunction>(
+        obs.camera->GetValue().GetProjectionType(),
+        camera_point,
+        obs.camera->GetValueData().data(),
+        predicted);
+
+    double u0 = predicted[0];
+    double v0 = predicted[1];
+
+    int predicted_label = map::Observation::NO_SEMANTIC_VALUE;
+
+    if (!(u0 < 0 || u0 >= width || v0 < 0 || v0 >= height)) {
+        int iu = static_cast<int>(u0);
+        int iv = static_cast<int>(v0);
+        predicted_label = segmentation_image(iv, iu);
+    }
+
+    if (predicted_label == observed_label) {
+        ++(*same_semantics);
+    } else {
+        ++(*different_semantics);
+    }      
+    
     // Store error in point
     obs.point->semantic_errors[obs.shot->GetID()] = residuals[0];
   }
@@ -1360,7 +1399,7 @@ void BundleAdjuster::ComputeSemanticErrors() {
         observation.camera->GetValue().GetProjectionType();
 
     geometry::Dispatch<ComputeSemanticResidualError>(projection_type, false,
-                                                     observation);
+                                                     observation, same_semantics, different_semantics);
   }
 }
 
