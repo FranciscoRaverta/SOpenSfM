@@ -10,7 +10,7 @@ struct Observation {
   Observation(double x, double y, double s, int r, int g, int b, int feature,
               int segmentation = NO_SEMANTIC_VALUE,
               int instance = NO_SEMANTIC_VALUE,
-              float segmentation_conf = 1.0f)
+              double segmentation_conf = 1.0f)
       : point(x, y),
         scale(s),
         color(r, g, b),
@@ -33,7 +33,7 @@ struct Observation {
   // Optional data : semantics
   int segmentation_id;
   int instance_id;
-  float segmentation_confidence_id;
+  double segmentation_confidence_id;
   static constexpr int NO_SEMANTIC_VALUE = -1;
 };
 }  // namespace map

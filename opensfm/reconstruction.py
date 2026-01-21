@@ -920,16 +920,15 @@ class TrackTriangulator:
         semantic_confidence = None
 
         for shot_id, obs in observations.items():
-            semantic_value = obs.segmentation_id
-            semantic_confidence = obs.segmentation_confidence_id
+            semantic_value = obs.segmentation
+            semantic_confidence = obs.segmentation_conf
             break
 
         # Optional consistency check
-        for shot_id, obs in observations.items():
-            if obs.segmentation_id != semantic_value:
-                raise ValueError(f"Inconsistent semantic label in track {track}")
-            if obs.segmentation_confidence_id != semantic_confidence:
-                raise ValueError(f"Inconsistent semantic confidence in track {track}")
+        if obs.segmentation != semantic_value:
+                logger.info(f"Diferent segmentation value: {obs.segmentation} insted of {semantic_value}")
+            if obs.segmentation_conf != semantic_confidence:
+                logger.info(f"Diferent confidence value: {obs.segmentation_conf} insted of {semantic_confidence}")
 
         for shot_id, obs in observations.items():
             shot = self.reconstruction.shots[shot_id]
@@ -1036,16 +1035,16 @@ class TrackTriangulator:
         semantic_confidence = None
 
         for shot_id, obs in observations.items():
-            semantic_value = obs.segmentation_id
-            semantic_confidence = obs.segmentation_confidence_id
+            semantic_value = obs.segmentation
+            semantic_confidence = obs.segmentation_conf
             break
 
         # Optional consistency check
         for shot_id, obs in observations.items():
-            if obs.segmentation_id != semantic_value:
-                raise ValueError(f"Inconsistent semantic label in track {track}")
-            if obs.segmentation_confidence_id != semantic_confidence:
-                raise ValueError(f"Inconsistent semantic confidence in track {track}")
+            if obs.segmentation != semantic_value:
+                logger.info(f"Diferent segmentation value: {obs.segmentation} insted of {semantic_value}")
+            if obs.segmentation_conf != semantic_confidence:
+                logger.info(f"Diferent confidence value: {obs.segmentation_conf} insted of {semantic_confidence}")
                 
         for shot_id, obs in observations.items():
             shot = self.reconstruction.shots[shot_id]
@@ -1088,16 +1087,16 @@ class TrackTriangulator:
         semantic_confidence = None
 
         for shot_id, obs in observations.items():
-            semantic_value = obs.segmentation_id
-            semantic_confidence = obs.segmentation_confidence_id
+            semantic_value = obs.segmentation
+            semantic_confidence = obs.segmentation_conf
             break
 
         # Optional consistency check
         for shot_id, obs in observations.items():
-            if obs.segmentation_id != semantic_value:
-                raise ValueError(f"Inconsistent semantic label in track {track}")
-            if obs.segmentation_confidence_id != semantic_confidence:
-                raise ValueError(f"Inconsistent semantic confidence in track {track}")
+            if obs.segmentation != semantic_value:
+                logger.info(f"Diferent segmentation value: {obs.segmentation} insted of {semantic_value}")
+            if obs.segmentation_conf != semantic_confidence:
+                logger.info(f"Diferent confidence value: {obs.segmentation_conf} insted of {semantic_confidence}")
 
         for shot_id, obs in observations.items():
             shot = self.reconstruction.shots[shot_id]
@@ -1134,16 +1133,16 @@ class TrackTriangulator:
         semantic_confidence = None
 
         for shot_id, obs in observations.items():
-            semantic_value = obs.segmentation_id
-            semantic_confidence = obs.segmentation_confidence_id
+            semantic_value = obs.segmentation
+            semantic_confidence = obs.segmentation_conf
             break
 
         # Optional consistency check
         for shot_id, obs in observations.items():
-            if obs.segmentation_id != semantic_value:
-                logger.info(f"Diferent segmentation value: {obs.segmentation_id} insted of {semantic_value}")
-            if obs.segmentation_confidence_id != semantic_confidence:
-                logger.info(f"Diferent confidence value: {obs.segmentation_confidence_id} insted of {semantic_confidence}")
+            if obs.segmentation != semantic_value:
+                logger.info(f"Diferent segmentation value: {obs.segmentation} insted of {semantic_value}")
+            if obs.segmentation_conf != semantic_confidence:
+                logger.info(f"Diferent confidence value: {obs.segmentation_conf} insted of {semantic_confidence}")
 
         plane_center = np.array([0, 0, 1])
         plane_normal = np.array([0, 0, 1])

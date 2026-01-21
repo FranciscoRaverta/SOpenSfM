@@ -77,6 +77,7 @@ PYBIND11_MODULE(pymap, m) {
       .def_readwrite("color", &map::Observation::color)
       .def_readwrite("segmentation", &map::Observation::segmentation_id)
       .def_readwrite("instance", &map::Observation::instance_id)
+      .def_readwrite("segmentation_conf", &map::Observation::segmentation_confidence_id)
       .def_readonly_static("NO_SEMANTIC_VALUE",
                            &map::Observation::NO_SEMANTIC_VALUE)
       .def(
