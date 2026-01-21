@@ -9,7 +9,6 @@
 
 #include "foundation/optional.h"
 #include "geometry/camera_instances.h"
-#include <ceres/internal/logging.h>
 
 namespace bundle {
 
