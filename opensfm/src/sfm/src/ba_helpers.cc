@@ -173,6 +173,7 @@ py::tuple BAHelpers::BundleLocal(
   for (const auto& rig_instance_id : rig_instances_ids) {
     auto& instance = map.GetRigInstance(rig_instance_id);
     std::unordered_map<std::string, std::string> shot_cameras, shot_rig_cameras;
+    std::unordered_map<std::string, const SegmImage*> segmented_images;
 
     // we're going to assign GPS constraint to the instance itself
     // by averaging its shot's GPS values (and std dev.)
@@ -187,6 +188,7 @@ py::tuple BAHelpers::BundleLocal(
       const auto shot_id = shot_n_rig_camera.first;
       auto& shot = map.GetShot(shot_id);
       shot_cameras[shot_id] = shot.GetCamera()->id;
+      segmented_images[shot_id] = shot.GetSegmentationImage();
       shot_rig_cameras[shot_id] = shot_n_rig_camera.second->id;
 
       const auto is_boundary = boundary.find(&shot) != boundary.end();
@@ -204,9 +206,15 @@ py::tuple BAHelpers::BundleLocal(
         fix_instance = true;
       }
     }
-
-    ba.AddRigInstance(rig_instance_id, instance.GetPose(), shot_cameras,
-                      shot_rig_cameras, fix_instance);
+    if(segmented_images.empty()) {  
+      ba.AddRigInstance(rig_instance_id, instance.GetPose(), shot_cameras,
+        shot_rig_cameras, fix_instance);
+    } else {
+      ba.AddRigInstance(rig_instance_id, instance.GetPose(), shot_cameras,
+        shot_rig_cameras, fix_instance, segmented_images);
+    }
+    //ba.AddRigInstance(rig_instance_id, instance.GetPose(), shot_cameras,
+    //                  shot_rig_cameras, fix_instance);
 
     // only add averaged rig position constraints to moving instances
     if (!fix_instance && gps_count > 0) {
@@ -481,6 +489,7 @@ py::dict BAHelpers::BundleShotPoses(
   for (const auto& rig_instance_id : rig_instances_ids) {
     auto& instance = map.GetRigInstance(rig_instance_id);
     std::unordered_map<std::string, std::string> shot_cameras, shot_rig_cameras;
+    std::unordered_map<std::string, const SegmImage*> segmented_images;
 
     // we're going to assign GPS constraint to the instance itself
     // by averaging its shot's GPS values (and std dev.)
@@ -496,6 +505,7 @@ py::dict BAHelpers::BundleShotPoses(
       const auto shot_id = shot_n_rig_camera.first;
       auto& shot = map.GetShot(shot_id);
       shot_cameras[shot_id] = shot.GetCamera()->id;
+      segmented_images[shot_id] = shot.GetSegmentationImage();
       shot_rig_cameras[shot_id] = shot_n_rig_camera.second->id;
 
       const auto is_fixed = shot_ids.find(shot_id) != shot_ids.end();
@@ -512,9 +522,15 @@ py::dict BAHelpers::BundleShotPoses(
       } else {
         fix_instance = true;
       }
-
-      ba.AddRigInstance(rig_instance_id, instance.GetPose(), shot_cameras,
-                        shot_rig_cameras, fix_instance);
+      if(segmented_images.empty()) {  
+        ba.AddRigInstance(rig_instance_id, instance.GetPose(), shot_cameras,
+          shot_rig_cameras, fix_instance);
+      } else {
+        ba.AddRigInstance(rig_instance_id, instance.GetPose(), shot_cameras,
+          shot_rig_cameras, fix_instance, segmented_images);
+      }
+      //ba.AddRigInstance(rig_instance_id, instance.GetPose(), shot_cameras,
+      //                  shot_rig_cameras, fix_instance);
 
       // only add averaged rig position constraints to moving instances
       if (!fix_instance && gps_count > 0) {
@@ -565,7 +581,7 @@ py::dict BAHelpers::BundleShotPoses(
     ba.Run();
   }
   std::cout << "BundleShotPoses, before ba.Run()" << std::endl;
-  
+
   const auto timer_run = std::chrono::high_resolution_clock::now();
 
   for (const auto& rig_instance_id : rig_instances_ids) {

@@ -952,7 +952,7 @@ void BundleAdjuster::Run() {
         std::cout << "Semantic Value: " << observation.semantic_value << std::endl;
         std::cout << "Confidence: " << observation.confidence << std::endl;
         std::cout << "Lambda: " << observation.lambda  << std::endl;
-        std::cout << "Seg.Image: " << observation.shot->GetSegmentationImage() << std::endl;
+        std::cout << "Seg.Image: " << *observation.shot->GetSegmentationImage() << std::endl;
       geometry::Dispatch<AddSemanticError>(
         projection_type, false, observation, semantic_loss, &problem);
     }
