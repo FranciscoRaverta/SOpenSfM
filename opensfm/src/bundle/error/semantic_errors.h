@@ -35,9 +35,7 @@ class SemanticReprojectionError {
         scale_(std::sqrt(lambda * confidence) / std::max(std_dev, 1e-6)),
         segmentation_image_(segmentation_image),
         height_(segmentation_image.rows()),
-        width_(segmentation_image.cols()),
-        same_semantics_(same_semantics),
-        different_semantics_(different_semantics) {}
+        width_(segmentation_image.cols()) {}
 
     template <typename T>
     bool operator()(const T* const camera,
