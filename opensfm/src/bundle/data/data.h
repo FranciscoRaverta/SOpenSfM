@@ -64,7 +64,7 @@ struct Data : public DataNode {
     if (!HasCovariance()) {
       throw std::runtime_error(GetID() + " hasn't any covariance");
     } else {
-      std::cout << "Covariance Matrix: " << covariance_.Value() << std::endl;
+      //std::cout << "Covariance Matrix: " << covariance_.Value() << std::endl;
     }
 
     return covariance_.Value();
