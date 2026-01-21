@@ -29,13 +29,17 @@ class SemanticReprojectionError {
                               int observed_label,
                               double confidence,
                               double lambda,
-                              const SegmImage& segmentation_image) :
+                              const SegmImage& segmentation_image,
+                              int* same_semantics = nullptr,
+                              int* different_semantics = nullptr) :
         type_(type),
         observed_label_(observed_label),
         scale_(std::sqrt(lambda * confidence) / std::max(std_dev, 1e-6)),
         segmentation_image_(segmentation_image),
         height_(segmentation_image.rows()),
-        width_(segmentation_image.cols()) {}
+        width_(segmentation_image.cols()),
+        same_semantics_(same_semantics),
+        different_semantics_(different_semantics) {}
 
     template <typename T>
     bool operator()(const T* const camera,
@@ -72,19 +76,21 @@ class SemanticReprojectionError {
         //int idx = iv * width_ + iu;
 
         int predicted_label = segmentation_image_(iv,iu);
+
+        if (predicted_label == observed_label_) {++(*same_semantics_);} else {++(*different_semantics_)};
         
         // The error is the difference between the predicted semantic label and the observed semantic label
         residuals[0] = T(scale_) * (T(predicted_label) - T(observed_label_));
         
 
-        std::cout
+        /*std::cout
             << "[SemanticResidual] "
             << "u: " << u0 << " v: " << v0
             << " | pred: " << predicted_label
             << " | obs: " << observed_label_
             << " | scale: " << scale_
             << " | residual: " << residuals[0]
-            << std::endl;
+            << std::endl;*/
 
         return true;
     }
@@ -96,6 +102,9 @@ class SemanticReprojectionError {
         const SegmImage& segmentation_image_;
         int height_;
         int width_;
+
+        int* same_semantics_{nullptr};
+        int* different_semantics_{nullptr};
 
 };
 

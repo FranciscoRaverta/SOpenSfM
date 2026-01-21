@@ -43,6 +43,8 @@ BundleAdjuster::BundleAdjuster() {
   num_threads_ = 1;
   linear_solver_type_ = "SPARSE_SCHUR";
   covariance_algorithm_type_ = "SPARSE_QR";
+  same_semantics = 0;
+  different_semantics = 0;
 }
 
 geometry::Camera BundleAdjuster::GetDefaultCameraSigma(
@@ -578,7 +580,9 @@ struct AddSemanticError {
   static void Apply(bool /*use_analytical*/,
                     const SemanticObservation &obs,
                     ceres::LossFunction *loss,
-                    ceres::Problem *problem) {
+                    ceres::Problem *problem,
+                    int* same_semantics,
+                    int* different_semantics) {
 
     constexpr static int CameraSize = T::Size;
     constexpr static int ShotSize = 6;
@@ -595,7 +599,9 @@ struct AddSemanticError {
                 obs.semantic_value,
                 obs.confidence,
                 obs.lambda,
-                *obs.shot->GetSegmentationImage()));//segmentation_image,
+                *obs.shot->GetSegmentationImage(),
+                same_semantics,
+                different_semantics));//segmentation_image,
                 //obs.shot->GetConfidenceImage()));//confidence_image));
 
     problem->AddResidualBlock(cost_function, loss,
@@ -942,7 +948,7 @@ void BundleAdjuster::Run() {
         //std::cout << "Lambda: " << observation.lambda  << std::endl;
         //std::cout << "Seg.Image: " << *observation.shot->GetSegmentationImage() << std::endl;
       geometry::Dispatch<AddSemanticError>(
-        projection_type, false, observation, semantic_loss, &problem);
+        projection_type, false, observation, semantic_loss, &problem, &same_semantics, &different_semantics);
     }
   }
 
@@ -1255,6 +1261,8 @@ void BundleAdjuster::Run() {
   if (compute_semantic_errors_) {
     ComputeSemanticErrors();
   }
+  std::cout << "Number of reprojections with same segmentation: " << same_semantics << std::endl;
+  std::cout << "Number of reprojections with different segmentation: " << different_semantics << std::endl; 
 }
 
 void BundleAdjuster::ComputeCovariances(ceres::Problem *problem) {
