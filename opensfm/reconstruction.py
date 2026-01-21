@@ -833,7 +833,7 @@ class TrackHandlerBase(ABC):
         pass
 
     @abstractmethod
-    def store_track_coordinates(self, track_id: str, coordinates: np.ndarray) -> None:
+    def store_track_coordinates(self, track_id: str, coordinates: np.ndarray, segmentation_value: Optional[int] = None, confidence_value: Optional[float] = None) -> None:
         """Stores coordinates of triangulated track."""
         pass
 
@@ -867,9 +867,9 @@ class TrackHandlerTrackManager(TrackHandlerBase):
             if k in self.reconstruction.shots
         }
 
-    def store_track_coordinates(self, track_id: str, coordinates: np.ndarray) -> None:
+    def store_track_coordinates(self, track_id: str, coordinates: np.ndarray, segmentation_value: Optional[int] = None, confidence_value: Optional[float] = None) -> None:
         """Stores coordinates of triangulated track."""
-        self.reconstruction.create_point(track_id, coordinates)
+        self.reconstruction.create_point(track_id, coordinates, segmentation_value, confidence_value)
 
     def store_inliers_observation(self, track_id: str, shot_id: str) -> None:
         """Stores triangulation inliers in the tracks manager."""
@@ -913,7 +913,25 @@ class TrackTriangulator:
     ) -> None:
         """Triangulate track in a RANSAC way and add point to reconstruction."""
         os, bs, ids = [], [], []
-        for shot_id, obs in self.tracks_handler.get_observations(track).items():
+
+        observations = self.tracks_handler.get_observations(track)
+
+        semantic_value = None
+        semantic_confidence = None
+
+        for shot_id, obs in observations.items():
+            semantic_value = obs.segmentation_id
+            semantic_confidence = obs.segmentation_confidence_id
+            break
+
+        # Optional consistency check
+        for shot_id, obs in observations.items():
+            if obs.segmentation_id != semantic_value:
+                raise ValueError(f"Inconsistent semantic label in track {track}")
+            if obs.segmentation_confidence_id != semantic_confidence:
+                raise ValueError(f"Inconsistent semantic confidence in track {track}")
+
+        for shot_id, obs in observations.items():
             shot = self.reconstruction.shots[shot_id]
             os.append(self._shot_origin(shot))
             b = shot.camera.pixel_bearing(np.array(obs.point))
@@ -998,7 +1016,7 @@ class TrackTriangulator:
                         break
 
         if len(best_inliers) > 1:
-            self.tracks_handler.store_track_coordinates(track, best_point)
+            self.tracks_handler.store_track_coordinates(track, best_point, semantic_value, semantic_confidence)
             for i in best_inliers:
                 self.tracks_handler.store_inliers_observation(track, ids[i])
 
@@ -1011,7 +1029,25 @@ class TrackTriangulator:
     ) -> None:
         """Triangulate track and add point to reconstruction."""
         os, bs, ids = [], [], []
-        for shot_id, obs in self.tracks_handler.get_observations(track).items():
+
+        observations = self.tracks_handler.get_observations(track)
+
+        semantic_value = None
+        semantic_confidence = None
+
+        for shot_id, obs in observations.items():
+            semantic_value = obs.segmentation_id
+            semantic_confidence = obs.segmentation_confidence_id
+            break
+
+        # Optional consistency check
+        for shot_id, obs in observations.items():
+            if obs.segmentation_id != semantic_value:
+                raise ValueError(f"Inconsistent semantic label in track {track}")
+            if obs.segmentation_confidence_id != semantic_confidence:
+                raise ValueError(f"Inconsistent semantic confidence in track {track}")
+                
+        for shot_id, obs in observations.items():
             shot = self.reconstruction.shots[shot_id]
             os.append(self._shot_origin(shot))
             b = shot.camera.pixel_bearing(np.array(obs.point))
@@ -1032,7 +1068,7 @@ class TrackTriangulator:
                 X = pygeometry.point_refinement(
                     np.array(os), np.array(bs), X, iterations
                 )
-                self.tracks_handler.store_track_coordinates(track, X.tolist())
+                self.tracks_handler.store_track_coordinates(track, X.tolist(), semantic_value, semantic_confidence)
                 for shot_id in ids:
                     self.tracks_handler.store_inliers_observation(track, shot_id)
 
@@ -1045,7 +1081,25 @@ class TrackTriangulator:
     ) -> None:
         """Triangulate track using DLT and add point to reconstruction."""
         Rts, bs, os, ids = [], [], [], []
-        for shot_id, obs in self.tracks_handler.get_observations(track).items():
+
+        observations = self.tracks_handler.get_observations(track)
+
+        semantic_value = None
+        semantic_confidence = None
+
+        for shot_id, obs in observations.items():
+            semantic_value = obs.segmentation_id
+            semantic_confidence = obs.segmentation_confidence_id
+            break
+
+        # Optional consistency check
+        for shot_id, obs in observations.items():
+            if obs.segmentation_id != semantic_value:
+                raise ValueError(f"Inconsistent semantic label in track {track}")
+            if obs.segmentation_confidence_id != semantic_confidence:
+                raise ValueError(f"Inconsistent semantic confidence in track {track}")
+
+        for shot_id, obs in observations.items():
             shot = self.reconstruction.shots[shot_id]
             os.append(self._shot_origin(shot))
             Rts.append(self._shot_Rt(shot))
@@ -1064,7 +1118,7 @@ class TrackTriangulator:
                 X = pygeometry.point_refinement(
                     np.array(os), np.array(bs), X, iterations
                 )
-                self.tracks_handler.store_track_coordinates(track, X.tolist())
+                self.tracks_handler.store_track_coordinates(track, X.tolist(), semantic_value, semantic_confidence)
                 for shot_id in ids:
                     self.tracks_handler.store_inliers_observation(track, shot_id)
 
@@ -1074,10 +1128,27 @@ class TrackTriangulator:
         """Triangulate track using a main plane and add point to reconstruction."""
         os, bs, ids = [], [], []
 
+        observations = self.tracks_handler.get_observations(track)
+
+        semantic_value = None
+        semantic_confidence = None
+
+        for shot_id, obs in observations.items():
+            semantic_value = obs.segmentation_id
+            semantic_confidence = obs.segmentation_confidence_id
+            break
+
+        # Optional consistency check
+        for shot_id, obs in observations.items():
+            if obs.segmentation_id != semantic_value:
+                logger.info(f"Diferent segmentation value: {obs.segmentation_id} insted of {semantic_value}")
+            if obs.segmentation_confidence_id != semantic_confidence:
+                logger.info(f"Diferent confidence value: {obs.segmentation_confidence_id} insted of {semantic_confidence}")
+
         plane_center = np.array([0, 0, 1])
         plane_normal = np.array([0, 0, 1])
 
-        for shot_id, obs in self.tracks_handler.get_observations(track).items():
+        for shot_id, obs in observations.items():
             if shot_id in self.reconstruction.shots:
                 shot = self.reconstruction.shots[shot_id]
                 os.append(self._shot_origin(shot))
@@ -1113,7 +1184,7 @@ class TrackTriangulator:
             avgX = np.average(Xs, axis=0)
             maxDist = np.max([np.linalg.norm(avgX - X) for X in Xs])
             if maxDist < threshold:
-                self.reconstruction.create_point(track, avgX)
+                self.reconstruction.create_point(track, avgX, semantic_value, semantic_confidence)
                 for shot_id in ids:
                     self.tracks_handler.store_inliers_observation(track, shot_id)
 
