@@ -73,7 +73,6 @@ struct SemanticObservation {
   double std_deviation;
   double lambda;
 
-  const std::vector<double> *semantic_map;
   Vec2d coordinates;
 };
 

@@ -243,6 +243,9 @@ def add_shot(
     """
 
     segmentation_image = data.load_segmentation(shot_id)
+    logger.info("segmentation image")
+    print(segmentation_image)
+    logger.info(segmentation_image)
     print("Segmentation Image " + shot_id + " Loaded In Shot")
     added_shots = set()
     if shot_id not in rig_assignments:
