@@ -9,9 +9,7 @@
 
 #include "foundation/optional.h"
 #include "geometry/camera_instances.h"
-
-#include <iostream>
-#include <mutex>
+#include <ceres/internal/logging.h>
 
 namespace bundle {
 
@@ -80,10 +78,7 @@ class SemanticReprojectionError {
         residuals[0] = T(scale_) * (T(predicted_label) - T(observed_label_));
         
         if constexpr (std::is_same_v<T, double>) {
-            static std::mutex print_mutex;
-            std::lock_guard<std::mutex> lock(print_mutex);
-
-            std::cout
+            LOG(INFO)
                 << "[SemanticResidual] "
                 << "u: " << u0 << " v: " << v0
                 << " | pred: " << predicted_label
