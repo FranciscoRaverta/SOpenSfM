@@ -83,7 +83,7 @@ class SemanticReprojectionError {
             << " | pred: " << predicted_label
             << " | obs: " << observed_label_
             << " | scale: " << scale_
-            << " | residual: " << r
+            << " | residual: " << residuals[0]
             << std::endl;
 
         return true;
