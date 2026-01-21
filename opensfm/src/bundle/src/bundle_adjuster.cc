@@ -652,7 +652,7 @@ struct ComputeResidualError {
 struct ComputeSemanticResidualError {
   template <class T>
   static void Apply(bool /*unused*/,
-                    const SemanticObservation &obs, int* same_semantics, int* different_semantics
+                    const SemanticObservation &obs
                     ) {
 
     const bool is_rig_camera_useful =
@@ -679,7 +679,7 @@ struct ComputeSemanticResidualError {
           residuals.data());
     
     // FOR STATISTICS: 
-
+    /*
     int observed_label = obs.semantic_value;
     const auto& segmentation_image = *obs.shot->GetSegmentationImage();
     const int height = segmentation_image.rows();
@@ -717,7 +717,7 @@ struct ComputeSemanticResidualError {
     } else {
         ++(*different_semantics);
     }      
-    
+    */
     // Store error in point
     obs.point->semantic_errors[obs.shot->GetID()] = residuals[0];
   }
@@ -1399,7 +1399,7 @@ void BundleAdjuster::ComputeSemanticErrors() {
         observation.camera->GetValue().GetProjectionType();
 
     geometry::Dispatch<ComputeSemanticResidualError>(projection_type, false,
-                                                     observation, same_semantics, different_semantics);
+                                                     observation);
   }
 }
 
