@@ -10,6 +10,9 @@
 #include "foundation/optional.h"
 #include "geometry/camera_instances.h"
 
+#include <iostream>
+#include <mutex>
+
 namespace bundle {
 
 template <typename T>
