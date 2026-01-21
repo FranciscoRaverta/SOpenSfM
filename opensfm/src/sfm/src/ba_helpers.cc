@@ -241,6 +241,7 @@ py::tuple BAHelpers::BundleLocal(
 
       if (use_semantics) {
         ba.SetComputeSemanticErrors(true);
+        std::cout << "ShotID: " << shot->id_ << ", Semantic Label: " << lm_obs.first->GetSemanticLabel() << ", Confidence: " << lm_obs.first->GetConfidence() << std::endl;
         ba.AddSemanticObservation(shot->id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetConfidence(), semantic_lambda, obs.scale);
       }
 
@@ -255,6 +256,7 @@ py::tuple BAHelpers::BundleLocal(
                                          obs.point, obs.scale);
         if (use_semantics) {
           ba.SetComputeSemanticErrors(true);
+          std::cout << "ShotID: " << shot->id_ << ", Semantic Label: " << lm_obs.first->GetSemanticLabel() << ", Confidence: " << lm_obs.first->GetConfidence() << std::endl;
           ba.AddSemanticObservation(shot->id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetConfidence(), semantic_lambda, obs.scale);
         }
       }
@@ -552,6 +554,7 @@ py::dict BAHelpers::BundleShotPoses(
                                        obs.scale);
       if (use_semantics) {
         ba.SetComputeSemanticErrors(true);
+        std::cout << "ShotID: " << shot.id_ << ", Semantic Label: " << lm_obs.first->GetSemanticLabel() << ", Confidence: " << lm_obs.first->GetConfidence() << std::endl;
         ba.AddSemanticObservation(shot.id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetConfidence(), semantic_lambda, obs.scale);
       }
     }
@@ -732,6 +735,7 @@ py::dict BAHelpers::Bundle(
                                        obs.scale);
       if (use_semantics) {
         ba.SetComputeSemanticErrors(true);
+        std::cout << "ShotID: " << shot.id_ << ", Semantic Label: " << lm_obs.first->GetSemanticLabel() << ", Confidence: " << lm_obs.first->GetConfidence() << std::endl;
         ba.AddSemanticObservation(shot.id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetConfidence(), semantic_lambda, obs.scale);
       }
     }

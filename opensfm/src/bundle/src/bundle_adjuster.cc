@@ -655,15 +655,15 @@ struct ComputeSemanticResidualError {
 
     using ErrorType = SemanticReprojectionError;
 
-    const SegmImage& segmentation_image = *obs.shot->GetSegmentationImage();
-    int h = segmentation_image.rows();
-    int w = segmentation_image.cols();
+    //const SegmImage& segmentation_image = *obs.shot->GetSegmentationImage();
+    //int h = segmentation_image.rows();
+    //int w = segmentation_image.cols();
 
-    int ph = std::min(10, h);
-    int pw = std::min(10, w);
+    //int ph = std::min(10, h);
+    //int pw = std::min(10, w);
 
-    std::cout << "Top-left " << ph << "x" << pw << " patch:\n";
-    std::cout << segmentation_image.block(0, 0, ph, pw) << std::endl;
+    //std::cout << "Top-left " << ph << "x" << pw << " patch:\n"; // FRAN
+    //std::cout << segmentation_image.block(0, 0, ph, pw) << std::endl; // FRAN
 
     std::cout << "Observed Label: " << obs.semantic_value << ", Observed Confidence: " << obs.confidence << std::endl;
 
