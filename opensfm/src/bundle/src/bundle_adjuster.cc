@@ -948,11 +948,11 @@ void BundleAdjuster::Run() {
     for (auto &observation : semantic_observations_) {
       const auto projection_type =
         observation.camera->GetValue().GetProjectionType();
-        std::cout << observation.std_deviation << std::endl;
-        std::cout << observation.semantic_value << std::endl;
-        std::cout << observation.confidence << std::endl;
-        std::cout << observation.lambda  << std::endl;
-        std::cout << *observation.shot->GetSegmentationImage() << std::endl;
+        std::cout << "Std Deviation: " << observation.std_deviation << std::endl;
+        std::cout << "Semantic Value: " << observation.semantic_value << std::endl;
+        std::cout << "Confidence: " << observation.confidence << std::endl;
+        std::cout << "Lambda: " << observation.lambda  << std::endl;
+        std::cout << "Seg.Image: " << observation.shot->GetSegmentationImage() << std::endl;
       geometry::Dispatch<AddSemanticError>(
         projection_type, false, observation, semantic_loss, &problem);
     }
