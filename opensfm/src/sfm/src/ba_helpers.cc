@@ -131,7 +131,7 @@ py::tuple BAHelpers::BundleLocal(
   // set up BA
   auto ba = bundle::BundleAdjuster();
   const bool use_semantics = (config["features_bake_segmentation"] and config["matching_segmentation_filter"]);
-  const double semantic_lambda = config.contains("semantic_lambda") ? config["semantic_lambda"].cast<double>() : 0.000025;
+  const double semantic_lambda = config.contains("semantic_lambda") ? config["semantic_lambda"].cast<double>() : 1;
 
   ba.SetUseAnalyticDerivatives(
       config["bundle_analytic_derivatives"].cast<bool>());
