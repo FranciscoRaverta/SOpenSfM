@@ -633,6 +633,7 @@ struct ComputeResidualError {
           obs.point->GetValueData().data()};
       error.Evaluate(params, residuals.data(), nullptr);
       obs.point->reprojection_errors[obs.shot->GetID()] = residuals;
+      std::cout << "Projection Residual" << residuals << std::endl;
     } else {
       using ErrorType = typename ErrorTraits<T>::Type;
       constexpr static int ErrorSize = ErrorType::Size;
@@ -645,6 +646,7 @@ struct ComputeResidualError {
             obs.shot->GetRigCamera()->GetValueData().data(),
             obs.point->GetValueData().data(), residuals.data());
       obs.point->reprojection_errors[obs.shot->GetID()] = residuals;
+      std::cout << "Projection Residual" << residuals << std::endl;
     }
   }
 };
@@ -652,9 +654,7 @@ struct ComputeResidualError {
 struct ComputeSemanticResidualError {
   template <class T>
   static void Apply(bool /*unused*/,
-                    const SemanticObservation &obs,
-                    int* same_semantics,
-                    int* different_semantics) {
+                    const SemanticObservation &obs) {
 
     const bool is_rig_camera_useful =
         IsRigCameraUseful(*obs.shot->GetRigCamera());
@@ -720,9 +720,8 @@ struct ComputeSemanticResidualError {
     }      
     */
     // Store error in point
-    ++(*same_semantics);
-    ++(*different_semantics);
     obs.point->semantic_errors[obs.shot->GetID()] = residuals[0];
+    std::cout << "Semantic Residual" << residuals << std::endl;
   }
 
 };
