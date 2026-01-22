@@ -636,7 +636,7 @@ struct ComputeResidualError {
         std::cerr << "Could not open output file\n";
         return;
       }
-      projection_residuals << "CameraID: " << obs.shot->GetID() << ", residuals: " << residuals << "\n";
+      projection_residuals << "CameraID: " << obs.shot->GetID() << ", residuals: " << residuals[0] << residuals[1] << "\n";
       projection_residuals.close();  
     } else {
       using ErrorType = typename ErrorTraits<T>::Type;
@@ -656,7 +656,7 @@ struct ComputeResidualError {
         std::cerr << "Could not open output file\n";
         return;
       }
-      projection_residuals << "CameraID: " << obs.shot->GetID() << ", residuals: " << residuals << "\n";
+      projection_residuals << "CameraID: " << obs.shot->GetID() << ", residuals: " << residuals[0] << residuals[1] << "\n";
       projection_residuals.close();  
     }
   }
