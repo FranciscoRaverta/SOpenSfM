@@ -6,6 +6,7 @@
 //#include <ceres/sized_cost_function.h>
 #include <foundation/types.h>
 #include <geometry/functions.h>
+#include <string>
 
 #include "foundation/optional.h"
 #include "geometry/camera_instances.h"
@@ -36,7 +37,8 @@ class SemanticReprojectionError {
         segmentation_image_(segmentation_image),
         height_(segmentation_image.rows()),
         width_(segmentation_image.cols()),
-        confidence_(confidence) {}
+        confidence_(confidence),
+        residual_method_("negative_log_likelihood") {}
 
     template <typename T>
     bool operator()(const T* const camera,
@@ -76,8 +78,15 @@ class SemanticReprojectionError {
 
         // The error is the difference between the predicted semantic label and the observed semantic label
         //residuals[0] = T(scale_) * (T(predicted_label) - T(observed_label_)); //This has no meaning, as the difference of labels says nothing
-        double p = (predicted_label == observed_label_) ? confidence_ : (1.0 - confidence_);
-        residuals[0] = T(scale_) * T(-std::log(std::max(p, 1e-6)));
+        if (residual_method_ == "negative_log_likelihood") {
+            double p = (predicted_label == observed_label_) ? confidence_ : (1.0 - confidence_);
+            residuals[0] = T(scale_) * T(-std::log(std::max(p, 1e-6)));
+        } else if (residual_method == "binary_residual") {
+            double w = scale_ * (1.0 - confidence_);
+            residuals[0] = (predicted_label == observed_label_) ? T(0) : T(w);
+        } else if (residual_method == "boundary_distance_residual") {
+            residual[0] = T(0);
+        }
 
         return true;
     }
@@ -90,6 +99,7 @@ class SemanticReprojectionError {
         int height_;
         int width_;
         double confidence_;
+        std::string residual_method_;
 
 };
 
