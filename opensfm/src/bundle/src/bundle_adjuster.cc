@@ -27,7 +27,7 @@ namespace bundle {
 BundleAdjuster::BundleAdjuster() {
   SetPointProjectionLossFunction("CauchyLoss", 1.0);
   SetRelativeMotionLossFunction("CauchyLoss", 1.0);
-  SetSemanticLossFunction("CauchyLoss", 1.0);
+  SetSemanticLossFunction("HuberLoss", 1.0);
   focal_prior_sd_ = 1;
   c_prior_sd_ = 1;
   k1_sd_ = 1;
