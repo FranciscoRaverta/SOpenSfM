@@ -188,7 +188,9 @@ py::tuple BAHelpers::BundleLocal(
       const auto shot_id = shot_n_rig_camera.first;
       auto& shot = map.GetShot(shot_id);
       shot_cameras[shot_id] = shot.GetCamera()->id;
-      segmented_images[shot_id] = shot.GetSegmentationImage();
+      if (shot.GetSegmentationImage() != nullptr) {
+        segmented_images[shot_id] = shot.GetSegmentationImage();
+      }
       shot_rig_cameras[shot_id] = shot_n_rig_camera.second->id;
 
       const auto is_boundary = boundary.find(&shot) != boundary.end();
@@ -507,7 +509,9 @@ py::dict BAHelpers::BundleShotPoses(
       const auto shot_id = shot_n_rig_camera.first;
       auto& shot = map.GetShot(shot_id);
       shot_cameras[shot_id] = shot.GetCamera()->id;
-      segmented_images[shot_id] = shot.GetSegmentationImage();
+      if (shot.GetSegmentationImage() != nullptr) {
+        segmented_images[shot_id] = shot.GetSegmentationImage();
+      }
       shot_rig_cameras[shot_id] = shot_n_rig_camera.second->id;
 
       const auto is_fixed = shot_ids.find(shot_id) != shot_ids.end();
@@ -688,7 +692,9 @@ py::dict BAHelpers::Bundle(
       const auto shot_id = shot_n_rig_camera.first;
       const auto& shot = map.GetShot(shot_id);
       shot_cameras[shot_id] = shot.GetCamera()->id;
-      segmented_images[shot_id] = shot.GetSegmentationImage();
+      if (shot.GetSegmentationImage() != nullptr) {
+        segmented_images[shot_id] = shot.GetSegmentationImage();
+      }
       shot_rig_cameras[shot_id] = shot_n_rig_camera.second->id;
 
       if (config["bundle_use_gps"].cast<bool>()) {
