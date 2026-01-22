@@ -132,7 +132,7 @@ py::tuple BAHelpers::BundleLocal(
   auto ba = bundle::BundleAdjuster();
   const bool use_semantics = (config["features_bake_segmentation"] and config["matching_segmentation_filter"]);
   const double semantic_lambda = config.contains("semantic_lambda") ? config["semantic_lambda"].cast<double>() : 1;
-  logger.info("After creating bundle adjuster - FRAN");
+  std::cout << "After creating bundle adjuster - FRAN" << std::endl;
   ba.SetUseAnalyticDerivatives(
       config["bundle_analytic_derivatives"].cast<bool>());
 
@@ -142,7 +142,7 @@ py::tuple BAHelpers::BundleLocal(
     constexpr bool fix_cameras{true};
     ba.AddCamera(cam.id, cam, cam_prior, fix_cameras);
   }
-  logger.info("After AddCameras - FRAN");
+  std::cout << "After AddCameras - FRAN" << std::endl;
   // combine the sets
   std::unordered_set<map::Shot*> int_and_bound(interior.cbegin(),
                                                interior.cend());
@@ -152,7 +152,7 @@ py::tuple BAHelpers::BundleLocal(
 
   constexpr bool point_constant{false};
   constexpr bool rig_camera_constant{true};
-  logger.info("Up to gather rig data - FRAN");
+  std::cout << "Up to gather rig data - FRAN" << std::endl;
   // gather required rig data to setup
   std::unordered_set<map::RigCameraId> rig_cameras_ids;
   std::unordered_set<map::RigInstanceId> rig_instances_ids;
@@ -160,7 +160,7 @@ py::tuple BAHelpers::BundleLocal(
     rig_cameras_ids.insert(shot->GetRigCameraId());
     rig_instances_ids.insert(shot->GetRigInstanceId());
   }
-  logger.info("Up tp rig cameras - FRAN");
+  std::cout << "Up tp rig cameras - FRAN" << std::endl;
   // rig cameras are going to be fixed
   for (const auto& rig_camera_id : rig_cameras_ids) {
     const auto& rig_camera = map.GetRigCamera(rig_camera_id);
@@ -168,7 +168,7 @@ py::tuple BAHelpers::BundleLocal(
                     rig_camera_priors.at(rig_camera_id).pose,
                     rig_camera_constant);
   }
-  logger.info("Up tp rig instances shots - FRAN");
+  std::cout << "Up tp rig instances shots - FRAN" << std::endl;
   // add rig instances shots
   const std::string gps_scale_group = "dummy";  // unused for now
   for (const auto& rig_instance_id : rig_instances_ids) {
@@ -228,7 +228,7 @@ py::tuple BAHelpers::BundleLocal(
                                      gps_scale_group);
     }
   }
-  logger.info("Up tp interior points - FRAN");
+  std::cout << "Up tp interior points - FRAN" << std::endl;
   for (auto* shot : interior) {
     // Add all points of the shots that are in the interior
     for (const auto& lm_obs : shot->GetLandmarkObservations()) {
