@@ -587,7 +587,7 @@ py::dict BAHelpers::BundleShotPoses(
     py::gil_scoped_release release;
     ba.Run();
   }
-
+  std::cout << "After run ba - FRAN" << std::endl;
 
   const auto timer_run = std::chrono::high_resolution_clock::now();
 
