@@ -388,8 +388,5 @@ class BundleAdjuster {
   // internal
   ceres::Solver::Summary last_run_summary_;
 
-  // for segmentation residuals counting
-  int same_semantics;
-  int different_semantics;
 };
 }  // namespace bundle

@@ -12,6 +12,8 @@
 #include <stdexcept>
 #include <string>
 
+#include <fstream>
+
 #include "bundle/data/bias.h"
 
 namespace {
@@ -43,8 +45,6 @@ BundleAdjuster::BundleAdjuster() {
   num_threads_ = 1;
   linear_solver_type_ = "SPARSE_SCHUR";
   covariance_algorithm_type_ = "SPARSE_QR";
-  same_semantics = 0;
-  different_semantics = 0;
 }
 
 geometry::Camera BundleAdjuster::GetDefaultCameraSigma(
@@ -580,9 +580,7 @@ struct AddSemanticError {
   static void Apply(bool /*use_analytical*/,
                     const SemanticObservation &obs,
                     ceres::LossFunction *loss,
-                    ceres::Problem *problem,
-                    int* same_semantics,
-                    int* different_semantics) {
+                    ceres::Problem *problem) {
 
     constexpr static int CameraSize = T::Size;
     constexpr static int ShotSize = 6;
@@ -611,7 +609,6 @@ struct AddSemanticError {
 };
 
 
-
 struct ComputeResidualError {
   template <class T>
   static void Apply(bool use_analytical,
@@ -633,7 +630,7 @@ struct ComputeResidualError {
           obs.point->GetValueData().data()};
       error.Evaluate(params, residuals.data(), nullptr);
       obs.point->reprojection_errors[obs.shot->GetID()] = residuals;
-      std::cout << "Projection Residual" << residuals << std::endl;
+      std::cout << "Projection Residual: " << residuals << std::endl;
     } else {
       using ErrorType = typename ErrorTraits<T>::Type;
       constexpr static int ErrorSize = ErrorType::Size;
@@ -646,8 +643,15 @@ struct ComputeResidualError {
             obs.shot->GetRigCamera()->GetValueData().data(),
             obs.point->GetValueData().data(), residuals.data());
       obs.point->reprojection_errors[obs.shot->GetID()] = residuals;
-      std::cout << "Projection Residual" << residuals << std::endl;
+      std::cout << "Projection Residual: " << residuals << std::endl;
     }
+    std::ofstream projection_residuals("projection_residuals.txt");
+    if (!projection_residuals.is_open()) {
+      std::cerr << "Could not open output file\n";
+      return;
+    }
+    projection_residuals << "CameraID: " << obs.shot->GetID() << ", residuals: " << residuals << "\n";
+    projection_residuals.close();  
   }
 };
 
@@ -721,7 +725,15 @@ struct ComputeSemanticResidualError {
     */
     // Store error in point
     obs.point->semantic_errors[obs.shot->GetID()] = residuals[0];
-    std::cout << "Semantic Residual" << residuals << std::endl;
+    std::cout << "Semantic Residual: " << residuals << std::endl;
+    std::ofstream semantic_residuals("semantic_residuals.txt");
+    if (!semantic_residuals.is_open()) {
+      std::cerr << "Could not open output file\n";
+      return;
+    }
+    semantic_residuals << "CameraID: " << obs.shot->GetID() << ", residuals: " << residuals << "\n";
+    semantic_residuals.close();  
+
   }
 
 };
@@ -1302,8 +1314,6 @@ void BundleAdjuster::Run() {
   if (compute_semantic_errors_) {
     ComputeSemanticErrors();
   }
-  std::cout << " ------- INFO : Number of reprojections with same segmentation: " << same_semantics << std::endl;
-  std::cout << " ------- INFO : Number of reprojections with different segmentation: " << different_semantics << std::endl; 
 }
 
 void BundleAdjuster::ComputeCovariances(ceres::Problem *problem) {
