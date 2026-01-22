@@ -443,7 +443,7 @@ py::dict BAHelpers::BundleShotPoses(
   ba.SetUseAnalyticDerivatives(
       config["bundle_analytic_derivatives"].cast<bool>());
   const auto start = std::chrono::high_resolution_clock::now();
-  std::cout << "About to gather rig data - FRAN" << std::endl;
+
   // gather required rig data to setup
   std::unordered_set<map::RigInstanceId> rig_instances_ids;
   for (const auto& shot_id : shot_ids) {
@@ -457,14 +457,14 @@ py::dict BAHelpers::BundleShotPoses(
       rig_cameras_ids.insert(shot_n_rig_camera.second->id);
     }
   }
-  std::cout << "rig cameras fixed - FRAN" << std::endl;
+
   // rig cameras are going to be fixed
   for (const auto& rig_camera_id : rig_cameras_ids) {
     const auto& rig_camera = map.GetRigCamera(rig_camera_id);
     ba.AddRigCamera(rig_camera_id, rig_camera.pose,
                     rig_camera_priors.at(rig_camera_id).pose, fix_rig_camera);
   }
-  std::cout << "Add cameras - FRAN" << std::endl;
+
   std::unordered_set<map::CameraId> added_cameras;
   for (const auto& shot_id : shot_ids) {
     const auto& shot = map.GetShot(shot_id);
@@ -476,7 +476,7 @@ py::dict BAHelpers::BundleShotPoses(
     ba.AddCamera(cam.id, cam, cam_prior, fix_cameras);
     added_cameras.insert(cam.id);
   }
-  std::cout << "Add landmarks - FRAN" << std::endl;
+
   std::unordered_set<map::Landmark*> landmarks;
   for (const auto& shot_id : shot_ids) {
     const auto& shot = map.GetShot(shot_id);
@@ -487,7 +487,7 @@ py::dict BAHelpers::BundleShotPoses(
   for (const auto& landmark : landmarks) {
     ba.AddPoint(landmark->id_, landmark->GetGlobalPos(), fix_points);
   }
-  std::cout << "Add rig instances - FRAN" << std::endl;
+
   // add rig instances shots
   const std::string gps_scale_group = "dummy";  // unused for now
   for (const auto& rig_instance_id : rig_instances_ids) {
@@ -504,7 +504,7 @@ py::dict BAHelpers::BundleShotPoses(
     // if any instance's shot is in boundary
     // then the entire instance will be fixed
     bool fix_instance = false;
-    std::cout << "Rig instances 1 - FRAN" << std::endl;
+
     for (const auto& shot_n_rig_camera : instance.GetRigCameras()) {
       const auto shot_id = shot_n_rig_camera.first;
       auto& shot = map.GetShot(shot_id);
@@ -513,7 +513,7 @@ py::dict BAHelpers::BundleShotPoses(
         segmented_images[shot_id] = shot.GetSegmentationImage();
       }
       shot_rig_cameras[shot_id] = shot_n_rig_camera.second->id;
-      std::cout << "Rig instances 2 - FRAN" << std::endl;
+
       const auto is_fixed = shot_ids.find(shot_id) != shot_ids.end();
       if (!is_fixed) {
         if (config["bundle_use_gps"].cast<bool>()) {
@@ -548,7 +548,7 @@ py::dict BAHelpers::BundleShotPoses(
       }
     }
   }
-  std::cout << "Add observations - FRAN" << std::endl;
+
   // add observations
   for (const auto& shot_id : shot_ids) {
     const auto& shot = map.GetShot(shot_id);
@@ -582,12 +582,12 @@ py::dict BAHelpers::BundleShotPoses(
   ba.SetMaxNumIterations(10);
   ba.SetLinearSolverType("DENSE_QR");
   const auto timer_setup = std::chrono::high_resolution_clock::now();
-  std::cout << "Before run ba - FRAN" << std::endl;
+
   {
     py::gil_scoped_release release;
     ba.Run();
   }
-  std::cout << "After run ba - FRAN" << std::endl;
+
 
   const auto timer_run = std::chrono::high_resolution_clock::now();
 

@@ -589,11 +589,11 @@ def reconstruction_from_relative_pose(
         return None, report
 
     to_adjust = {s for s in new_shots if s != im1}
-    logger.info("About to enter bundle_shot_poses - FRAN")
+
     bundle_shot_poses(
         reconstruction, to_adjust, camera_priors, rig_camera_priors, data.config
     )
-    logger.info("About to retriangulate - FRAN")
+
     retriangulate(tracks_manager, reconstruction, data.config)
 
     if len(reconstruction.points) < min_inliers:
