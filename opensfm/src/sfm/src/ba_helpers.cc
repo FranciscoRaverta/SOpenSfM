@@ -130,8 +130,8 @@ py::tuple BAHelpers::BundleLocal(
 
   // set up BA
   auto ba = bundle::BundleAdjuster();
-  const bool use_semantics = (config["features_bake_segmentation"] and config["matching_segmentation_filter"]);
-  const double semantic_lambda = config.contains("semantic_lambda") ? config["semantic_lambda"].cast<double>() : 1;
+  const bool use_semantics = config["use_semantics_bundle"].cast<bool>();
+  const double semantic_lambda = config["lambda_value_semantics"].cast<double>();
   ba.SetUseAnalyticDerivatives(
       config["bundle_analytic_derivatives"].cast<bool>());
 
@@ -438,8 +438,8 @@ py::dict BAHelpers::BundleShotPoses(
   constexpr auto fix_rig_camera = true;
 
   auto ba = bundle::BundleAdjuster();
-  const bool use_semantics = (config["features_bake_segmentation"] and config["matching_segmentation_filter"]);
-  const double semantic_lambda = config.contains("semantic_lambda") ? config["semantic_lambda"].cast<double>() : 1.0;
+  const bool use_semantics = config["use_semantics_bundle"].cast<bool>();
+  const double semantic_lambda = config["lambda_value_semantics"].cast<double>();
   ba.SetUseAnalyticDerivatives(
       config["bundle_analytic_derivatives"].cast<bool>());
   const auto start = std::chrono::high_resolution_clock::now();
@@ -626,8 +626,8 @@ py::dict BAHelpers::Bundle(
   py::dict report;
 
   auto ba = bundle::BundleAdjuster();
-  const bool use_semantics = (config["features_bake_segmentation"] and config["matching_segmentation_filter"]);
-  const double semantic_lambda = config.contains("semantic_lambda") ? config["semantic_lambda"].cast<double>() : 1.0;
+  const bool use_semantics = config["use_semantics_bundle"].cast<bool>();
+  const double semantic_lambda = config["lambda_value_semantics"].cast<double>();
   const bool fix_cameras = !config["optimize_camera_parameters"].cast<bool>();
   ba.SetUseAnalyticDerivatives(
       config["bundle_analytic_derivatives"].cast<bool>());

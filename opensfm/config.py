@@ -279,6 +279,10 @@ class OpenSfMConfig:
     # Save reconstructions at every iteration
     save_partial_reconstructions: bool = False
 
+    # Use segmentation info inside bundle adjustment minimization
+    use_semantics_bundle: bool = False
+    lambda_value_semantics: float = 1
+
     ##################################
     # Params for GPS alignment
     ##################################
