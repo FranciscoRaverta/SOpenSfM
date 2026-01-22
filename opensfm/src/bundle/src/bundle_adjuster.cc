@@ -652,8 +652,9 @@ struct ComputeResidualError {
 struct ComputeSemanticResidualError {
   template <class T>
   static void Apply(bool /*unused*/,
-                    const SemanticObservation &obs
-                    ) {
+                    const SemanticObservation &obs,
+                    int* same_semantics,
+                    int* different_semantics) {
 
     const bool is_rig_camera_useful =
         IsRigCameraUseful(*obs.shot->GetRigCamera());
@@ -719,6 +720,8 @@ struct ComputeSemanticResidualError {
     }      
     */
     // Store error in point
+    ++(*same_semantics);
+    ++(*different_semantics);
     obs.point->semantic_errors[obs.shot->GetID()] = residuals[0];
   }
 
