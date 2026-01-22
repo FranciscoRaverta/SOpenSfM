@@ -32,10 +32,11 @@ class SemanticReprojectionError {
                               const SegmImage& segmentation_image) :
         type_(type),
         observed_label_(observed_label),
-        scale_(std::sqrt(lambda * confidence)),// / std::max(std_dev, 1e-6)),
+        scale_(std::sqrt(lambda)),// / std::max(std_dev, 1e-6)),
         segmentation_image_(segmentation_image),
         height_(segmentation_image.rows()),
-        width_(segmentation_image.cols()) {}
+        width_(segmentation_image.cols()),
+        confidence_(confidence) {}
 
     template <typename T>
     bool operator()(const T* const camera,
@@ -74,7 +75,9 @@ class SemanticReprojectionError {
         int predicted_label = segmentation_image_(iv,iu);
 
         // The error is the difference between the predicted semantic label and the observed semantic label
-        residuals[0] = T(scale_) * (T(predicted_label) - T(observed_label_));
+        //residuals[0] = T(scale_) * (T(predicted_label) - T(observed_label_)); //This has no meaning, as the difference of labels says nothing
+        double p = (predicted_label == observed_label_) ? confidence_ : (1.0 - confidence_);
+        residuals[0] = T(scale_) * T(-std::log(std::max(p, 1e-6)));
 
         return true;
     }
@@ -86,6 +89,7 @@ class SemanticReprojectionError {
         const SegmImage& segmentation_image_;
         int height_;
         int width_;
+        double confidence_;
 
 };
 
