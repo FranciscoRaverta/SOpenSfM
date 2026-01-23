@@ -117,13 +117,13 @@ class SemanticReprojectionError {
         if (residual_method_ == "negative_log_likelihood") {
             double p = (predicted_label == observed_label_) ? confidence_ : (1.0 - confidence_);
             residuals[0] = T(scale_) * T(-std::log(std::max(p, 1e-6)));
-        } else if (residual_method == "binary_residual") {
+        } else if (residual_method_ == "binary_residual") {
             double w = scale_ * (1.0 - confidence_);
             residuals[0] = (predicted_label == observed_label_) ? T(0) : T(w);
-        } else if (residual_method == "boundary_distance_residual") {
+        } else if (residual_method_ == "boundary_distance_residual") {
             double dist = BoundaryDistance(segmentation_image_, iu, iv, observed_label_, 50);
-            double w = scale_ * (1.0 - confidence_);
-            residuals[0] = T(scale_) * T(dist);
+            double w = scale_ * confidence_;
+            residuals[0] = T(w) * T(dist);
         }
 
         return true;
