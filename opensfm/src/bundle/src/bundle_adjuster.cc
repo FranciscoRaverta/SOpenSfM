@@ -634,13 +634,13 @@ struct ComputeResidualError {
       error.Evaluate(params, residuals.data(), nullptr);
       obs.point->reprojection_errors[obs.shot->GetID()] = residuals;
       //std::cout << "Projection Residual: " << residuals << std::endl;
-      std::ofstream projection_residuals("/code/volume/project/projection_residuals.txt",  std::ios::app);
-      if (!projection_residuals.is_open()) {
-        std::cerr << "Could not open output file\n";
-        return;
-      }
-      projection_residuals << "CameraID: " << obs.shot->GetID() << ", residuals: " << residuals[0] << " " << residuals[1] << "\n";
-      projection_residuals.close();  
+      //std::ofstream projection_residuals("/code/volume/project/projection_residuals.txt",  std::ios::app);
+      //if (!projection_residuals.is_open()) {
+      //  std::cerr << "Could not open output file\n";
+      //  return;
+      //}
+      //projection_residuals << "CameraID: " << obs.shot->GetID() << ", residuals: " << residuals[0] << " " << residuals[1] << "\n";
+      //projection_residuals.close();  
     } else {
       using ErrorType = typename ErrorTraits<T>::Type;
       constexpr static int ErrorSize = ErrorType::Size;
@@ -654,13 +654,13 @@ struct ComputeResidualError {
             obs.point->GetValueData().data(), residuals.data());
       obs.point->reprojection_errors[obs.shot->GetID()] = residuals;
       //std::cout << "Projection Residual: " << residuals << std::endl;
-      std::ofstream projection_residuals("/code/volume/project/projection_residuals.txt",  std::ios::app);
-      if (!projection_residuals.is_open()) {
-        std::cerr << "Could not open output file\n";
-        return;
-      }
-      projection_residuals << "CameraID: " << obs.shot->GetID() << ", residuals: " << residuals[0] << " " << residuals[1] << "\n";
-      projection_residuals.close();  
+      //std::ofstream projection_residuals("/code/volume/project/projection_residuals.txt",  std::ios::app);
+      //if (!projection_residuals.is_open()) {
+      //  std::cerr << "Could not open output file\n";
+      //  return;
+      //}
+      //projection_residuals << "CameraID: " << obs.shot->GetID() << ", residuals: " << residuals[0] << " " << residuals[1] << "\n";
+      //projection_residuals.close();  
     }
   }
 };
@@ -697,13 +697,13 @@ struct ComputeSemanticResidualError {
     // Store error in point
     obs.point->semantic_errors[obs.shot->GetID()] = residuals[0];
     //std::cout << "Semantic Residual: " << residuals << std::endl;
-    std::ofstream semantic_residuals("/code/volume/project/semantic_residuals.txt", std::ios::app);
-    if (!semantic_residuals.is_open()) {
-      std::cerr << "Could not open output file\n";
-      return;
-    }
-    semantic_residuals << "CameraID: " << obs.shot->GetID() << ", residuals: " << residuals << "\n";
-    semantic_residuals.close();  
+    //std::ofstream semantic_residuals("/code/volume/project/semantic_residuals.txt", std::ios::app);
+    //if (!semantic_residuals.is_open()) {
+    //  std::cerr << "Could not open output file\n";
+    //  return;
+    //}
+    //semantic_residuals << "CameraID: " << obs.shot->GetID() << ", residuals: " << residuals << "\n";
+    //semantic_residuals.close();  
   }
 
 };
