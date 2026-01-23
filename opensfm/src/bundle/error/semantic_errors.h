@@ -74,7 +74,7 @@ class SemanticReprojectionError {
         segmentation_image_(segmentation_image),
         height_(segmentation_image.rows()),
         width_(segmentation_image.cols()),
-        confidence_(confidence),
+        confidence_(std::srqt(confidence)),
         residual_method_(residual_method) {}
 
     template <typename T>
