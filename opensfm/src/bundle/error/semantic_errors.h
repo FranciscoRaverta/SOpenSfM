@@ -23,6 +23,42 @@ inline double GetScalar(const ceres::Jet<double, N>& x) {
     return x.a; // scalar part of Jet
 }
 
+inline double BoundaryDistance(
+    const SegmImage& seg,
+    int u, int v,
+    int expected_label,
+    int max_radius = 20
+) {
+    const int h = seg.rows();
+    const int w = seg.cols();
+
+    double min_dist2 = std::numeric_limits<double>::infinity();
+
+    for (int r = 1; r <= max_radius; ++r) {
+        for (int dy = -r; dy <= r; ++dy) {
+            for (int dx = -r; dx <= r; ++dx) {
+                int x = u + dx;
+                int y = v + dy;
+
+                if (x < 0 || x >= w || y < 0 || y >= h) continue;
+                if (seg(y, x) != expected_label) continue;
+
+                double d2 = dx * dx + dy * dy;
+                if (d2 < min_dist2) {
+                    min_dist2 = d2;
+                }
+            }
+        }
+        if (std::isfinite(min_dist2)) break; // early exit
+    }
+
+    if (!std::isfinite(min_dist2)) {
+        return max_radius;  // fallback penalty
+    }
+
+    return std::sqrt(min_dist2);
+}
+
 class SemanticReprojectionError {
     public: 
     SemanticReprojectionError(const geometry::ProjectionType& type,
@@ -85,7 +121,9 @@ class SemanticReprojectionError {
             double w = scale_ * (1.0 - confidence_);
             residuals[0] = (predicted_label == observed_label_) ? T(0) : T(w);
         } else if (residual_method == "boundary_distance_residual") {
-            residual[0] = T(0);
+            double dist = BoundaryDistance(segmentation_image_, iu, iv, observed_label_, 50);
+            double w = scale_ * (1.0 - confidence_);
+            residuals[0] = T(scale_) * T(dist);
         }
 
         return true;
