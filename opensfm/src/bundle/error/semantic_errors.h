@@ -75,7 +75,7 @@ class SemanticReprojectionError {
         height_(segmentation_image.rows()),
         width_(segmentation_image.cols()),
         confidence_(confidence),
-        residual_method_("boundary_distance_residual") {}
+        residual_method_(residual_method) {}
 
     template <typename T>
     bool operator()(const T* const camera,
@@ -128,6 +128,8 @@ class SemanticReprojectionError {
             double dist = BoundaryDistance(segmentation_image_, iu, iv, observed_label_, 50);
             double w = scale_ * confidence_;
             residuals[0] = T(w) * T(dist);
+        } else {
+            return false;
         }
 
         return true;
