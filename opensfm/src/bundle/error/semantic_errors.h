@@ -74,7 +74,7 @@ class SemanticReprojectionError {
         height_(segmentation_image.rows()),
         width_(segmentation_image.cols()),
         confidence_(confidence),
-        residual_method_("negative_log_likelihood") {}
+        residual_method_("boundary_distance_residual") {}
 
     template <typename T>
     bool operator()(const T* const camera,
