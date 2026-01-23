@@ -299,7 +299,8 @@ void BundleAdjuster::AddSemanticObservation(const std::string &shot,
                                             int semantic_value,
                                             double confidence,
                                             double lambda,
-                                            double std_deviation) {
+                                            double std_deviation,
+                                            std::string residual_method) {
   SemanticObservation o;
   o.shot = &shots_.at(shot);
   o.camera = &cameras_.at(o.shot->GetCamera()->GetID());
@@ -309,6 +310,7 @@ void BundleAdjuster::AddSemanticObservation(const std::string &shot,
   o.semantic_value = semantic_value;
   o.confidence = confidence;
   o.lambda = lambda;
+  o.residual_method = residual_method;
   semantic_observations_.push_back(o);
 }
 
@@ -597,7 +599,8 @@ struct AddSemanticError {
                 obs.semantic_value,
                 obs.confidence,
                 obs.lambda,
-                *obs.shot->GetSegmentationImage()));//segmentation_image,
+                *obs.shot->GetSegmentationImage(),
+                obs.residual_method));//segmentation_image,
                 //obs.shot->GetConfidenceImage()));//confidence_image));
 
     problem->AddResidualBlock(cost_function, loss,
@@ -679,7 +682,8 @@ struct ComputeSemanticResidualError {
                     obs.semantic_value,
                     obs.confidence,
                     obs.lambda,
-                    *obs.shot->GetSegmentationImage());//segmentation_image_path,
+                    *obs.shot->GetSegmentationImage(),
+                    obs.residual_method);//segmentation_image_path,
                     //obs.shot->GetConfidenceImage());//confidence_image_path);
 
     VecNd<1> residuals;

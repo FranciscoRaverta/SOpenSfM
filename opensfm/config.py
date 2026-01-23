@@ -281,7 +281,8 @@ class OpenSfMConfig:
 
     # Use segmentation info inside bundle adjustment minimization
     use_semantics_bundle: bool = False
-    lambda_value_semantics: float = 1
+    lambda_value_semantics: float = 0.001
+    semantic_residual_method: str = "boundary_distance_residual"  # Options: boundary_distance_residual, negative_log_likelihood, binary_residual
 
     ##################################
     # Params for GPS alignment

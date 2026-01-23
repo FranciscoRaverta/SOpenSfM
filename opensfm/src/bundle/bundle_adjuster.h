@@ -74,6 +74,7 @@ struct SemanticObservation {
   double lambda;
 
   Vec2d coordinates;
+  std::string residual_method;
 };
 
 struct RelativeMotion {
@@ -225,7 +226,8 @@ class BundleAdjuster {
                               int semantic_value,
                               double confidence,
                               double lambda,
-                              double std_deviation);
+                              double std_deviation,
+                              std::string residual_method);
 
   //void AddPointSemantics(const std::string &id, double semantic_value, double confidence);
 

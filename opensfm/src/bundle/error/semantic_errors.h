@@ -66,10 +66,11 @@ class SemanticReprojectionError {
                               int observed_label,
                               double confidence,
                               double lambda,
-                              const SegmImage& segmentation_image) :
+                              const SegmImage& segmentation_image,
+                              std::string residual_method) :
         type_(type),
         observed_label_(observed_label),
-        scale_( 0.001 * std::sqrt(lambda)),// / std::max(std_dev, 1e-6)),
+        scale_(lambda),// / std::max(std_dev, 1e-6)),
         segmentation_image_(segmentation_image),
         height_(segmentation_image.rows()),
         width_(segmentation_image.cols()),
@@ -115,12 +116,15 @@ class SemanticReprojectionError {
         // The error is the difference between the predicted semantic label and the observed semantic label
         //residuals[0] = T(scale_) * (T(predicted_label) - T(observed_label_)); //This has no meaning, as the difference of labels says nothing
         if (residual_method_ == "negative_log_likelihood") {
+            std::cout << "Using negative_log_likelihood for Semantic-Constrained Bundle Adjustment" << std::endl;
             double p = (predicted_label == observed_label_) ? confidence_ : (1.0 - confidence_);
             residuals[0] = T(scale_) * T(std::sqrt(-std::log(std::max(p, 1e-6))));
         } else if (residual_method_ == "binary_residual") {
+            std::cout << "Using binary_residual for Semantic-Constrained Bundle Adjustment" << std::endl;
             double w = scale_ * confidence_;
             residuals[0] = (predicted_label == observed_label_) ? T(0) : T(w);
         } else if (residual_method_ == "boundary_distance_residual") {
+            std::cout << "Using boundary_distance_residual for Semantic-Constrained Bundle Adjustment" << std::endl;
             double dist = BoundaryDistance(segmentation_image_, iu, iv, observed_label_, 50);
             double w = scale_ * confidence_;
             residuals[0] = T(w) * T(dist);
