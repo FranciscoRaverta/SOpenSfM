@@ -116,7 +116,7 @@ class SemanticReprojectionError {
         // The error is the difference between the predicted semantic label and the observed semantic label
         //residuals[0] = T(scale_) * (T(predicted_label) - T(observed_label_)); //This has no meaning, as the difference of labels says nothing
         if (residual_method_ == "negative_log_likelihood") {
-            double p = (predicted_label == observed_label_) ? confidence_ : (1.0 - confidence_);
+            double p = (predicted_label == observed_label_) ? 1 : std::sqrt(1.0 - confidence_ * confidence_);
             residuals[0] = T(scale_) * T(std::sqrt(-std::log(std::max(p, 1e-6))));
         } else if (residual_method_ == "binary_residual") {
             double w = scale_ * confidence_;
