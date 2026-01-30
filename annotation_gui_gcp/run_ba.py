@@ -330,6 +330,8 @@ def bundle_with_fixed_images(
         shot.pose.rotation = [s.r[0], s.r[1], s.r[2]]
         shot.pose.translation = [s.t[0], s.t[1], s.t[2]]
         shot.covariance = s.get_covariance() #s.get_covariance_inv_param()
+        logger.info(f"FRAN - Shot Id: {shot.id}")
+        logger.info(f"FRAN - Covariance: \n {s.get_covariance()}")
 
     for point in reconstruction.points.values():
         p = ba.get_point(point.id)
