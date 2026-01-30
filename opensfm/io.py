@@ -495,6 +495,8 @@ def shot_to_json(shot: pymap.Shot) -> Dict[str, Any]:
     if hasattr(shot, "scale"):
         obj["scale"] = shot.scale
     if hasattr(shot, "covariance"):
+        logger.info(f"Covariance: \n {shot.covariance}")
+        logger.info(f"Covariance in list: \n {shot.covariance.tolist()}")
         obj["covariance"] = shot.covariance.tolist()
     if hasattr(shot, "merge_cc"):
         obj["merge_cc"] = shot.merge_cc
