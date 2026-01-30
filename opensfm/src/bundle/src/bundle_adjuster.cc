@@ -1358,7 +1358,7 @@ void BundleAdjuster::ComputeCovariances(ceres::Problem *problem) {
     }
   }
 
-  std::cout << "Covariances computed: " << computed << std:endl;
+  std::cout << "Covariances computed: " << computed << std::endl;
   for (auto &i : shots_) {
       std::cout << "Shot id: " << i.second.GetID() << std::endl;
       std::cout << "Covariance Matrix: " << std::endl;
