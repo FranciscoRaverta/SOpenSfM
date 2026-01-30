@@ -3,6 +3,7 @@
 #include <bundle/data/camera.h>
 #include <bundle/data/data.h>
 #include <bundle/data/pose.h>
+#include <foundation/types.h>
 
 #include <unordered_set>
 
@@ -46,6 +47,10 @@ struct Shot : public DataContainer {
   }
   RigInstance *GetRigInstance() {
     return static_cast<RigInstance *>(GetData("rig_instance"));
+  }
+
+  const MatXd& GetCovariance() const {
+    return static_cast<RigInstance *>(GetData("rig_instance"))->GetCovariance();
   }
 
   const SegmImage *GetSegmentationImage() {

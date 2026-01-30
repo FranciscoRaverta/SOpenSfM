@@ -40,6 +40,8 @@ PYBIND11_MODULE(pybundle, m) {
                              [](const bundle::Point &p) { return p.GetID(); })
       .def_readwrite("reprojection_errors",
                      &bundle::Point::reprojection_errors);
+  py::class_<bundle::Shot>(m, "Shot")
+      .def("get_covariance", &bundle::Shot::GetCovariance);
   py::class_<bundle::BundleAdjuster>(m, "BundleAdjuster")
       .def(py::init())
       .def("run", &bundle::BundleAdjuster::Run,
