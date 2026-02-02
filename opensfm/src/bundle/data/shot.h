@@ -49,8 +49,8 @@ struct Shot : public DataContainer {
     return static_cast<RigInstance *>(GetData("rig_instance"));
   }
 
-  const MatXd& GetCovariance() {
-    return static_cast<RigInstance *>(GetData("rig_instance"))->GetCovariance();
+  const MatXd& GetCovariance() const {
+    return static_cast<const RigInstance *>(GetData("rig_instance"))->GetCovariance();
   }
 
   const SegmImage *GetSegmentationImage() {
