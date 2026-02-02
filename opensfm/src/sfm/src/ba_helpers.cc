@@ -861,7 +861,7 @@ void BAHelpers::BundleToMap(const bundle::BundleAdjuster& bundle_adjuster,
     point.second.SetGlobalPos(pt.GetValue());
     point.second.SetReprojectionErrors(pt.reprojection_errors);
   }
-
+  std::cout << "About to update covariance of shots" << std::endl;
   // Update covariances of shots
   for (auto& shot_pair : output_map.GetShots()) {
     auto& map_shot = shot_pair.second;
