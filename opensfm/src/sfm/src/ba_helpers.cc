@@ -874,16 +874,22 @@ void BAHelpers::BundleToMap(const bundle::BundleAdjuster& bundle_adjuster,
   //   }
   // }
   for (auto& shot_pair : output_map.GetShots()) {
-    auto& map_shot = shot_pair.second;
-    const auto& ba_shot = bundle_adjuster.GetShot(map_shot.GetId());
+      auto& map_shot = shot_pair.second;
+      const auto& ba_shot = bundle_adjuster.GetShot(map_shot.GetId());
 
-    auto* rig_instance = ba_shot.GetRigInstance();
-    if (!rig_instance) continue;  // skip shots without rig
-    const auto& cov = rig_instance->GetCovariance();
+      MatXd cov;
 
-    if (cov.size() != 0 && cov.allFinite()) {
-        map_shot.SetCovariance(cov);
-    }
+      // Prefer covariance from RigInstance if available
+      if (auto* rig_instance = ba_shot.GetRigInstance(); rig_instance) {
+          cov = rig_instance->GetCovariance();
+      } else {
+          // fallback to shot-level covariance if any
+          cov = ba_shot.GetCovariance();
+      }
+
+      if (cov.size() != 0 && cov.allFinite()) {
+          map_shot.SetCovariance(cov);
+      }
   }
 }
 
