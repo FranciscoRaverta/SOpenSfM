@@ -877,7 +877,7 @@ void BAHelpers::BundleToMap(const bundle::BundleAdjuster& bundle_adjuster,
     auto& map_shot = shot_pair.second;
     const auto& ba_shot = bundle_adjuster.GetShot(map_shot.GetId());
 
-    const auto* rig_instance = ba_shot.GetRigInstance();
+    auto* rig_instance = ba_shot.GetRigInstance();
     if (!rig_instance) continue;  // skip shots without rig
     const auto& cov = rig_instance->GetCovariance();
 
