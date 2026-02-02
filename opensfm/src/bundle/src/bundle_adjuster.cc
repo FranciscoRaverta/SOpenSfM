@@ -1416,7 +1416,7 @@ geometry::Similarity BundleAdjuster::GetBias(const std::string &id) const {
   return bias_.at(id).GetValue();
 }
 
-Shot BundleAdjuster::GetShot(const std::string &id) const {
+const Shot& BundleAdjuster::GetShot(const std::string &id) const {
   if (shots_.find(id) == shots_.end()) {
     throw std::runtime_error("Shot " + id + " doesn't exists");
   }
