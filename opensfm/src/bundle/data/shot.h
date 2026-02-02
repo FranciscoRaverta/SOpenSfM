@@ -49,7 +49,7 @@ struct Shot : public DataContainer {
     return static_cast<RigInstance *>(GetData("rig_instance"));
   }
 
-  const MatXd& GetCovariance() const {
+  const MatXd& GetCovariance() {
     return static_cast<RigInstance *>(GetData("rig_instance"))->GetCovariance();
   }
 
