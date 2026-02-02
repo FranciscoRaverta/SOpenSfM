@@ -1420,7 +1420,7 @@ Shot BundleAdjuster::GetShot(const std::string &id) const {
   if (shots_.find(id) == shots_.end()) {
     throw std::runtime_error("Shot " + id + " doesn't exists");
   }
-  return shots_.at(id).GetValue();
+  return shots_.at(id);
 }
 
 Point BundleAdjuster::GetPoint(const std::string &id) const {
