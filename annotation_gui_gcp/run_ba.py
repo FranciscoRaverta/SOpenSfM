@@ -325,7 +325,9 @@ def bundle_with_fixed_images(
     for camera in reconstruction.cameras.values():
         orec._get_camera_from_bundle(ba, camera)
 
+    logger.info("FRAN - About to check shots:")
     for shot in reconstruction.shots.values():
+        logger.info("FRAN - entered shot iteration")
         s = ba.get_shot(shot.id)
         shot.pose.rotation = [s.r[0], s.r[1], s.r[2]]
         shot.pose.translation = [s.t[0], s.t[1], s.t[2]]
