@@ -877,10 +877,10 @@ void BAHelpers::BundleToMap(const bundle::BundleAdjuster& bundle_adjuster,
       auto& map_shot = shot_pair.second;
       const auto& ba_shot = bundle_adjuster.GetShot(map_shot.GetId());
 
-      const MatXd cov;
+      MatXd cov;
 
       // Prefer covariance from RigInstance if available
-      auto* rig_instance = ba_shot.GetRigInstance();
+      auto* rig_instance = const_cast<bundle::Shot&>(ba_shot).GetRigInstance();
       if (rig_instance) {
           cov = rig_instance->GetCovariance();
       } else {
