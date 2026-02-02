@@ -1357,12 +1357,12 @@ void BundleAdjuster::ComputeCovariances(ceres::Problem *problem) {
       i.second.GetRigInstance()->SetCovariance(default_covariance_matrix);
     }
   }
-  std::cout << "FRAN - Covariances computed: " << computed << std::endl;
-  for (auto &i : shots_) {
-      std::cout << "FRAN - Shot id: " << i.second.GetID() << std::endl;
-      std::cout << "FRAN - Covariance Matrix: " << std::endl;
-      std::cout << i.second.GetRigInstance()->GetCovariance() << std::endl;
-    }
+  // std::cout << "FRAN - Covariances computed: " << computed << std::endl;
+  // for (auto &i : shots_) {
+  //     std::cout << "FRAN - Shot id: " << i.second.GetID() << std::endl;
+  //     std::cout << "FRAN - Covariance Matrix: " << std::endl;
+  //     std::cout << i.second.GetRigInstance()->GetCovariance() << std::endl;
+  //   }
 }
 
 void BundleAdjuster::ComputeReprojectionErrors() {
@@ -1416,12 +1416,12 @@ geometry::Similarity BundleAdjuster::GetBias(const std::string &id) const {
   return bias_.at(id).GetValue();
 }
 
-const Shot& BundleAdjuster::GetShot(const std::string &id) const {
-  if (shots_.find(id) == shots_.end()) {
-    throw std::runtime_error("Shot " + id + " doesn't exists");
-  }
-  return shots_.at(id);
-}
+// const Shot& BundleAdjuster::GetShot(const std::string &id) const {
+//   if (shots_.find(id) == shots_.end()) {
+//     throw std::runtime_error("Shot " + id + " doesn't exists");
+//   }
+//   return shots_.at(id);
+// }
 
 Point BundleAdjuster::GetPoint(const std::string &id) const {
   if (points_.find(id) == points_.end()) {

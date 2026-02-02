@@ -1782,14 +1782,6 @@ def incremental_reconstruction(
                 k, len(r.shots), len(r.points)
             )
         )
-        for shot in r.shots.values():
-            # s = ba.get_shot(shot.id)
-            # shot.pose.rotation = [s.r[0], s.r[1], s.r[2]]
-            # shot.pose.translation = [s.t[0], s.t[1], s.t[2]]
-            # shot.covariance = s.get_covariance() #s.get_covariance_inv_param()
-            logger.info(f"FRAN - Covariance: \n {shot.covariance}")
-        #for j, s in enumerate(r.shots):
-        #    logger.info("FRAN - Covariances for shot {}: \n {} \n".format(j,s.covariance))
     logger.info("{} partial reconstructions in total.".format(len(reconstructions)))
     chrono.lap("compute_reconstructions")
     report["wall_times"] = dict(chrono.lap_times())
