@@ -866,7 +866,7 @@ void BAHelpers::BundleToMap(const bundle::BundleAdjuster& bundle_adjuster,
   for (auto& shot_pair : output_map.GetShots()) {
     auto& map_shot = shot_pair.second;
     auto& ba_shot = bundle_adjuster.GetShot(map_shot.GetId());
-    auto& cov = ba_shot.GetCovariance();
+    const auto& cov = ba_shot.GetCovariance();
 
     if (cov.size() != 0 && cov.allFinite()) {
       map_shot.SetCovariance(cov);
