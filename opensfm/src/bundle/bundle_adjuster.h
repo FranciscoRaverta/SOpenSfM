@@ -310,7 +310,7 @@ class BundleAdjuster {
   std::map<std::string, RigInstance> GetRigInstances() const;
 
   //FRAN
-  //const Shot& GetShot(const std::string &id) const;
+  const Shot& GetShot(const std::string &id) const;
 
   // Minimization details
   std::string BriefReport() const;
