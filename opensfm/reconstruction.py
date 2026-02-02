@@ -1782,6 +1782,8 @@ def incremental_reconstruction(
                 k, len(r.shots), len(r.points)
             )
         )
+        for j, s in enumerate(r.shots):
+            logger.info("Covariances for shot {}: \n {} \n".format(j,s.covariance))
     logger.info("{} partial reconstructions in total.".format(len(reconstructions)))
     chrono.lap("compute_reconstructions")
     report["wall_times"] = dict(chrono.lap_times())
