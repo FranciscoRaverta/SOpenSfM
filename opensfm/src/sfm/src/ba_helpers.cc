@@ -875,12 +875,13 @@ void BAHelpers::BundleToMap(const bundle::BundleAdjuster& bundle_adjuster,
   // }
   for (auto& shot_pair : output_map.GetShots()) {
       auto& map_shot = shot_pair.second;
-      const auto& ba_shot = bundle_adjuster.GetShot(map_shot.GetId());
+      auto& ba_shot = bundle_adjuster.GetShot(map_shot.GetId());
 
       MatXd cov;
 
       // Prefer covariance from RigInstance if available
-      if (auto* rig_instance = ba_shot.GetRigInstance(); rig_instance) {
+      auto* rig_instance = ba_shot.GetRigInstance();
+      if (rig_instance) {
           cov = rig_instance->GetCovariance();
       } else {
           // fallback to shot-level covariance if any
