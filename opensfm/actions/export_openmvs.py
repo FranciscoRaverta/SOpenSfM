@@ -63,6 +63,7 @@ def export(reconstruction, tracks_manager, udata: UndistortedDataSet, export_onl
                 str(shot.camera.id),
                 shot.pose.get_rotation_matrix(),
                 shot.pose.get_origin(),
+                shot.covariance,
             )
 
     def positive_point_depth(point, shot_id):

@@ -22,7 +22,7 @@ class OpenMVSExporter {
   }
 
   void AddShot(const std::string &path, const std::string &maskPath, const std::string &segmentationPath, const std::string &shot_id,
-               const std::string &camera_id, pyarray_d R, pyarray_d C) {
+               const std::string &camera_id, pyarray_d R, pyarray_d C, pyarray_d Cov) {
     const double *C_data = C.data();
 
     int platform_id = platform_ids_[camera_id];
@@ -31,6 +31,7 @@ class OpenMVSExporter {
     MVS::Interface::Platform::Pose pose;
     pose.R = cv::Matx33d(R.data());
     pose.C = cv::Point3_<double>(C_data[0], C_data[1], C_data[2]);
+    pose.Cov = cv::Matx66d(Cov.data())
     int pose_id = platform.poses.size();
     platform.poses.push_back(pose);
 

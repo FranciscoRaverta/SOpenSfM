@@ -367,6 +367,7 @@ struct Interface
 	typedef cv::Point3_<double> Pos3d;
 	typedef cv::Matx<double,3,3> Mat33d;
 	typedef cv::Matx<double,4,4> Mat44d;
+	typedef cv::Matx<double,6,6> Mat66d;
 	typedef cv::Point3_<uint8_t> Col3; // x=B, y=G, z=R
 	typedef uint8_t Segm;
 	typedef uint8_t SegmConf; 
@@ -410,10 +411,12 @@ struct Interface
 		struct Pose {
 			Mat33d R; // platform's rotation matrix that rotates a point from world to camera coordinate system
 			Pos3d C; // platform's translation vector (position) in world coordinate system
+			Mat66d Cov; // platform's covariance matrix
 
 			Pose() {}
 			template <typename MAT, typename POS>
 			Pose(const MAT& _R, const POS& _C) : R(_R), C(_C) {}
+			Pose(const MAT& _R, const POS& _C, const MAT& _Cov) : R(_R), C(_C) Cov(_Cov) {}
 
 			// translation vector t = -RC
 			inline Pos3d GetTranslation() const { return R*(-C); }
@@ -440,6 +443,7 @@ struct Interface
 			void serialize(Archive& ar, const unsigned int /*version*/) {
 				ar & R;
 				ar & C;
+				ar & Cov;
 			}
 		};
 		typedef std::vector<Pose> PoseArr;
