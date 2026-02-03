@@ -414,9 +414,9 @@ struct Interface
 			Mat66d Cov; // platform's covariance matrix
 
 			Pose() {}
-			template <typename MAT, typename POS>
+			template <typename MAT, typename POS, typename MATC>
 			Pose(const MAT& _R, const POS& _C) : R(_R), C(_C) {}
-			Pose(const MAT& _R, const POS& _C, const MAT& _Cov) : R(_R), C(_C) Cov(_Cov) {}
+			Pose(const MAT& _R, const POS& _C, const MATC& _Cov) : R(_R), C(_C), Cov(_Cov) {}
 
 			// translation vector t = -RC
 			inline Pos3d GetTranslation() const { return R*(-C); }

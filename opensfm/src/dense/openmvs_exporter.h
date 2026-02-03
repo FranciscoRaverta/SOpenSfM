@@ -31,7 +31,7 @@ class OpenMVSExporter {
     MVS::Interface::Platform::Pose pose;
     pose.R = cv::Matx33d(R.data());
     pose.C = cv::Point3_<double>(C_data[0], C_data[1], C_data[2]);
-    pose.Cov = cv::Matx66d(Cov.data())
+    pose.Cov = cv::Matx66d(Cov.data());
     int pose_id = platform.poses.size();
     platform.poses.push_back(pose);
 
