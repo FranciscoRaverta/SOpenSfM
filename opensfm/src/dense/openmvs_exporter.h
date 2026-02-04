@@ -22,7 +22,7 @@ class OpenMVSExporter {
   }
 
   void AddShot(const std::string &path, const std::string &maskPath, const std::string &segmentationPath, const std::string &shot_id,
-               const std::string &camera_id, pyarray_d R, pyarray_d C, pyarray_f Cov) {
+               const std::string &camera_id, pyarray_d R, pyarray_d C, pyarray_d Cov) {
     const double *C_data = C.data();
 
     int platform_id = platform_ids_[camera_id];
