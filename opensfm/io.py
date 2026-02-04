@@ -161,6 +161,9 @@ def assign_shot_attributes(obj: Dict[str, Any], shot: pymap.Shot) -> None:
         shot.scale = obj["scale"]
     if "covariance" in obj:
         shot.covariance = np.array(obj["covariance"])
+        print(f"FRAN1 - {obj["covariance"]}")
+        print(f"FRAN2 - {np.array(obj["covariance"])}")
+        print(f"FRAN3 - {shot.covariance}")
     if "merge_cc" in obj:
         shot.merge_cc = obj["merge_cc"]
     if "vertices" in obj and "faces" in obj:
