@@ -603,6 +603,8 @@ struct AddSemanticError {
                 obs.residual_method));//segmentation_image,
                 //obs.shot->GetConfidenceImage()));//confidence_image));
 
+    std::cout << obs.confidence << std::endl;
+
     problem->AddResidualBlock(cost_function, loss,
         obs.camera->GetValueData().data(),
         obs.shot->GetRigInstance()->GetValueData().data(),

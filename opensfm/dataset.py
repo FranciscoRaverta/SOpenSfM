@@ -204,9 +204,9 @@ class DataSet(DataSetBase):
                     # TODO: We do not write a header tag in the metadata. Might be good safety check.
                     data = np.array(png_image)
                     if data.ndim == 2:
-                        return data
+                        return data.astype(np.float32) / 100.0
                     elif data.ndim == 3:
-                        return data[:, :, 0]
+                        return data[:, :, 0].astype(np.float32) / 100.0
 
                         # TODO we can optionally return also the instances and scores:
                         # instances = (
