@@ -63,6 +63,10 @@ def undistort_reconstruction(
         for subshot in subshots:
             if tracks_manager:
                 add_subshot_tracks(tracks_manager, utracks_manager, shot, subshot)
+                
+        for subshot in subshots:
+            if hasattr(shot, "covariance") and shot.covariance is not None:
+                subshot.covariance = shot.covariance.copy()
         undistorted_shots[shot.id] = subshots
 
     udata.save_undistorted_reconstruction([urec])

@@ -28,6 +28,7 @@ def run_dataset(
     udata = dataset.UndistortedDataSet(
         data, undistorted_data_path, io_handler=data.io_handler
     )
+    print("FRAN - undistort")
     print(reconstruction)
     reconstructions = data.load_reconstruction(reconstruction)
     if data.tracks_exists(tracks):
