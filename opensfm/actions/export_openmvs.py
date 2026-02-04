@@ -14,7 +14,7 @@ def run_dataset(data: DataSet, image_list) -> None:
     tracks_manager = udata.load_undistorted_tracks_manager()
 
     for reconstruction in reconstructions:
-        for shot in reconstruction.shots:
+        for shot in reconstruction.shots.values():
             print("Covariances - Fran4")
             print(shot.covariance)
 
