@@ -1358,12 +1358,12 @@ void BundleAdjuster::ComputeCovariances(ceres::Problem *problem) {
       i.second.GetRigInstance()->SetCovariance(default_covariance_matrix);
     }
   }
-  // std::cout << "FRAN - Covariances computed: " << computed << std::endl;
-  // for (auto &i : shots_) {
-  //     std::cout << "FRAN - Shot id: " << i.second.GetID() << std::endl;
-  //     std::cout << "FRAN - Covariance Matrix: " << std::endl;
-  //     std::cout << i.second.GetRigInstance()->GetCovariance() << std::endl;
-  //   }
+  std::cout << "FRAN - Covariances computed: " << computed << std::endl;
+  for (auto &i : shots_) {
+      std::cout << "FRAN - Shot id: " << i.second.GetID() << std::endl;
+      std::cout << "FRAN - Covariance Matrix: " << std::endl;
+      std::cout << i.second.GetRigInstance()->GetCovariance() << std::endl;
+    }
 }
 
 void BundleAdjuster::ComputeReprojectionErrors() {
