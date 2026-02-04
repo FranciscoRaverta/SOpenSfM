@@ -13,6 +13,12 @@ def run_dataset(data: DataSet, image_list) -> None:
     reconstructions = udata.load_undistorted_reconstruction()
     tracks_manager = udata.load_undistorted_tracks_manager()
 
+    for reconstruction in reconstructions:
+        for shot in reconstruction.shots:
+            print("Covariances - Fran4")
+            print(shot.covariance)
+
+
     export_only = None
     if image_list:
         export_only = {}

@@ -162,8 +162,8 @@ def assign_shot_attributes(obj: Dict[str, Any], shot: pymap.Shot) -> None:
     if "covariance" in obj:
         shot.covariance = np.array(obj["covariance"])
         print("FRAN")
-        print(obj["covariance"])
-        print(np.array(obj["covariance"]))
+        #print(obj["covariance"])
+        #print(np.array(obj["covariance"]))
         print(shot.covariance)
     if "merge_cc" in obj:
         shot.merge_cc = obj["merge_cc"]
