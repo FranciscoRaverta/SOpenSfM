@@ -60,7 +60,7 @@ def export(reconstruction, tracks_manager, udata: UndistortedDataSet, export_onl
                 segmentation_path = ""
 
             shots_map[str(shot.id)] = shot
-            print(f"Covariance - FRAN SfM: \n {shot.covariance}")
+            #print(f"Covariance - FRAN SfM: \n {shot.covariance}")
 
             exporter.add_shot(
                 str(os.path.abspath(image_path)),
