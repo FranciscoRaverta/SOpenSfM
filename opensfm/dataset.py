@@ -158,7 +158,7 @@ class DataSet(DataSetBase):
 
     def _segmentation_path(self) -> str:
         parent_path = os.path.dirname(self.data_path)
-        return os.path.join(self.parent_path, "segmentations")
+        return os.path.join(parent_path, "segmentations")
 
     def _segmentation_file(self, image: str) -> str:
         return os.path.join(self._segmentation_path(), image + ".png")
@@ -168,14 +168,14 @@ class DataSet(DataSetBase):
 
     def _segmentation_confidence_path(self) -> str:
         parent_path = os.path.dirname(self.data_path)
-        return os.path.join(self.parent_path, "segmentation_confidences")
+        return os.path.join(parent_path, "segmentation_confidences")
 
     def _segmentation_uncertainty_file(self, image: str) -> str:
         return os.path.join(self._segmentation_uncertainty_path(), image + ".npz")
 
     def _segmentation_uncertainty_path(self) -> str:
         parent_path = os.path.dirname(self.data_path)
-        return os.path.join(self.parent_path, "segmentation_uncertainties")
+        return os.path.join(parent_path, "segmentation_uncertainties")
 
     def segmentation_labels(self) -> List[Any]:
         return []
