@@ -261,7 +261,7 @@ def detect(
 
     start = timer()
 
-    p_unmasked, f_unmasked, c_unmasked = features.extract_features(
+    p_unmasked, f_unmasked, c_unmasked, u_unmasked = features.extract_features(
         image_array, data.config, is_high_res_panorama(data, image, image_array)
     )
 
