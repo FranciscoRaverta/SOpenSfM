@@ -211,7 +211,7 @@ def bake_segmentation(
             f"Image has inconsistent EXIF dimensions ({exif_width}, {exif_height}) and image dimensions ({width}, {height}). Orientation={exif_orientation}"
         )
 
-    panoptic_data = [None, None, None, None]
+    panoptic_data = [None, None, None]
     for i, p_data in enumerate([segmentation, instances, confidences]):
         if p_data is None:
             continue
@@ -274,7 +274,6 @@ def detect(
         p_unsorted = p_unmasked
         f_unsorted = f_unmasked
         c_unsorted = c_unmasked
-        u_unsorted = u_unmasked
     # Load segmentation, make a mask from it mask and apply it
     else:
         s_unsorted, i_unsorted, conf_unsorted = None, None, None
