@@ -643,7 +643,7 @@ struct ComputeResidualError {
        std::cerr << "Could not open output file\n";
        return;
       }
-      //projection_residuals << "CameraID: " << obs.shot->GetID() << ", residuals: " << residuals[0] << " " << residuals[1] << "\n";
+      projection_residuals << "CameraID: " << obs.shot->GetID() << ", residuals: " << residuals[0] << " " << residuals[1] << "\n";
       projection_residuals.close();  
     } else {
       using ErrorType = typename ErrorTraits<T>::Type;
@@ -663,7 +663,7 @@ struct ComputeResidualError {
         std::cerr << "Could not open output file\n";
         return;
       }
-      //projection_residuals << "CameraID: " << obs.shot->GetID() << ", residuals: " << residuals[0] << " " << residuals[1] << "\n";
+      projection_residuals << "CameraID: " << obs.shot->GetID() << ", residuals: " << residuals[0] << " " << residuals[1] << "\n";
       projection_residuals.close();  
     }
   }
@@ -679,7 +679,7 @@ struct ComputeSemanticResidualError {
 
     using ErrorType = SemanticReprojectionError;
 
-    std::cout << "Observed Label: " << obs.semantic_value << ", Observed Uncertainty: " << obs.uncertainty << std::endl;
+    //std::cout << "Observed Label: " << obs.semantic_value << ", Observed Uncertainty: " << obs.uncertainty << std::endl;
 
     ErrorType error(obs.camera->GetValue().GetProjectionType(),
                     obs.std_deviation,
@@ -707,7 +707,7 @@ struct ComputeSemanticResidualError {
       std::cerr << "Could not open output file\n";
       return;
     }
-    //semantic_residuals << "CameraID: " << obs.shot->GetID() << ", residuals: " << residuals << "\n";
+    semantic_residuals << "CameraID: " << obs.shot->GetID() << ", residuals: " << residuals << "\n";
     semantic_residuals.close();  
   }
 
