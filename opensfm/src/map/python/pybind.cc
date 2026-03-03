@@ -65,7 +65,7 @@ PYBIND11_MODULE(pymap, m) {
       .export_values();
 
   py::class_<map::Observation>(m, "Observation")
-      .def(py::init<double, double, double, int, int, int, int, int, int, double>(),
+      .def(py::init<double, double, double, int, int, int, int, int, int, double, double>(),
            py::arg("x"), py::arg("y"), py::arg("s"), py::arg("r"), py::arg("g"),
            py::arg("b"), py::arg("feature"),
            py::arg("segmentation") = map::Observation::NO_SEMANTIC_VALUE,
