@@ -165,9 +165,10 @@ def read_images(
             segmentation_array = data.load_segmentation(image)
             instances_array = data.load_instances(image)
             confidence_array = data.load_confidence(image)
+            uncertainty_array = data.load_uncertainty(image)
         else:
-            segmentation_array, instances_array, confidence_array = None, None, None
-        args = image, image_array, segmentation_array, instances_array, confidence_array, data, force
+            segmentation_array, instances_array, confidence_array, uncertainty_array = None, None, None, None
+        args = image, image_array, segmentation_array, instances_array, confidence_array, uncertainty_array, data, force
         queue.put(args, block=True, timeout=full_queue_timeout)
         counter.increment()
         if counter.value() == expected:
@@ -181,12 +182,13 @@ def run_detection(queue: queue.Queue):
         if args is None:
             queue.put(None)
             break
-        image, image_array, segmentation_array, instances_array, confidence_array, data, force = args
-        detect(image, image_array, segmentation_array, instances_array, confidence_array, data, force)
+        image, image_array, segmentation_array, instances_array, confidence_array, uncertainty_array, data, force = args
+        detect(image, image_array, segmentation_array, instances_array, confidence_array, uncertainty_array, data, force)
         del image_array
         del segmentation_array
         del instances_array
         del confidence_array
+        del uncertainty_array
 
 
 def bake_segmentation(
@@ -195,6 +197,7 @@ def bake_segmentation(
     segmentation: Optional[np.ndarray],
     instances: Optional[np.ndarray],
     confidences: Optional[np.ndarray],
+    uncertainties: Optional[np.ndarray],
     exif: Dict[str, Any],
 ) -> Tuple[Optional[np.ndarray], Optional[np.ndarray], Optional[np.ndarray]]:
     exif_height, exif_width, exif_orientation = (
@@ -209,7 +212,7 @@ def bake_segmentation(
         )
 
     panoptic_data = [None, None, None]
-    for i, p_data in enumerate([segmentation, instances, confidences]):
+    for i, p_data in enumerate([segmentation, instances, confidences, uncertainties]):
         if p_data is None:
             continue
         new_height, new_width = p_data.shape
@@ -231,6 +234,7 @@ def detect(
     segmentation_array: Optional[np.ndarray],
     instances_array: Optional[np.ndarray],
     confidence_array: Optional[np.ndarray],
+    uncertainty_array: Optional[np.ndarray],
     data: DataSetBase,
     force: bool = False,
 ) -> None:
@@ -264,19 +268,21 @@ def detect(
     # Load segmentation and bake it in the data: This does not modify the descriptores, but store the segmentation data separately 
     if data.config["features_bake_segmentation"]:
         exif = data.load_exif(image)
-        s_unsorted, i_unsorted, conf_unsorted = bake_segmentation(
-            image_array, p_unmasked, segmentation_array, instances_array, confidence_array, exif
+        s_unsorted, i_unsorted, conf_unsorted, unc_unsorted = bake_segmentation(
+            image_array, p_unmasked, segmentation_array, instances_array, confidence_array, uncertainty_array, exif
         )
         p_unsorted = p_unmasked
         f_unsorted = f_unmasked
         c_unsorted = c_unmasked
+        u_unsorted = u_unmasked
     # Load segmentation, make a mask from it mask and apply it
     else:
-        s_unsorted, i_unsorted, conf_unsorted = None, None, None
+        s_unsorted, i_unsorted, conf_unsorted, unc_unsorted = None, None, None, None
         fmask = masking.load_features_mask(data, image, p_unmasked)
         p_unsorted = p_unmasked[fmask]
         f_unsorted = f_unmasked[fmask]
         c_unsorted = c_unmasked[fmask]
+        u_unsorted = u_unmasked[fmask]
 
     if len(p_unsorted) == 0:
         logger.warning("No features found in image {}".format(image))
@@ -286,16 +292,18 @@ def detect(
     p_sorted = p_unsorted[order, :]
     f_sorted = f_unsorted[order, :]
     c_sorted = c_unsorted[order, :]
+    u_sorted = u_unsorted[order, :]
     if s_unsorted is not None:
         semantic_data = features.SemanticData(
             s_unsorted[order],
             i_unsorted[order] if i_unsorted is not None else None,
             conf_unsorted[order] if conf_unsorted is not None else None,
+            unc_unsorted[order] if unc_unsorted is not None else None,
             data.segmentation_labels(),
         )
     else:
         semantic_data = None
-    features_data = features.FeaturesData(p_sorted, f_sorted, c_sorted, semantic_data)
+    features_data = features.FeaturesData(p_sorted, f_sorted, c_sorted, u_sorted, semantic_data)
     data.save_features(image, features_data)
 
     if need_words:

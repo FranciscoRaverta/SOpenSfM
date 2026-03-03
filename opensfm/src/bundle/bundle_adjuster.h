@@ -70,6 +70,7 @@ struct SemanticObservation {
 
   int semantic_value;
   double confidence;
+  double uncertainty;
   double std_deviation;
   double lambda;
 
@@ -225,6 +226,7 @@ class BundleAdjuster {
                               const Vec2d &observation,
                               int semantic_value,
                               double confidence,
+                              double uncertainty,
                               double lambda,
                               double std_deviation,
                               std::string residual_method);

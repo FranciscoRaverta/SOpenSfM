@@ -64,7 +64,7 @@ class SemanticReprojectionError {
     SemanticReprojectionError(const geometry::ProjectionType& type,
                               double std_dev,
                               int observed_label,
-                              double confidence,
+                              double uncertainty,
                               double lambda,
                               const SegmImage& segmentation_image,
                               std::string residual_method) :
@@ -74,7 +74,7 @@ class SemanticReprojectionError {
         segmentation_image_(segmentation_image),
         height_(segmentation_image.rows()),
         width_(segmentation_image.cols()),
-        confidence_(std::sqrt(confidence)),
+        uncertainty_(uncertainty),
         residual_method_(residual_method) {}
 
     template <typename T>
@@ -112,18 +112,19 @@ class SemanticReprojectionError {
         //int idx = iv * width_ + iu;
 
         int predicted_label = segmentation_image_(iv,iu);
+        float weight = std::sqrt(1 / (1e-9f + std::pow(uncertainty_,2)))
 
         // The error is the difference between the predicted semantic label and the observed semantic label
         //residuals[0] = T(scale_) * (T(predicted_label) - T(observed_label_)); //This has no meaning, as the difference of labels says nothing
         if (residual_method_ == "negative_log_likelihood") {
-            double p = (predicted_label == observed_label_) ? 1 : std::sqrt(1.0 - confidence_ * confidence_);
+            double p = (predicted_label == observed_label_) ? 1 : (1-weight);//std::sqrt(1.0 - uncertainty_ * uncertainty_);
             residuals[0] = T(scale_) * T(std::sqrt(-std::log(std::max(p, 1e-6))));
         } else if (residual_method_ == "binary_residual") {
-            double w = scale_ * confidence_;
+            double w = scale_ * weight;
             residuals[0] = (predicted_label == observed_label_) ? T(0) : T(w);
         } else if (residual_method_ == "boundary_distance_residual") {
             double dist = BoundaryDistance(segmentation_image_, iu, iv, observed_label_, 50);
-            double w = scale_ * confidence_;
+            double w = scale_ * weight;
             residuals[0] = T(w) * T(dist);
         } else {
             return false;
@@ -139,7 +140,7 @@ class SemanticReprojectionError {
         const SegmImage& segmentation_image_;
         int height_;
         int width_;
-        double confidence_;
+        double uncertainty_;
         std::string residual_method_;
 
 };

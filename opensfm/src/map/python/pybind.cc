@@ -70,7 +70,8 @@ PYBIND11_MODULE(pymap, m) {
            py::arg("b"), py::arg("feature"),
            py::arg("segmentation") = map::Observation::NO_SEMANTIC_VALUE,
            py::arg("instance") = map::Observation::NO_SEMANTIC_VALUE,
-           py::arg("segmentation_conf") = map::Observation::NO_SEMANTIC_VALUE)
+           py::arg("segmentation_conf") = map::Observation::NO_SEMANTIC_VALUE,
+           py::arg("segmentation_unc") = map::Observation::NO_SEMANTIC_VALUE)
       .def_readwrite("point", &map::Observation::point)
       .def_readwrite("scale", &map::Observation::scale)
       .def_readwrite("id", &map::Observation::feature_id)
@@ -78,6 +79,7 @@ PYBIND11_MODULE(pymap, m) {
       .def_readwrite("segmentation", &map::Observation::segmentation_id)
       .def_readwrite("instance", &map::Observation::instance_id)
       .def_readwrite("segmentation_conf", &map::Observation::segmentation_confidence_id)
+      .def_readwrite("segmentation_unc", &map::Observation::segmentation_uncertainty_id)
       .def_readonly_static("NO_SEMANTIC_VALUE",
                            &map::Observation::NO_SEMANTIC_VALUE)
       .def(
@@ -105,6 +107,8 @@ PYBIND11_MODULE(pymap, m) {
                     &map::Landmark::SetSemanticLabel)
       .def_property("confidence_value", &map::Landmark::GetConfidence,
                     &map::Landmark::SetConfidence);
+      .def_property("uncertainty_value", &map::Landmark::GetUncertainty,
+                    &map::Landmark::SetUncertainty);
 
   py::class_<map::ShotMeasurements>(m, "ShotMeasurements")
       .def(py::init<>())
@@ -609,6 +613,7 @@ PYBIND11_MODULE(pymap, m) {
           py::arg("global_position"),
           py::arg("semantic_label"),
           py::arg("semantic_confidence"),
+          py::arg("semantic_uncertainty"),
           py::return_value_policy::reference_internal)
       .def("remove_landmark", (void (map::Map::*)(const map::Landmark *const)) &
                                   map::Map::RemoveLandmark)

@@ -13,7 +13,7 @@ class Landmark {
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   Landmark(const LandmarkId& lm_id, const Vec3d& global_pos);
-  Landmark(const LandmarkId& lm_id, const Vec3d& global_pos, const int semantic_label, const double confidence);
+  Landmark(const LandmarkId& lm_id, const Vec3d& global_pos, const int semantic_label, const double confidence, const double uncertainty);
 
   // Getters and Setters
   Vec3d GetGlobalPos() const { return global_pos_; }
@@ -48,7 +48,9 @@ class Landmark {
   void SetSemanticLabel(int label);
   int GetSemanticLabel() const { return semantic_label_;}
   double GetConfidence() const { return semantic_conf_;}
+  double GetUncertainty() const { return semantic_unc_;}
   void SetConfidence(double confidence);
+  void SetUncertainty(double uncertainty);
 
  public:
   const LandmarkId id_;
@@ -61,6 +63,7 @@ class Landmark {
   //Semantic properties
   int semantic_label_;
   double semantic_conf_;
+  double semantic_unc_;
 
 };
 }  // namespace map

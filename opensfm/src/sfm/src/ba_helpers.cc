@@ -244,7 +244,7 @@ py::tuple BAHelpers::BundleLocal(
       if (use_semantics) {
         ba.SetComputeSemanticErrors(true);
         //std::cout << "ShotID: " << shot->id_ << ", Semantic Label: " << lm_obs.first->GetSemanticLabel() << ", Confidence: " << lm_obs.first->GetConfidence() << std::endl;
-        ba.AddSemanticObservation(shot->id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetConfidence(), semantic_lambda, obs.scale, config["semantic_residual_method"].cast<std::string>());
+        ba.AddSemanticObservation(shot->id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetConfidence(), lm_obs.first->GetUncertainty(), semantic_lambda, obs.scale, config["semantic_residual_method"].cast<std::string>());
       }
 
     }
@@ -259,7 +259,7 @@ py::tuple BAHelpers::BundleLocal(
         if (use_semantics) {
           ba.SetComputeSemanticErrors(true);
           //std::cout << "ShotID: " << shot->id_ << ", Semantic Label: " << lm_obs.first->GetSemanticLabel() << ", Confidence: " << lm_obs.first->GetConfidence() << std::endl;
-          ba.AddSemanticObservation(shot->id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetConfidence(), semantic_lambda, obs.scale, config["semantic_residual_method"].cast<std::string>());
+          ba.AddSemanticObservation(shot->id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetConfidence(), lm_obs.first->GetUncertainty(), semantic_lambda, obs.scale, config["semantic_residual_method"].cast<std::string>());
         }
       }
     }
@@ -559,7 +559,7 @@ py::dict BAHelpers::BundleShotPoses(
       if (use_semantics) {
         ba.SetComputeSemanticErrors(true);
         //std::cout << "ShotID: " << shot.id_ << ", Semantic Label: " << lm_obs.first->GetSemanticLabel() << ", Confidence: " << lm_obs.first->GetConfidence() << std::endl;
-        ba.AddSemanticObservation(shot.id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetConfidence(), semantic_lambda, obs.scale, config["semantic_residual_method"].cast<std::string>());
+        ba.AddSemanticObservation(shot.id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetConfidence(), lm_obs.first->GetUncertainty(), semantic_lambda, obs.scale, config["semantic_residual_method"].cast<std::string>());
       }
     }
   }
@@ -742,7 +742,7 @@ py::dict BAHelpers::Bundle(
       if (use_semantics) {
         ba.SetComputeSemanticErrors(true);
         //std::cout << "ShotID: " << shot.id_ << ", Semantic Label: " << lm_obs.first->GetSemanticLabel() << ", Confidence: " << lm_obs.first->GetConfidence() << std::endl;
-        ba.AddSemanticObservation(shot.id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetConfidence(), semantic_lambda, obs.scale, config["semantic_residual_method"].cast<std::string>());
+        ba.AddSemanticObservation(shot.id_, lm_obs.first->id_, obs.point, lm_obs.first->GetSemanticLabel(), lm_obs.first->GetConfidence(), lm_obs.first->GetUncertainty(), semantic_lambda, obs.scale, config["semantic_residual_method"].cast<std::string>());
       }
     }
   }

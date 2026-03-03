@@ -46,7 +46,7 @@ std::unique_ptr<Map> Map::DeepCopy(const Map& map, bool copy_observations) {
   }
 
   for (const auto& landmark : map.GetLandmarks()) {
-    map_copy->CreateLandmark(landmark.first, landmark.second.GetGlobalPos(), landmark.second.GetSemanticLabel(), landmark.second.GetConfidence());
+    map_copy->CreateLandmark(landmark.first, landmark.second.GetGlobalPos(), landmark.second.GetSemanticLabel(), landmark.second.GetConfidence(), landmark.second.GetUncertainty());
   }
 
   if (copy_observations) {
@@ -334,12 +334,13 @@ Landmark& Map::CreateLandmark(const LandmarkId& lm_id,
 Landmark& Map::CreateLandmark(const LandmarkId& lm_id,
                               const Vec3d& global_pos,
                               const int semantic_label,
-                              const double semantic_confidence) {
+                              const double semantic_confidence,
+                              const double semantic_uncertainty) {
   auto it_exist = landmarks_.find(lm_id);
   if (it_exist == landmarks_.end()) {
     auto it = landmarks_.emplace(std::piecewise_construct,
                                  std::forward_as_tuple(lm_id),
-                                 std::forward_as_tuple(lm_id, global_pos, semantic_label, semantic_confidence));
+                                 std::forward_as_tuple(lm_id, global_pos, semantic_label, semantic_confidence, semantic_uncertainty));
     return it.first->second;
   } else {
     throw std::runtime_error("Landmark " + lm_id + " already exists.");

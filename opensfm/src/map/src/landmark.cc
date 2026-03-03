@@ -8,8 +8,8 @@ namespace map {
 Landmark::Landmark(const LandmarkId& lm_id, const Vec3d& global_pos)
     : id_(lm_id), global_pos_(global_pos), color_(255, 0, 0) {}
 
-Landmark::Landmark(const LandmarkId& lm_id, const Vec3d& global_pos, const int semantic_label, const double confidence)
-    : id_(lm_id), global_pos_(global_pos), color_(255, 0, 0), semantic_label_(semantic_label), semantic_conf_(confidence) {}
+Landmark::Landmark(const LandmarkId& lm_id, const Vec3d& global_pos, const int semantic_label, const double confidence, const double uncertainty)
+    : id_(lm_id), global_pos_(global_pos), color_(255, 0, 0), semantic_label_(semantic_label), semantic_conf_(confidence), semantic_unc_(uncertainty) {}
 
 void Landmark::SetReprojectionErrors(
     const std::map<ShotId, Eigen::VectorXd>& reproj_errors) {
@@ -57,6 +57,10 @@ void Landmark::SetSemanticLabel(int label) {
 
 void Landmark::SetConfidence(double confidence) {
   semantic_conf_ = confidence;
+}
+
+void Landmark::SetUncertainty(double uncertainty) {
+  semantic_unc_ = uncertainty;
 }
 
 };  // namespace map

@@ -40,6 +40,7 @@ def merge_reconstructions(reconstructions, tracks_manager):
             new_point.color = point.color
             new_point.semantic_value = point.semantic_value
             new_point.confidence_value = point.confidence_value
+            new_point.uncertainty_value = point.uncertainty_value
 
         for shot in reconstruction.shots.values():
             merged.add_shot(shot)
@@ -78,6 +79,7 @@ def resplit_reconstruction(merged, original_reconstructions):
             new_point.color = merged_point.color
             new_point.semantic_value = merged_point.semantic_value
             new_point.confidence_value = merged_point.confidence_value
+            new_point.uncertainty_value = merged_point.uncertainty_value
         for camera_id in original.cameras:
             r.add_camera(merged.cameras[camera_id])
         split.append(r)
@@ -285,12 +287,13 @@ def bundle_with_fixed_images(
             obs = shot.get_landmark_observation(point)
             ba.add_point_projection_observation(shot.id, point.id, obs.point, obs.scale)
             if (has_semantics):
-                logger.info(f"Point Semantic Value: {point.semantic_value} and confidence: {point.confidence_value} cameras")
+                logger.info(f"Point Semantic Value: {point.semantic_value} and confidence: {point.confidence_value} and uncertainty: {point.uncertainty_value} cameras")
                 ba.add_semantic_observation(shot.id,
                                             point.id,
                                             obs.point,
                                             point.semantic_value,
                                             point.confidence_value,
+                                            point.uncertainty_value,
                                             point.lambda_value,
                                             obs.scale,)
 

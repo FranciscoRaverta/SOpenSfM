@@ -28,6 +28,7 @@ def load_features(
     segmentations = {}
     instances = {}
     segmentation_confidences = {}
+    segmentation_uncertainties = {}
     for im in images:
         features_data = dataset.load_features(im)
 
@@ -44,8 +45,10 @@ def load_features(
                 instances[im] = semantic_data.instances
             if semantic_data.has_confidences():
                 segmentation_confidences[im] = semantic_data.segmentation_confidences
+            if semantic_data.has_uncertainties():
+                segmentation_uncertainties[im] = semantic_data.segmentation_uncertainties
 
-    return features, colors, segmentations, instances, segmentation_confidences
+    return features, colors, segmentations, instances, segmentation_confidences, segmentation_uncertainties
 
 
 def load_matches(
@@ -69,6 +72,7 @@ def create_tracks_manager(
     segmentations: t.Dict[str, np.ndarray],
     instances: t.Dict[str, np.ndarray],
     segmentation_confidences: t.Dict[str, np.ndarray],
+    segmentation_uncertainties: t.Dict[str, np.ndarray],
     matches: t.Dict[t.Tuple[str, str], t.List[t.Tuple[int, int]]],
     min_length: int,
 ) -> TracksManager:
@@ -99,16 +103,17 @@ def create_tracks_manager(
             x, y, s = features[image][featureid]
             r, g, b = colors[image][featureid]
 
-            segmentation, instance, segmentation_confidence = (
+            segmentation, instance, segmentation_confidence, segmentation_uncertainty = (
                 segmentations[image][featureid] if image in segmentations else NO_VALUE,
                 instances[image][featureid] if image in instances else NO_VALUE,
                 segmentation_confidences[image][featureid] if image in segmentation_confidences else NO_VALUE,
+                segmentation_uncertainties[image][featureid] if image in segmentation_uncertainties else NO_VALUE,
             )
             #segmentation_image_path = Dataset._segmentation_file(image)
             #confidence_image_path = Datset._segmentation_confidence_file(image)
             #print(f"x: {x}, y: {y}, s: {s}, r: {int(r)}, g: {int(g)}, b: {int(b)}, feature_id: {featureid}, segmentation: {segmentation}, instance: {instance}, confidence: {segmentation_confidence}")
             obs = pymap.Observation(
-                x, y, s, int(r), int(g), int(b), featureid, segmentation, instance, segmentation_confidence#, segmentation_image_path, confidence_image_path
+                x, y, s, int(r), int(g), int(b), featureid, segmentation, instance, segmentation_confidence, segmentation_uncertainty#, segmentation_image_path, confidence_image_path
             )
             tracks_manager.add_observation(image, str(track_id), obs)
     return tracks_manager
@@ -277,5 +282,6 @@ def as_graph(tracks_manager: pymap.TracksManager) -> nx.Graph:
                 feature_segmentation=obs.segmentation,
                 feature_instance=obs.instance,
                 feature_segmentation_confidence=obs.segmentation_confidence
+                feature_segmentation_uncertainty=obs.segmentation_uncertainty
             )
     return graph

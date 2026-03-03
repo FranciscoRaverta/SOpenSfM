@@ -23,6 +23,7 @@ struct TrackRecord{
     int segm; //
     int inst; //
     float segm_conf;
+    float segm_unc;
 };
 
 template <class S>
@@ -68,6 +69,7 @@ void WriteToStreamCurrentVersion(S& ostream,
       tr.segm = observation.second.segmentation_id; //
       tr.inst = observation.second.instance_id; // 
       tr.segm_conf = observation.second.segmentation_confidence_id;
+      tr.segm_unc = observation.second.segmentation_uncertainty_id;
 
       ostream.write(reinterpret_cast<char *>(&tl), sizeof(tl));
       ostream << shotID << observation.first;
@@ -80,7 +82,8 @@ map::Observation InstanciateObservation(
     double x, double y, double scale, int id, int r, int g, int b,
     int segm = map::Observation::NO_SEMANTIC_VALUE,
     int inst = map::Observation::NO_SEMANTIC_VALUE,
-    float segm_conf = map::Observation::NO_SEMANTIC_VALUE) {
+    float segm_conf = map::Observation::NO_SEMANTIC_VALUE,
+    float segm_unc = map::Observation::NO_SEMANTIC_VALUE) {
   map::Observation observation;
   observation.point << x, y;
   observation.scale = scale;
@@ -89,6 +92,7 @@ map::Observation InstanciateObservation(
   observation.segmentation_id = segm;
   observation.instance_id = inst;
   observation.segmentation_confidence_id = segm_conf;
+  observation.segmentation_uncertainty_id = segm_unc;
   return observation;
 }
 
@@ -218,7 +222,7 @@ map::TracksManager InstanciateFromFilenameBinaryV2(std::ifstream& fstream, const
       std::string trackID(buffer + tl.imageLen, tl.trackIdLen);
 
       fs.read(reinterpret_cast<char *>(&tr), sizeof(TrackRecord));
-      auto observation = InstanciateObservation(tr.x, tr.y, tr.scale, tr.featureID, tr.r, tr.g, tr.b, tr.segm, -1, tr.segm_conf);
+      auto observation = InstanciateObservation(tr.x, tr.y, tr.scale, tr.featureID, tr.r, tr.g, tr.b, tr.segm, -1, tr.segm_conf, tr.segm_unc);
       manager.AddObservation(image, trackID, observation);
   }
 

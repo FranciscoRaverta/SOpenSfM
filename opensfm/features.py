@@ -16,6 +16,7 @@ class SemanticData:
     segmentation: np.ndarray
     instances: Optional[np.ndarray]
     segmentation_confidences: Optional[np.ndarray]
+    segmentation_uncertainties: Optional[np.ndarray]
     labels: List[Dict[str, Any]]
 
     def __init__(
@@ -23,35 +24,43 @@ class SemanticData:
         segmentation: np.ndarray,
         instances: Optional[np.ndarray],
         segmentation_confidences: np.ndarray,
+        segmentation_uncertainties: np.ndarray,
         labels: List[Dict[str, Any]],
     ):
         self.segmentation = segmentation
         self.instances = instances
         self.labels = labels
         self.segmentation_confidences = segmentation_confidences
+        self.segmentation_uncertainties = segmentation_uncertainties
 
     def has_instances(self) -> bool:
         return self.instances is not None
 
     def has_confidences(self) -> bool:
         return self.segmentation_confidences is not None
+    
+    def has_uncertainties(self) -> bool:
+        return self.segmentation_uncertainties is not None
 
     def mask(self, mask: np.ndarray) -> "SemanticData":
         try:
             segmentation = self.segmentation[mask]
             instances = self.instances
             segmentation_confidences = self.segmentation_confidences
+            segmentation_uncertainties = self.segmentation_uncertainties
             if instances is not None:
                 instances = instances[mask]
             if segmentation_confidences is not None:
                 segmentation_confidences = segmentation_confidences[mask]
+            if segmentation_uncertainties is not None:
+                segmentation_uncertainties = segmentation_uncertainties[mask]
         except IndexError:
             logger.error(
                 f"Invalid mask array of dtype {mask.dtype}, shape {mask.shape}: {mask}"
             )
             raise
 
-        return SemanticData(segmentation, instances, segmentation_confidences, self.labels)
+        return SemanticData(segmentation, instances, segmentation_confidences, segmentation_uncertainties, self.labels)
 
 
 class FeaturesData:
@@ -95,6 +104,12 @@ class FeaturesData:
             return False
         return semantic.segmentation_confidences is not None
 
+    def has_uncertainties(self) -> bool:
+        semantic = self.semantic
+        if not semantic:
+            return False
+        return semantic.segmentation_uncertainties is not None
+
     def mask(self, mask: np.ndarray) -> "FeaturesData":
         if self.semantic:
             masked_semantic = self.semantic.mask(mask)
@@ -128,6 +143,7 @@ class FeaturesData:
         if semantic:
             instances = semantic.instances
             segmentation_confidences = semantic.segmentation_confidences
+            segmentation_uncertainties = semantic.segmentation_uncertainties
             np.savez_compressed(
                 fileobject,
                 points=self.points.astype(np.float32),
@@ -136,6 +152,7 @@ class FeaturesData:
                 segmentations=semantic.segmentation.astype(np.uint8),
                 instances=instances.astype(np.int16) if instances is not None else [],
                 segmentation_confidences=segmentation_confidences.astype(np.float32) if segmentation_confidences is not None else [],
+                segmentation_uncertainties=segmentation_uncertainties.astype(np.float32) if segmentation_uncertainties is not None else [],
                 segmentation_labels=np.array(semantic.labels).astype(np.str),
                 OPENSFM_FEATURES_VERSION=self.FEATURES_VERSION,
             )
@@ -148,6 +165,7 @@ class FeaturesData:
                 segmentations=[],
                 instances=[],
                 segmentation_confidences=[],
+                segmentation_uncertainties=[],
                 segmentation_labels=[],
                 OPENSFM_FEATURES_VERSION=self.FEATURES_VERSION,
             )
@@ -230,9 +248,10 @@ class FeaturesData:
             has_segmentation = (data["segmentations"] != None).all()
             has_instances = (data["instances"] != None).all()
             has_segmentation_confidences = (data["segmentation_confidences"] != None).all()
+            has_segmentation_uncertainties = (data["segmentation_uncertainties"] != None).all()
         except ValueError:
             logger.warning(pickle_message.format("segmentations and instances"))
-            has_segmentation, has_instances, has_segmentation_confidences = False, False, False
+            has_segmentation, has_instances, has_segmentation_confidences, has_segmentation_uncertainties = False, False, False, False
 
         # ... whereas 'labels' can't be loaded anymore, as it is a plain 'list' object. Not an
         # issue since these labels are used for description only and not actual filtering.
@@ -242,11 +261,12 @@ class FeaturesData:
             logger.warning(pickle_message.format("labels"))
             labels = []
 
-        if has_segmentation or has_instances or has_segmentation_confidences:
+        if has_segmentation or has_instances or has_segmentation_confidences or has_segmentation_uncertainties:
             semantic_data = SemanticData(
                 data["segmentations"] if has_segmentation else None,
                 data["instances"] if has_instances else None,
                 data["segmentation_confidences"] if has_segmentation_confidences else None,
+                data["segmentation_uncertainties"] if has_segmentation_uncertainties else None,
                 labels,
             )
         else:
@@ -275,12 +295,14 @@ class FeaturesData:
         has_segmentation = len(data["segmentations"]) > 0
         has_instances = len(data["instances"]) > 0
         has_segmentation_confidences = len(data["segmentation_confidences"]) > 0
+        has_segmentation_uncertainties = len(data["segmentation_uncertainties"]) > 0
 
-        if has_segmentation or has_instances or has_segmentation_confidences:
+        if has_segmentation or has_instances or has_segmentation_confidences or has_segmentation_uncertainties:
             semantic_data = SemanticData(
                 data["segmentations"] if has_segmentation else None,
                 data["instances"] if has_instances else None,
                 data["segmentation_confidences"].astype(np.float32) if has_segmentation_confidences else None,
+                data["segmentation_uncertainties"].astype(np.float32) if has_segmentation_uncertainties else None,
                 data["segmentation_labels"],
             )
         else:
