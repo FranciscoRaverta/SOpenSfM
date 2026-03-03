@@ -106,7 +106,7 @@ PYBIND11_MODULE(pymap, m) {
       .def_property("semantic_value", &map::Landmark::GetSemanticLabel,
                     &map::Landmark::SetSemanticLabel)
       .def_property("confidence_value", &map::Landmark::GetConfidence,
-                    &map::Landmark::SetConfidence);
+                    &map::Landmark::SetConfidence)
       .def_property("uncertainty_value", &map::Landmark::GetUncertainty,
                     &map::Landmark::SetUncertainty);
 
