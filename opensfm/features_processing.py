@@ -211,7 +211,7 @@ def bake_segmentation(
             f"Image has inconsistent EXIF dimensions ({exif_width}, {exif_height}) and image dimensions ({width}, {height}). Orientation={exif_orientation}"
         )
 
-    panoptic_data = [None, None, None]
+    panoptic_data = [None, None, None, None]
     for i, p_data in enumerate([segmentation, instances, confidences, uncertainties]):
         if p_data is None:
             continue
