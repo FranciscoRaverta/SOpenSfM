@@ -303,7 +303,7 @@ def detect(
         )
     else:
         semantic_data = None
-    features_data = features.FeaturesData(p_sorted, f_sorted, c_sorted, u_sorted, semantic_data)
+    features_data = features.FeaturesData(p_sorted, f_sorted, c_sorted, semantic_data)
     data.save_features(image, features_data)
 
     if need_words:
