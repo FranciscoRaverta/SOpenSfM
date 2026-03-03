@@ -638,7 +638,7 @@ struct ComputeResidualError {
       error.Evaluate(params, residuals.data(), nullptr);
       obs.point->reprojection_errors[obs.shot->GetID()] = residuals;
       //std::cout << "Projection Residual: " << residuals << std::endl;
-      std::ofstream projection_residuals("/code/volume/project/projection_residuals.txt",  std::ios::app);
+      std::ofstream projection_residuals("/code/volume/prueba/projection_residuals.txt",  std::ios::app);
       if (!projection_residuals.is_open()) {
        std::cerr << "Could not open output file\n";
        return;
@@ -658,7 +658,7 @@ struct ComputeResidualError {
             obs.point->GetValueData().data(), residuals.data());
       obs.point->reprojection_errors[obs.shot->GetID()] = residuals;
       //std::cout << "Projection Residual: " << residuals << std::endl;
-      std::ofstream projection_residuals("/code/volume/project/projection_residuals.txt",  std::ios::app);
+      std::ofstream projection_residuals("/code/volume/prueba/projection_residuals.txt",  std::ios::app);
       if (!projection_residuals.is_open()) {
         std::cerr << "Could not open output file\n";
         return;
@@ -679,7 +679,7 @@ struct ComputeSemanticResidualError {
 
     using ErrorType = SemanticReprojectionError;
 
-    std::cout << "Observed Label: " << obs.semantic_value << ", Observed Confidence: " << obs.uncertainty << std::endl;
+    std::cout << "Observed Label: " << obs.semantic_value << ", Observed Uncertainty: " << obs.uncertainty << std::endl;
 
     ErrorType error(obs.camera->GetValue().GetProjectionType(),
                     obs.std_deviation,
@@ -702,7 +702,7 @@ struct ComputeSemanticResidualError {
     // Store error in point
     obs.point->semantic_errors[obs.shot->GetID()] = residuals[0];
     //std::cout << "Semantic Residual: " << residuals << std::endl;
-    std::ofstream semantic_residuals("/code/volume/project/semantic_residuals.txt", std::ios::app);
+    std::ofstream semantic_residuals("/code/volume/prueba/semantic_residuals.txt", std::ios::app);
     if (!semantic_residuals.is_open()) {
       std::cerr << "Could not open output file\n";
       return;
