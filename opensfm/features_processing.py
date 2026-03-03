@@ -183,7 +183,7 @@ def run_detection(queue: queue.Queue):
             queue.put(None)
             break
         image, image_array, segmentation_array, instances_array, confidence_array, uncertainty_array, data, force = args
-        detect(image, image_array, segmentation_array, instances_array, confidence_array, uncertainty_array, data, force)
+        detect(image, image_array, segmentation_array, instances_array, confidence_array, data, force)
         del image_array
         del segmentation_array
         del instances_array
