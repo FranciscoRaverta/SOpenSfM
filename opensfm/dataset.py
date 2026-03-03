@@ -233,7 +233,7 @@ class DataSet(DataSetBase):
             with self.io_handler.open(segmentation_uncertainty_file, "rb") as fp:
                 with np.load(fp) as npz_file:
                     # If you know the key name
-                    data = npz_file["data"]
+                    data = npz_file[npz_file.files[0]]
 
                     if data.ndim == 2:
                         return data.astype(np.float32)
