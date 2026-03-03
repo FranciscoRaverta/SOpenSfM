@@ -281,7 +281,7 @@ def as_graph(tracks_manager: pymap.TracksManager) -> nx.Graph:
                 feature_color=obs.color,
                 feature_segmentation=obs.segmentation,
                 feature_instance=obs.instance,
-                feature_segmentation_confidence=obs.segmentation_confidence
+                feature_segmentation_confidence=obs.segmentation_confidence,
                 feature_segmentation_uncertainty=obs.segmentation_uncertainty
             )
     return graph
