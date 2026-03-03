@@ -226,25 +226,25 @@ class DataSet(DataSetBase):
         return segmentation
 
     def load_uncertainty(self, image: str) -> Optional[np.ndarray]:
-    """Load segmentation uncertainty from .npz if it exists, otherwise return None."""
-    segmentation_uncertainty_file = self._segmentation_uncertainty_file(image)
+        """Load segmentation uncertainty from .npz if it exists, otherwise return None."""
+        segmentation_uncertainty_file = self._segmentation_uncertainty_file(image)
 
-    if self.io_handler.isfile(segmentation_uncertainty_file):
-        with self.io_handler.open(segmentation_uncertainty_file, "rb") as fp:
-            with np.load(fp) as npz_file:
-                # If you know the key name
-                data = npz_file["data"]
+        if self.io_handler.isfile(segmentation_uncertainty_file):
+            with self.io_handler.open(segmentation_uncertainty_file, "rb") as fp:
+                with np.load(fp) as npz_file:
+                    # If you know the key name
+                    data = npz_file["data"]
 
-                if data.ndim == 2:
-                    return data.astype(np.float32)
-                elif data.ndim == 3:
-                    return data[:, :, 0].astype(np.float32) 
-                else:
-                    raise IndexError
-    else:
-        uncertainty = None
+                    if data.ndim == 2:
+                        return data.astype(np.float32)
+                    elif data.ndim == 3:
+                        return data[:, :, 0].astype(np.float32) 
+                    else:
+                        raise IndexError
+        else:
+            uncertainty = None
 
-    return uncertainty
+        return uncertainty
 
     def segmentation_ignore_values(self, image: str) -> List[int]:
         """List of label values to ignore.
