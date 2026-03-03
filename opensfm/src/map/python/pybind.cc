@@ -607,7 +607,7 @@ PYBIND11_MODULE(pymap, m) {
           py::return_value_policy::reference_internal)
 
       .def("create_landmark",
-          static_cast<map::Landmark& (map::Map::*)(const std::string&, const Eigen::Vector3d&, int, double)>(
+          static_cast<map::Landmark& (map::Map::*)(const std::string&, const Eigen::Vector3d&, int, double, double)>(
               &map::Map::CreateLandmark),
           py::arg("lm_id"),
           py::arg("global_position"),
