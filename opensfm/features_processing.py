@@ -234,7 +234,7 @@ def detect(
     segmentation_array: Optional[np.ndarray],
     instances_array: Optional[np.ndarray],
     confidence_array: Optional[np.ndarray],
-    #uncertainty_array: Optional[np.ndarray],
+    uncertainty_array: Optional[np.ndarray],
     data: DataSetBase,
     force: bool = False,
 ) -> None:
