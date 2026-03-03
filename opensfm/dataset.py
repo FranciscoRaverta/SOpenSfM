@@ -169,7 +169,7 @@ class DataSet(DataSetBase):
         return os.path.join(self.data_path, "segmentation_confidences")
 
     def _segmentation_uncertainty_file(self, image: str) -> str:
-        return os.path.join(self._segmentation_uncertainty_path(), image + ".png")
+        return os.path.join(self._segmentation_uncertainty_path(), image + ".npz")
 
     def _segmentation_uncertainty_path(self) -> str:
         return os.path.join(self.data_path, "segmentation_uncertainties")
