@@ -114,7 +114,7 @@ class SemanticReprojectionError {
         //int idx = iv * width_ + iu;
 
         int predicted_label = segmentation_image_(iv,iu);
-        float weight = std::sqrt(1 / (1e-9f + std::pow(uncertainty_,2)))
+        float weight = std::sqrt(1 / (1e-9f + std::pow(uncertainty_,2)));
 
         // The error is the difference between the predicted semantic label and the observed semantic label
         //residuals[0] = T(scale_) * (T(predicted_label) - T(observed_label_)); //This has no meaning, as the difference of labels says nothing
