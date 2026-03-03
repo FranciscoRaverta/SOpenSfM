@@ -64,6 +64,7 @@ class SemanticReprojectionError {
     SemanticReprojectionError(const geometry::ProjectionType& type,
                               double std_dev,
                               int observed_label,
+                              double confidence,
                               double uncertainty,
                               double lambda,
                               const SegmImage& segmentation_image,
@@ -74,6 +75,7 @@ class SemanticReprojectionError {
         segmentation_image_(segmentation_image),
         height_(segmentation_image.rows()),
         width_(segmentation_image.cols()),
+        confidence_(confidence),
         uncertainty_(uncertainty),
         residual_method_(residual_method) {}
 
@@ -141,6 +143,7 @@ class SemanticReprojectionError {
         int height_;
         int width_;
         double uncertainty_;
+        double confidence_;
         std::string residual_method_;
 
 };
