@@ -183,7 +183,9 @@ class DataSet(DataSetBase):
     def load_segmentation(self, image: str) -> Optional[np.ndarray]:
         """Load image segmentation if it exists, otherwise return None."""
         segmentation_file = self._segmentation_file(image)
+        print(segmentation_file)
         if self.io_handler.isfile(segmentation_file):
+            print("Exists!")
             with self.io_handler.open(segmentation_file, "rb") as fp:
                 with PngImageFile(fp) as png_image:
                     # TODO: We do not write a header tag in the metadata. Might be good safety check.
