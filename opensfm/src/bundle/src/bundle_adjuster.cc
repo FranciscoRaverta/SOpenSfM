@@ -640,7 +640,7 @@ struct ComputeResidualError {
       //std::cout << "Projection Residual: " << residuals << std::endl;
       std::ofstream projection_residuals("/code/volume/prueba/projection_residuals.txt",  std::ios::app);
       if (!projection_residuals.is_open()) {
-       std::cerr << "Could not open output file\n";
+       //std::cerr << "Could not open output file\n";
        return;
       }
       projection_residuals << "CameraID: " << obs.shot->GetID() << ", residuals: " << residuals[0] << " " << residuals[1] << "\n";
@@ -660,7 +660,7 @@ struct ComputeResidualError {
       //std::cout << "Projection Residual: " << residuals << std::endl;
       std::ofstream projection_residuals("/code/volume/prueba/projection_residuals.txt",  std::ios::app);
       if (!projection_residuals.is_open()) {
-        std::cerr << "Could not open output file\n";
+        //std::cerr << "Could not open output file\n";
         return;
       }
       projection_residuals << "CameraID: " << obs.shot->GetID() << ", residuals: " << residuals[0] << " " << residuals[1] << "\n";
@@ -704,7 +704,7 @@ struct ComputeSemanticResidualError {
     //std::cout << "Semantic Residual: " << residuals << std::endl;
     std::ofstream semantic_residuals("/code/volume/prueba/semantic_residuals.txt", std::ios::app);
     if (!semantic_residuals.is_open()) {
-      std::cerr << "Could not open output file\n";
+      //std::cerr << "Could not open output file\n";
       return;
     }
     semantic_residuals << "CameraID: " << obs.shot->GetID() << ", residuals: " << residuals << "\n";
