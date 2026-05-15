@@ -203,6 +203,7 @@ class DataSet(DataSetBase):
                     else:
                         raise IndexError
         else:
+            print(f"{segmentation_file} does not have segmentation!")
             segmentation = None
         return segmentation
 
