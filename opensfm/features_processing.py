@@ -282,7 +282,7 @@ def detect(
         p_unsorted = p_unmasked[fmask]
         f_unsorted = f_unmasked[fmask]
         c_unsorted = c_unmasked[fmask]
-        u_unsorted = u_unmasked[fmask]
+        u_unsorted = c_unmasked[fmask].copy()
 
     if len(p_unsorted) == 0:
         logger.warning("No features found in image {}".format(image))
