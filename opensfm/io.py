@@ -1418,6 +1418,11 @@ class IoFilesystemBase(ABC):
 
     @classmethod
     @abstractmethod
+    def npzwrite(cls, path: str, image):
+        pass
+
+    @classmethod
+    @abstractmethod
     def imread(cls, path: str, grayscale=False, unchanged=False, anydepth=False):
         pass
 
@@ -1522,3 +1527,7 @@ class IoFilesystemDefault(IoFilesystemBase):
     def timestamp(cls, path: str) -> str:
         # pyre-fixme[7]: Expected `str` but got `float`.
         return os.path.getmtime(path)
+
+    @classmethod
+    def npzwrite(cls, path, image: np.ndarray) -> None:
+        np.savez_compressed(path, image.astype(np.float32))
