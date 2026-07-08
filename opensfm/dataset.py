@@ -176,6 +176,10 @@ class DataSet(DataSetBase):
     def _segmentation_uncertainty_path(self) -> str:
         parent_path = os.path.dirname(self.data_path)
         return os.path.join(parent_path, "segmentation_uncertainties")
+    
+    def _segmentation_probability_path(self) -> str:
+        parent_path = os.path.dirname(self.data_path)
+        return os.path.join(parent_path, "segmentation_probabilities")
 
     def segmentation_labels(self) -> List[Any]:
         return []
