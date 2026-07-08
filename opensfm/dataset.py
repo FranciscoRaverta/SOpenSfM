@@ -251,7 +251,7 @@ class DataSet(DataSetBase):
                     if data.ndim == 2:
                         return data.astype(np.float32)
                     elif data.ndim == 3:
-                        return data[:, :, 0].astype(np.float32) 
+                        return data.astype(np.float32)
                     else:
                         raise IndexError
         else:
