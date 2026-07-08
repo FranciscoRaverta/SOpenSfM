@@ -221,7 +221,7 @@ def undistort_image_and_masks(arguments) -> None:
     uncertainty = data.load_uncertainty(shot.id)
     if uncertainty is not None:
         undistorted = undistort_image(
-            shot, undistorted_shots, uncertainty, cv2.INTER_LINEAR, max_size
+            shot, undistorted_shots, uncertainty, cv2.INTER_NEAREST, max_size
         )
         for k, v in undistorted.items():
             udata.save_undistorted_uncertainty(k, v)
@@ -230,7 +230,7 @@ def undistort_image_and_masks(arguments) -> None:
     probability = data.load_probability(shot.id)
     if probability is not None:
         undistorted = undistort_image(
-            shot, undistorted_shots, probability, cv2.INTER_LINEAR, max_size
+            shot, undistorted_shots, probability, cv2.INTER_NEAREST, max_size
         )
         for k, v in undistorted.items():
             udata.save_undistorted_probability(k, v)
