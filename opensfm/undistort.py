@@ -212,7 +212,7 @@ def undistort_image_and_masks(arguments) -> None:
     segmentation = data.load_segmentation(shot.id)
     if segmentation is not None:
         undistorted = undistort_image(
-            shot, undistorted_shots, segmentation, cv2.INTER_NEAREST, max_size
+            shot, undistorted_shots, segmentation, cv2.INTER_NEAREST, max_size, borderMode=cv2.BORDER_REPLICATE
         )
         for k, v in undistorted.items():
             udata.save_undistorted_segmentation(k, v)
@@ -221,7 +221,7 @@ def undistort_image_and_masks(arguments) -> None:
     uncertainty = data.load_uncertainty(shot.id)
     if uncertainty is not None:
         undistorted = undistort_image(
-            shot, undistorted_shots, uncertainty, cv2.INTER_NEAREST, max_size
+            shot, undistorted_shots, uncertainty, cv2.INTER_NEAREST, max_size, borderMode=cv2.BORDER_REPLICATE
         )
         for k, v in undistorted.items():
             udata.save_undistorted_uncertainty(k, v)
@@ -230,7 +230,7 @@ def undistort_image_and_masks(arguments) -> None:
     probability = data.load_probability(shot.id)
     if probability is not None:
         undistorted = undistort_image(
-            shot, undistorted_shots, probability, cv2.INTER_NEAREST, max_size
+            shot, undistorted_shots, probability, cv2.INTER_NEAREST, max_size, borderMode=cv2.BORDER_REPLICATE
         )
         for k, v in undistorted.items():
             udata.save_undistorted_probability(k, v)
@@ -260,6 +260,7 @@ def undistort_image(
     original: Optional[np.ndarray],
     interpolation,
     max_size: int,
+    borderMode=cv2.BORDER_WRAP,
 ) -> Dict[str, np.ndarray]:
     """Undistort an image into a set of undistorted ones.
 
@@ -283,7 +284,7 @@ def undistort_image(
         map1, map2 = compute_camera_mapping_cached(
             shot.camera, new_camera, width, height
         )
-        undistorted = cv2.remap(original, map1, map2, interpolation)
+        undistorted = cv2.remap(original, map1, map2, interpolation, borderMode=borderMode)
         return {undistorted_shot.id: scale_image(undistorted, max_size, interpolation)}
     elif pygeometry.Camera.is_panorama(projection_type):
         subshot_width = undistorted_shots[0].camera.width
@@ -294,7 +295,7 @@ def undistort_image(
         res = {}
         for undistorted_shot in undistorted_shots:
             undistorted = render_perspective_view_of_a_panorama(
-                image, shot, undistorted_shot, mint
+                image, shot, undistorted_shot, mint, borderMode=borderMode,
             )
             res[undistorted_shot.id] = scale_image(undistorted, max_size, interpolation)
         return res
