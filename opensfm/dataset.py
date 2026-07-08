@@ -878,21 +878,24 @@ class UndistortedDataSet(object):
 
     def _undistorted_segmentation_file(self, image: str) -> str:
         """Path of undistorted version of a segmentation."""
-        return os.path.join(self._undistorted_segmentation_path(), image + ".png")
+        image_name = os.path.splitext(image)[0]
+        return os.path.join(self._undistorted_segmentation_path(), image_name + ".png")
     
     def _undistorted_uncertainty_path(self) -> str:
         return os.path.join(self.data_path, "uncertainties")
 
     def _undistorted_uncertainty_file(self, image: str) -> str:
         """Path of undistorted version of an uncertainty image."""
-        return os.path.join(self._undistorted_uncertainty_path(), image + ".npz")
+        image_name = os.path.splitext(image)[0]
+        return os.path.join(self._undistorted_uncertainty_path(), image_name + ".npz")
     
     def _undistorted_probability_path(self) -> str:
         return os.path.join(self.data_path, "probabilities")
 
     def _undistorted_probability_file(self, image: str) -> str:
         """Path of undistorted version of an uncertainty image."""
-        return os.path.join(self._undistorted_probability_path(), image + ".npz")
+        image_name = os.path.splitext(image)[0]
+        return os.path.join(self._undistorted_probability_path(), image_name + ".npz")
 
     def undistorted_segmentation_exists(self, image: str) -> bool:
         """Check if the undistorted segmentation file exists."""
