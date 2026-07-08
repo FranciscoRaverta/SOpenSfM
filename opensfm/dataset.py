@@ -177,6 +177,9 @@ class DataSet(DataSetBase):
         parent_path = os.path.dirname(self.data_path)
         return os.path.join(parent_path, "segmentation_uncertainties")
     
+    def _segmentation_probability_file(self, image: str) -> str:
+        return os.path.join(self._segmentation_probability_path(), image + ".npz")
+    
     def _segmentation_probability_path(self) -> str:
         parent_path = os.path.dirname(self.data_path)
         return os.path.join(parent_path, "segmentation_probabilities")
