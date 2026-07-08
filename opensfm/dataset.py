@@ -251,6 +251,22 @@ class DataSet(DataSetBase):
             uncertainty = None
 
         return uncertainty
+    
+    def load_probabilities(self, image: str) -> Optional[np.ndarray]:
+        """Load per-pixel class probabilities from .npz if it exists, otherwise return None."""
+        segmentation_probability_file = self._segmentation_probability_file(image)
+
+        if self.io_handler.isfile(segmentation_probability_file):
+            with self.io_handler.open(segmentation_probability_file, "rb") as fp:
+                with np.load(fp) as npz_file:
+                    data = npz_file[npz_file.files[0]].astype(np.float32)
+
+                    if data.ndim != 3:
+                        raise ValueError(
+                            f"Expected probability tensor of shape (H, W, C), got {data.shape}"
+                        )
+                    return data
+        return None
 
     def segmentation_ignore_values(self, image: str) -> List[int]:
         """List of label values to ignore.
@@ -856,6 +872,20 @@ class UndistortedDataSet(object):
     def _undistorted_segmentation_file(self, image: str) -> str:
         """Path of undistorted version of a segmentation."""
         return os.path.join(self._undistorted_segmentation_path(), image + ".png")
+    
+    def _undistorted_uncertainty_path(self) -> str:
+        return os.path.join(self.data_path, "uncertainties")
+
+    def _undistorted_uncertainty_file(self, image: str) -> str:
+        """Path of undistorted version of an uncertainty image."""
+        return os.path.join(self._undistorted_uncertainty_path(), image + ".npz")
+    
+    def _undistorted_probability_path(self) -> str:
+        return os.path.join(self.data_path, "probabilities")
+
+    def _undistorted_probability_file(self, image: str) -> str:
+        """Path of undistorted version of an uncertainty image."""
+        return os.path.join(self._undistorted_probability_path(), image + ".npz")
 
     def undistorted_segmentation_exists(self, image: str) -> bool:
         """Check if the undistorted segmentation file exists."""
@@ -885,6 +915,16 @@ class UndistortedDataSet(object):
         """Save the undistorted image segmentation."""
         self.io_handler.mkdir_p(self._undistorted_segmentation_path())
         self.io_handler.imwrite(self._undistorted_segmentation_file(image), array)
+
+    def save_undistorted_uncertainty(self, image: str, array: np.ndarray) -> None:
+        """Save the undistorted image segmentation."""
+        self.io_handler.mkdir_p(self._undistorted_uncertainty_path())
+        self.io_handler.npzwrite(self._undistorted_uncertainty_file(image), array)
+
+    def save_undistorted_probability(self, image: str, array: np.ndarray) -> None:
+        """Save the undistorted image segmentation."""
+        self.io_handler.mkdir_p(self._undistorted_probability_path())
+        self.io_handler.npzwrite(self._undistorted_probability_file(image), array)
 
     def load_undistorted_segmentation_mask(self, image: str) -> Optional[np.ndarray]:
         """Build a mask from the undistorted segmentation.

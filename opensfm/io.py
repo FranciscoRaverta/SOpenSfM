@@ -1358,6 +1358,9 @@ def image_size(path: str) -> Tuple[int, int]:
     with open(path, "rb") as fb:
         return image_size_from_fileobject(fb)
 
+def npzwrite(path, image: np.ndarray) -> None:
+    np.savez_compressed(path, image.astype(np.float32))
+
 
 # IO Filesystem
 class IoFilesystemBase(ABC):

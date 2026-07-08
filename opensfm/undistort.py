@@ -217,6 +217,24 @@ def undistort_image_and_masks(arguments) -> None:
         for k, v in undistorted.items():
             udata.save_undistorted_segmentation(k, v)
 
+    # Undistort uncertainty
+    uncertainty = data.load_uncertainty(shot.id)
+    if uncertainty is not None:
+        undistorted = undistort_image(
+            shot, undistorted_shots, uncertainty, cv2.INTER_LINEAR, max_size
+        )
+        for k, v in undistorted.items():
+            udata.save_undistorted_uncertainty(k, v)
+
+    # Undistort probabilities
+    probability = data.load_probability(shot.id)
+    if probability is not None:
+        undistorted = undistort_image(
+            shot, undistorted_shots, probability, cv2.INTER_LINEAR, max_size
+        )
+        for k, v in undistorted.items():
+            udata.save_undistorted_probability(k, v)
+
 
 def compute_camera_mapping_cached(camera, new_camera, width, height):
     global _camera_mapping_cache
@@ -266,7 +284,7 @@ def undistort_image(
             shot.camera, new_camera, width, height
         )
         undistorted = cv2.remap(original, map1, map2, interpolation)
-        return {undistorted_shot.id: scale_image(undistorted, max_size)}
+        return {undistorted_shot.id: scale_image(undistorted, max_size, interpolation)}
     elif pygeometry.Camera.is_panorama(projection_type):
         subshot_width = undistorted_shots[0].camera.width
         width = 4 * subshot_width
@@ -278,7 +296,7 @@ def undistort_image(
             undistorted = render_perspective_view_of_a_panorama(
                 image, shot, undistorted_shot, mint
             )
-            res[undistorted_shot.id] = scale_image(undistorted, max_size)
+            res[undistorted_shot.id] = scale_image(undistorted, max_size, interpolation)
         return res
     else:
         raise NotImplementedError(
@@ -288,7 +306,7 @@ def undistort_image(
         )
 
 
-def scale_image(image: np.ndarray, max_size: int) -> np.ndarray:
+def scale_image(image: np.ndarray, max_size: int, interpolation) -> np.ndarray:
     """Scale an image not to exceed max_size."""
     height, width = image.shape[:2]
     factor = max_size / float(max(height, width))
@@ -296,7 +314,7 @@ def scale_image(image: np.ndarray, max_size: int) -> np.ndarray:
         return image
     width = int(round(width * factor))
     height = int(round(height * factor))
-    return cv2.resize(image, (width, height), interpolation=cv2.INTER_NEAREST)
+    return cv2.resize(image, (width, height), interpolation=interpolation)
 
 
 def add_image_format_extension(shot_id: str, image_format: str) -> str:
