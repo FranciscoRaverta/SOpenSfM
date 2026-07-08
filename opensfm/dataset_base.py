@@ -79,7 +79,7 @@ class DataSetBase(ABC):
         pass
 
     @abstractmethod
-    def load_probabilities(self, image: str) -> Optional[np.ndarray]:
+    def load_probability(self, image: str) -> Optional[np.ndarray]:
         pass
 
     @abstractmethod

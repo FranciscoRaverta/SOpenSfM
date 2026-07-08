@@ -252,7 +252,7 @@ class DataSet(DataSetBase):
 
         return uncertainty
     
-    def load_probabilities(self, image: str) -> Optional[np.ndarray]:
+    def load_probability(self, image: str) -> Optional[np.ndarray]:
         """Load per-pixel class probabilities from .npz if it exists, otherwise return None."""
         segmentation_probability_file = self._segmentation_probability_file(image)
 
